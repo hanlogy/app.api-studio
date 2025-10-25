@@ -4,28 +4,19 @@
  */
 
 import React from 'react';
-import {ScrollView, StatusBar, Text, View} from 'react-native';
+import {Text, View} from 'react-native';
 
 import {styles} from './App.styles';
+import {RootContextProvider} from './states/RootContext';
 
-function App(): React.JSX.Element {
-  const backgroundStyle = {
-    backgroundColor: 'white',
-  };
-
+const App = (): React.JSX.Element => {
   return (
-    <View style={backgroundStyle}>
-      <StatusBar
-        barStyle="dark-content"
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView style={backgroundStyle}>
-        <View style={styles.container}>
-          <Text>Api Studio</Text>
-        </View>
-      </ScrollView>
-    </View>
+    <RootContextProvider>
+      <View style={styles.container}>
+        <Text>Api Studio</Text>
+      </View>
+    </RootContextProvider>
   );
-}
+};
 
 export default App;
