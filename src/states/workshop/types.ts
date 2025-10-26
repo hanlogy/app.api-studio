@@ -38,19 +38,24 @@ interface ApiCollection {
   readonly endpoints: readonly ApiEndpoint[];
 }
 
-export interface WorkspaceState {
-  /**
-   * - `initializing`: when the app starts before any workspace is loaded.
-   * - `loading`: when reading and parsing workspace files (initial or
-   *   background refresh).
-   * - `idle`: when no file operations are in progress.
-   */
-  readonly status: 'initializing' | 'loading' | 'idle';
+/**
+ * ### `status`:
+ * - `initializing`: when the app starts before any workspace is loaded.
+ * - `loading`: when reading and parsing workspace files (initial or
+ *   background refresh).
+ * - `idle`: when no file operations are in progress.
+ */
+export type WorkspaceState =
+  | {
+      readonly status: 'initializing';
+    }
+  | {
+      readonly status: 'loading' | 'idle';
 
-  // The root folder of the workspace.
-  readonly path?: string;
+      // The root folder of the workspace.
+      readonly path: string;
 
-  readonly environments: readonly Environment[];
+      readonly environments: readonly Environment[];
 
-  readonly resources: readonly (ApiEndpoint | ApiCollection)[];
-}
+      readonly resources: readonly (ApiEndpoint | ApiCollection)[];
+    };
