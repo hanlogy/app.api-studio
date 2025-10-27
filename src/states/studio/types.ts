@@ -3,7 +3,12 @@ interface Workshop {
   readonly path: string;
 }
 
-export interface StudioState {
-  readonly currentWorkshopPath: string;
-  readonly workshops: readonly Workshop[];
-}
+export type StudioState =
+  | {
+      readonly isReady: false;
+    }
+  | {
+      readonly isReady: true;
+      readonly currentWorkshopPath: string;
+      readonly workshops: readonly Workshop[];
+    };
