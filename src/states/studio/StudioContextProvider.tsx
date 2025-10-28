@@ -2,9 +2,11 @@ import {PropsWithChildren, useCallback, useEffect, useState} from 'react';
 import {StudioContext} from './StudioContext';
 import {StudioState} from './types';
 import {fetchStudioState} from './repository';
+import {useWorkspace} from './useWorkspace';
 
 export const StudioContextProvider = ({children}: PropsWithChildren<{}>) => {
   const [state, setState] = useState<StudioState>({status: 'initializing'});
+  const {setWorkspacePath} = useWorkspace();
 
   // Load cache
   useEffect(() => {
@@ -33,10 +35,8 @@ export const StudioContextProvider = ({children}: PropsWithChildren<{}>) => {
       return {...prev, currentWorkspacePath, status: 'loading'};
     });
 
-    (async () => {
-      //
-    })();
-  }, [state.currentWorkspacePath]);
+    setWorkspacePath(currentWorkspacePath);
+  }, [state.currentWorkspacePath, setWorkspacePath]);
 
   const openWorkspace = useCallback((path: string) => {
     setState(prev => ({
