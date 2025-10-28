@@ -16,8 +16,8 @@ export const useWorkspace = () => {
         watcherRef.current = null;
       }
 
-      watcherRef.current = await watchWorkspace(workspacePath, snapshot => {
-        console.log(snapshot);
+      watcherRef.current = await watchWorkspace(workspacePath, files => {
+        console.log(files);
       });
     })();
   }, [workspacePath]);

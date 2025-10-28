@@ -1,38 +1,70 @@
-import RNFS, {ReadDirItem} from 'react-native-fs';
+import RNFS from 'react-native-fs';
 
-interface FileSnapshot {
-  [key: string]: number | FileSnapshot;
+const CONFIG_FILE = 'config.json' as const;
+const APIS_DIR_NAME = 'apis';
+
+interface Snapshot {
+  readonly [CONFIG_FILE]?: number;
+  readonly apis?: Record<string, number>;
 }
 
-const snapshot = async (dir: string): Promise<FileSnapshot> => {
-  const files: ReadDirItem[] = await RNFS.readDir(dir);
-  const map: FileSnapshot = {};
+export interface WorkspaceFiles {
+  readonly config?: typeof CONFIG_FILE;
+  readonly apis?: string[];
+}
 
-  for (const {name, path, isDirectory, mtime} of files) {
-    if (isDirectory() && name === 'apis') {
-      map[name] = await snapshot(path);
-    } else if (name.endsWith('.json')) {
-      map[name] = mtime?.getTime() ?? 0;
+export const createSnapshot = async (dir: string): Promise<Snapshot> => {
+  const files = await RNFS.readDir(dir);
+
+  // Find config.json
+  const configFile = files.find(
+    ({name, isDirectory}) => name === CONFIG_FILE && !isDirectory(),
+  );
+
+  // Find apis folder
+  const apisDir = files.find(
+    ({name, isDirectory}) => name === APIS_DIR_NAME && isDirectory(),
+  );
+
+  let apisMap: Record<string, number> | undefined;
+
+  if (apisDir) {
+    apisMap = {};
+    const apiFiles = await RNFS.readDir(apisDir.path);
+    for (const {isDirectory, name, mtime} of apiFiles) {
+      if (!isDirectory() && name.endsWith('.json')) {
+        apisMap[name] = mtime?.getTime() ?? 0;
+      }
     }
   }
 
-  return map;
+  return {
+    [CONFIG_FILE]: configFile?.mtime?.getTime(),
+    apis: apisMap,
+  };
+};
+
+const toFiles = (snapshot: Snapshot) => {
+  return {
+    config: snapshot[CONFIG_FILE] ? CONFIG_FILE : undefined,
+    apis: snapshot.apis ? Object.keys(snapshot.apis) : undefined,
+  };
 };
 
 export const watchWorkspace = async (
   dir: string,
-  onChange: (snapshot: FileSnapshot) => void,
+  onChange: (files: WorkspaceFiles) => void,
 ) => {
   const interval = 2000;
 
-  let prev = await snapshot(dir);
-  onChange(prev);
+  let prev = await createSnapshot(dir);
+  onChange(toFiles(prev));
 
   const timer = setInterval(async () => {
-    const next = await snapshot(dir);
+    const next = await createSnapshot(dir);
     if (JSON.stringify(next) !== JSON.stringify(prev)) {
       prev = next;
-      onChange(next);
+      onChange(toFiles(next));
     }
   }, interval);
 
