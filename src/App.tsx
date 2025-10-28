@@ -1,13 +1,9 @@
-/**
- * Api Studio
- * @format
- */
-
 import React from 'react';
-import {Text, View, LogBox} from 'react-native';
+import {Text, LogBox} from 'react-native';
 
-import {styles} from './App.styles';
-import {RootContextProvider} from './states/RootContext';
+import {StudioLayout} from './components/StudioLayout/StudioLayout';
+import {StudioContextProvider} from './states/studio/StudioContextProvider';
+import {StudioLoader} from './components/StudioLoader/StudioLoader';
 
 LogBox.ignoreLogs([
   'Sending `onAnimatedValueUpdate` with no listeners registered.',
@@ -15,11 +11,13 @@ LogBox.ignoreLogs([
 
 const App = (): React.JSX.Element => {
   return (
-    <RootContextProvider>
-      <View style={styles.container}>
-        <Text>Api Studio</Text>
-      </View>
-    </RootContextProvider>
+    <StudioContextProvider>
+      <StudioLoader>
+        <StudioLayout>
+          <Text>Api Studio</Text>
+        </StudioLayout>
+      </StudioLoader>
+    </StudioContextProvider>
   );
 };
 

@@ -58,9 +58,10 @@ export type StudioState =
   | {
       /**
        * - `initializing`: reading from cache
-       * - `initializing`: no cache
+       * - `waiting`: no cache
        */
       readonly status: 'initializing' | 'waiting';
+      // currentWorkspacePath, workspaces are from cache at this state.
       readonly currentWorkspacePath?: string;
       readonly workspaces?: readonly WorkspaceSummary[];
     }
@@ -72,6 +73,7 @@ export type StudioState =
       readonly status: 'loading';
       readonly currentWorkspacePath: string;
       readonly workspaces?: readonly WorkspaceSummary[];
+      readonly workspace?: Workspace;
     }
   | {
       /**

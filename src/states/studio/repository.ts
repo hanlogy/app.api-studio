@@ -1,4 +1,4 @@
-import {readFromCache, saveToCache} from '@/repositories/cache';
+import {readFromCache, saveToCache} from '../../repositories/cache';
 import {StudioStateCache} from './types';
 
 const cacheFileName = 'studio-cache';
