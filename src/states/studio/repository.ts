@@ -1,12 +1,12 @@
 import {readFromCache, saveToCache} from '@/repositories/cache';
-import {StudioState} from './types';
+import {StudioStateCache} from './types';
 
 const cacheFileName = 'studio-cache';
 
-export const saveStudioState = async (state: StudioState) => {
+export const saveStudioState = async (state: StudioStateCache) => {
   await saveToCache(cacheFileName, state);
 };
 
 export const fetchStudioState = async () => {
-  return readFromCache<StudioState>(cacheFileName);
+  return readFromCache<StudioStateCache>(cacheFileName);
 };
