@@ -1,0 +1,45 @@
+import {parseConfigFile} from '@/workspaceParser/parseConfigFile';
+import * as readJsonModule from '@/helpers/readJsonFile';
+
+jest.mock('react-native-fs', () => ({
+  readFile: jest.fn(),
+  writeFile: jest.fn(),
+  readDir: jest.fn(),
+}));
+
+describe('parseConfigFile', () => {
+  test('parseConfigFile', async () => {
+    const spy = jest.spyOn(readJsonModule, 'readJsonFile').mockResolvedValue({
+      name: 'My App',
+      description: 'Test app',
+      environments: {
+        '@global': {
+          headers: {name: 'foo'},
+        },
+        dev: {':api': 'https://dev.api'},
+      },
+    });
+
+    const result = await parseConfigFile('/tmp', 'config.json');
+
+    expect(result).toStrictEqual({
+      name: 'My App',
+      description: 'Test app',
+      environments: [
+        {
+          name: '@global',
+          isGlobal: true,
+          headers: {name: 'foo'},
+          variables: {},
+        },
+        {
+          name: 'dev',
+          isGlobal: false,
+          headers: {},
+          variables: {api: 'https://dev.api'},
+        },
+      ],
+    });
+    spy.mockRestore();
+  });
+});
