@@ -1,5 +1,5 @@
-import {isPlainObject} from '../helpers/isPlainObject';
-import {RequestHeaders} from '../types/types';
+import {isPlainObject} from '@/helpers/isPlainObject';
+import {RequestHeaders} from '@/types/types';
 
 export const buildHeaders = (data?: unknown): RequestHeaders => {
   if (!data || !isPlainObject(data)) {

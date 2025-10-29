@@ -1,4 +1,4 @@
-import {buildVariables} from '../../src/workspaceParser/buildVariables';
+import {buildVariables} from '@/workspaceParser/buildVariables';
 
 describe('buildVariables', () => {
   test('undefined', () => {

@@ -1,6 +1,6 @@
-import {isPlainObject} from '../helpers/isPlainObject';
-import {isPrimitive} from '../helpers/isPrimitive';
-import type {Variables} from '../types/types';
+import {isPlainObject} from '@/helpers/isPlainObject';
+import {isPrimitive} from '@/helpers/isPrimitive';
+import type {Variables} from '@/types/types';
 
 export const buildVariables = (data?: unknown): Variables => {
   if (!data || !isPlainObject(data)) {

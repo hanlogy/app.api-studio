@@ -1,6 +1,6 @@
 import {Text, View} from 'react-native';
 import {PropsWithChildren} from 'react';
-import {useStudioConext} from '../../states/studio/useStudioConext';
+import {useStudioConext} from '@/states/studio/useStudioConext';
 import {OpenWorkspaceButton} from '../OpenWorkspaceButton';
 import {styles} from './styles';
 

@@ -1,4 +1,4 @@
-import {buildHeaders} from '../../src/workspaceParser/buildHeaders';
+import {buildHeaders} from '@/workspaceParser/buildHeaders';
 
 describe('buildHeaders', () => {
   test('undefined', () => {
