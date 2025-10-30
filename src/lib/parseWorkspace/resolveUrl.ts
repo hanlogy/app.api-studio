@@ -1,19 +1,19 @@
-import {PrimitiveRecord, Variables} from '@/definitions';
-import {resolveStringRecord} from './resolveStringRecord';
+import {PrimitiveRecord, ValuesMap} from '@/definitions';
 import {resolveStringSource} from './resolveStringSource';
+import {resolveRecordSource} from './resolveRecordSource';
 
-export const buildUrl = ({
+export const resolveUrl = ({
   url: localUrl,
   baseUrl,
   query = {},
-  variables = {},
+  valuesMap = {},
 }: {
   url?: string;
   baseUrl?: string;
   query?: PrimitiveRecord;
-  variables?: Variables;
+  valuesMap?: ValuesMap;
 } = {}): string => {
-  const resolvedQuery = resolveStringRecord(query, variables);
+  const resolvedQuery = resolveRecordSource({source: query, valuesMap});
 
   const queryString = Object.entries(resolvedQuery)
     .map(
@@ -28,7 +28,7 @@ export const buildUrl = ({
     .join('/');
 
   if (mergedUrl) {
-    mergedUrl = String(resolveStringSource(mergedUrl, variables));
+    mergedUrl = String(resolveStringSource({source: mergedUrl, valuesMap}));
   }
 
   const [path, existingQueryString] = mergedUrl.split('?', 2);

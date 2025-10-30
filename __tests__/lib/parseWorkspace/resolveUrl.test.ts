@@ -1,39 +1,39 @@
-import {buildUrl} from '@/lib/parseWorkspace/buildUrl';
+import {resolveUrl} from '@/lib/parseWorkspace/resolveUrl';
 
-describe('buildUrl', () => {
+describe('resolveUrl', () => {
   test('empty', () => {
-    const result = buildUrl();
+    const result = resolveUrl();
     expect(result).toBe('');
   });
 
   test('only url', () => {
-    const result = buildUrl({url: 'foo'});
+    const result = resolveUrl({url: 'foo'});
     expect(result).toBe('foo');
   });
 
   test('only baseUrl', () => {
-    const result = buildUrl({baseUrl: 'bar'});
+    const result = resolveUrl({baseUrl: 'bar'});
     expect(result).toBe('bar');
   });
 
   test('baseUrl + url', () => {
-    const result = buildUrl({baseUrl: 'bar', url: 'foo'});
+    const result = resolveUrl({baseUrl: 'bar', url: 'foo'});
     expect(result).toBe('bar/foo');
   });
 
   test('only baseUrl and contains query with query input', () => {
-    const result = buildUrl({baseUrl: 'bar?key=foo', query: {limit: 10}});
+    const result = resolveUrl({baseUrl: 'bar?key=foo', query: {limit: 10}});
     expect(result).toBe('bar?key=foo&limit=10');
   });
 
   test('all features in one', () => {
-    const result = buildUrl({
+    const result = resolveUrl({
       baseUrl: 'http://localhost/{{version}}',
       url: 'bar?key={{key}}',
       query: {
         limit: '{{limit}}',
       },
-      variables: {
+      valuesMap: {
         version: 'v1',
         key: 'foo',
         limit: 10,
