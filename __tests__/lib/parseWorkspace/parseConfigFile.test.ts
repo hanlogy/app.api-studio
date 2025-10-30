@@ -20,7 +20,7 @@ describe('parseConfigFile', () => {
       },
     });
 
-    const result = await parseConfigFile('/tmp', 'config.json');
+    const result = await parseConfigFile('/tmp/config.json');
 
     expect(result).toStrictEqual({
       name: 'My App',

@@ -1,5 +1,5 @@
 import {readJsonFile} from '@/helpers/readJsonFile';
-import type {Workspace} from '@/definitions/types';
+import type {Workspace} from '@/definitions';
 import {buildHeaders} from './buildHeaders';
 import {buildVariables} from './buildVariables';
 
@@ -12,22 +12,23 @@ interface RawConfig {
 }
 
 export const parseConfigFile = async (
-  dir: string,
-  file: string,
+  filePath: string,
 ): Promise<Pick<Workspace, 'name' | 'environments' | 'description'>> => {
   const {
     name: workspaceName,
     description,
     environments: rawEnvironments,
-  } = await readJsonFile<RawConfig>(`${dir}/${file}`);
+  } = await readJsonFile<RawConfig>(`${filePath}`);
 
   const environments = Object.entries(rawEnvironments).map(
-    ([environmentName, {headers, ...others}]) => {
+    ([environmentName, {headers, ...rest}]) => {
+      const variables = buildVariables(rest);
+
       return {
         name: environmentName,
         isGlobal: environmentName === GLOBAL,
-        headers: buildHeaders(headers),
-        variables: buildVariables(others),
+        headers: buildHeaders(headers, variables),
+        variables,
       };
     },
   );
