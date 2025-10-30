@@ -1,5 +1,7 @@
 import {isPlainObject} from '@/helpers/isPlainObject';
-import {RequestHeaders} from '@/types/types';
+import {RequestHeaders} from '@/definitions/types';
+
+// TODO: support varaiable
 
 export const buildHeaders = (data?: unknown): RequestHeaders => {
   if (!data || !isPlainObject(data)) {

@@ -1,4 +1,4 @@
-import {resolveEnvironmentSettings} from '@/workspaceParser/resolveEnvironmentSettings';
+import {resolveEnvironmentSettings} from '@/lib/parseWorkspace/resolveEnvironmentSettings';
 
 describe('resolveEnvironmentSettings', () => {
   test('both undefined', () => {

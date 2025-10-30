@@ -1,5 +1,5 @@
 import {readJsonFile} from '@/helpers/readJsonFile';
-import type {Workspace} from '@/types/types';
+import type {Workspace} from '@/definitions/types';
 import {buildHeaders} from './buildHeaders';
 import {buildVariables} from './buildVariables';
 

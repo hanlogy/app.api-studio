@@ -1,6 +1,8 @@
 import {isPlainObject} from '@/helpers/isPlainObject';
 import {isPrimitive} from '@/helpers/isPrimitive';
-import type {Variables} from '@/types/types';
+import type {Variables} from '@/definitions/types';
+
+// TODO: support varaiable
 
 export const buildVariables = (data?: unknown): Variables => {
   if (!data || !isPlainObject(data)) {

@@ -1,4 +1,4 @@
-import {parseConfigFile} from '@/workspaceParser/parseConfigFile';
+import {parseConfigFile} from '@/lib/parseWorkspace/parseConfigFile';
 import * as readJsonModule from '@/helpers/readJsonFile';
 
 jest.mock('react-native-fs', () => ({

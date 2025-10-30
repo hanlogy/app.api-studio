@@ -1,5 +1,5 @@
+import {watchWorkspace, type WorkspaceWatcher} from '@/lib';
 import {useEffect, useRef, useState} from 'react';
-import {watchWorkspace, type WorkspaceWatcher} from './watchWorkspace';
 
 export const useWorkspace = () => {
   const [workspacePath, setWorkspacePath] = useState<string>();

@@ -1,16 +1,9 @@
+import {APIS_DIR, CONFIG_FILE, type WorkspaceFiles} from '@/definitions';
 import RNFS from 'react-native-fs';
-
-const CONFIG_FILE = 'config.json' as const;
-const APIS_DIR_NAME = 'apis';
 
 interface Snapshot {
   readonly [CONFIG_FILE]?: number;
   readonly apis?: Record<string, number>;
-}
-
-export interface WorkspaceFiles {
-  readonly config?: typeof CONFIG_FILE;
-  readonly apis?: string[];
 }
 
 export const createSnapshot = async (dir: string): Promise<Snapshot> => {
@@ -23,7 +16,7 @@ export const createSnapshot = async (dir: string): Promise<Snapshot> => {
 
   // Find apis folder
   const apisDir = files.find(
-    ({name, isDirectory}) => name === APIS_DIR_NAME && isDirectory(),
+    ({name, isDirectory}) => name === APIS_DIR && isDirectory(),
   );
 
   let apisMap: Record<string, number> | undefined;
