@@ -3,6 +3,8 @@ import {CONFIG_FILE} from './constants';
 export type PrimitiveType = string | number | boolean | null;
 type PrimitiveRecord<T = PrimitiveType> = Record<string, T>;
 
+export type VariableName = `:${string}`;
+
 export type Variables = PrimitiveRecord;
 export type RequestHeaders = PrimitiveRecord<string>;
 export type RequestBody =
@@ -32,7 +34,7 @@ export type WorkspaceEnvironment =
     };
 
 // NOTE: The url, headers, query, and body should be the assembled result.
-interface ApiEndpoint {
+export interface ApiResource {
   // The id must globally unique in a workspace.
   readonly id?: string;
   readonly name: string;
@@ -46,13 +48,13 @@ interface ApiEndpoint {
 }
 
 // NOTE: The baseUrl, and headers should be the assembled result.
-interface ApiCollection {
+export interface CollectionResource {
   readonly name: string;
   readonly description?: string;
   readonly headers: RequestHeaders;
   readonly variables: Variables;
   readonly baseUrl?: string;
-  readonly endpoints: readonly ApiEndpoint[];
+  readonly apis: readonly ApiResource[];
 }
 
 export interface WorkspaceSummary {
@@ -60,7 +62,7 @@ export interface WorkspaceSummary {
   readonly path: string;
 }
 
-export type WorkspaceResource = ApiEndpoint | ApiCollection;
+export type WorkspaceResource = ApiResource | CollectionResource;
 
 export interface Workspace extends WorkspaceSummary {
   readonly description?: string;
