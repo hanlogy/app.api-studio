@@ -3,9 +3,13 @@ import {CONFIG_FILE} from './constants';
 export type PrimitiveType = string | number | boolean | null;
 type PrimitiveRecord<T = PrimitiveType> = Record<string, T>;
 
-// TODO: we should support only string record for Variables
 export type Variables = PrimitiveRecord;
 export type RequestHeaders = PrimitiveRecord<string>;
+export type RequestBody =
+  | PrimitiveType
+  | RequestBody[]
+  | {[key: string]: RequestBody};
+
 type RequestQuery = PrimitiveRecord<string>;
 type RequestMethod = 'GET' | 'POST' | 'DELETE' | 'PATCH';
 
@@ -38,7 +42,7 @@ interface ApiEndpoint {
   readonly headers: RequestHeaders;
   readonly query: RequestQuery;
   readonly variables: Variables;
-  readonly body?: Record<string, unknown>;
+  readonly body?: RequestBody;
 }
 
 // NOTE: The baseUrl, and headers should be the assembled result.
