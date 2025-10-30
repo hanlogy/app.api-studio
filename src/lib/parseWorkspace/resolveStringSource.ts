@@ -16,7 +16,7 @@ export const resolveStringSource = ({
   source: sourceOriginal,
   valuesMap,
   lookup,
-}: ResolveArgs): PrimitiveType => {
+}: ResolveArgs = {}): PrimitiveType => {
   if (!sourceOriginal || typeof sourceOriginal !== 'string') {
     return '';
   }
