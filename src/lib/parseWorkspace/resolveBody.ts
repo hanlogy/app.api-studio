@@ -1,27 +1,32 @@
 import {isPlainObject} from '@/helpers/isPlainObject';
 import {resolveStringSource} from './resolveStringSource';
 import type {RequestBody, ValuesMap} from '@/definitions/types';
-import {StudioError} from '@/definitions';
 
 export const resolveBody = ({
   source,
   valuesMap = {},
 }: {
-  source: unknown;
+  source?: unknown;
   valuesMap?: ValuesMap;
-}): RequestBody => {
+} = {}): RequestBody | undefined => {
   if (source === undefined) {
-    throw StudioError.invalidSource('resolveBody', source);
+    return undefined;
   }
 
   if (Array.isArray(source)) {
-    return source.map(item => resolveBody({source: item, valuesMap}));
+    return source.map(item => {
+      const resolved = resolveBody({source: item, valuesMap});
+      return resolved === undefined ? null : resolved;
+    });
   }
 
   if (isPlainObject(source)) {
     const result: {[key: string]: RequestBody} = {};
     for (const [key, value] of Object.entries(source)) {
-      result[key] = resolveBody({source: value, valuesMap});
+      const resolved = resolveBody({source: value, valuesMap});
+      if (resolved !== undefined) {
+        result[key] = resolved;
+      }
     }
 
     return result;
@@ -39,5 +44,5 @@ export const resolveBody = ({
     return source;
   }
 
-  throw StudioError.invalidSource('resolveBody', source);
+  return undefined;
 };

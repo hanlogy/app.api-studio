@@ -23,6 +23,9 @@ export class StudioError extends Error {
     return new StudioError({code});
   }
 
+  /**
+   * @deprecated "do not use it"
+   */
   static invalidSource(name: string, source: unknown) {
     return new StudioError({
       code: 'invalidSource',
