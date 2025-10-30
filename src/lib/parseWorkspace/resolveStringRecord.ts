@@ -1,5 +1,5 @@
 import {Variables} from '@/definitions';
-import {resolveVariablePlaceholders} from './resolveVariablePlaceholders';
+import {resolveStringSource} from './resolveStringSource';
 
 export const resolveStringRecord = (
   data: Record<string, unknown>,
@@ -9,7 +9,7 @@ export const resolveStringRecord = (
     .filter(([_, value]) => value !== undefined)
     .map(([name, value]) => {
       const raw = String(value);
-      const resolved = resolveVariablePlaceholders(raw, variables);
+      const resolved = resolveStringSource(raw, variables);
       return [name, String(resolved)];
     });
 

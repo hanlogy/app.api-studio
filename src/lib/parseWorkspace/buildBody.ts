@@ -1,5 +1,5 @@
 import {isPlainObject} from '@/helpers/isPlainObject';
-import {resolveVariablePlaceholders} from './resolveVariablePlaceholders';
+import {resolveStringSource} from './resolveStringSource';
 import type {RequestBody, Variables} from '@/definitions/types';
 
 export const buildBody = (
@@ -24,7 +24,7 @@ export const buildBody = (
   }
 
   if (typeof rawBody === 'string') {
-    return resolveVariablePlaceholders(rawBody, variables);
+    return resolveStringSource(rawBody, variables);
   }
 
   return rawBody;

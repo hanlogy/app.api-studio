@@ -1,7 +1,7 @@
 import {isPlainObject} from '@/helpers/isPlainObject';
 import {isPrimitive} from '@/helpers/isPrimitive';
 import type {Variables} from '@/definitions/types';
-import {resolveVariablePlaceholders} from './resolveVariablePlaceholders';
+import {resolveStringSource} from './resolveStringSource';
 import {StudioError} from '@/definitions';
 
 export const buildVariables = (
@@ -39,7 +39,7 @@ export const buildVariables = (
       });
     }
 
-    const replaced = resolveVariablePlaceholders(value, refName => {
+    const replaced = resolveStringSource(value, refName => {
       if (refName in localVariables) {
         return resolveVar(refName, [...stack, variableName]);
       }

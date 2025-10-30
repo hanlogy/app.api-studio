@@ -1,6 +1,6 @@
 import {PrimitiveRecord, Variables} from '@/definitions';
 import {resolveStringRecord} from './resolveStringRecord';
-import {resolveVariablePlaceholders} from './resolveVariablePlaceholders';
+import {resolveStringSource} from './resolveStringSource';
 
 export const buildUrl = ({
   url: localUrl,
@@ -12,7 +12,7 @@ export const buildUrl = ({
   baseUrl?: string;
   query?: PrimitiveRecord;
   variables?: Variables;
-} = {}) => {
+} = {}): string => {
   const resolvedQuery = resolveStringRecord(query, variables);
 
   const queryString = Object.entries(resolvedQuery)
@@ -28,7 +28,7 @@ export const buildUrl = ({
     .join('/');
 
   if (mergedUrl) {
-    mergedUrl = String(resolveVariablePlaceholders(mergedUrl, variables));
+    mergedUrl = String(resolveStringSource(mergedUrl, variables));
   }
 
   const [path, existingQueryString] = mergedUrl.split('?', 2);
