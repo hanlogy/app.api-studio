@@ -17,10 +17,10 @@ export const resolveStringSource = ({
   valuesMap,
   lookup,
 }: ResolveArgs): PrimitiveType => {
-  if (!source || typeof source !== 'string') {
+  if (typeof source !== 'string') {
     throw new StudioError({
       code: 'invalidSource',
-      message: `resolveStringSource: ${source} is not a valid string`,
+      message: `resolveStringSource: ${source} is not a valid source`,
     });
   }
 
