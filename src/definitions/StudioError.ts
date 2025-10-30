@@ -22,4 +22,11 @@ export class StudioError extends Error {
   static fromCode(code: string) {
     return new StudioError({code});
   }
+
+  static invalidSource(name: string, source: unknown) {
+    return new StudioError({
+      code: 'invalidSource',
+      message: `${name}: ${source} is not a valid source`,
+    });
+  }
 }
