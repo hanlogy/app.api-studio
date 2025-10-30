@@ -1,16 +1,12 @@
 import {resolveHeaders} from '@/lib/parseWorkspace/resolveHeaders';
 
 describe('resolveHeaders', () => {
-  test('empty', () => {
-    const result = resolveHeaders({source: {}});
-
-    expect(result).toEqual({});
-  });
-
-  test('not a plain object', () => {
-    expect(() => resolveHeaders({source: 10})).toThrow(
-      expect.objectContaining({code: 'invalidSource'}),
-    );
+  test('return empty', () => {
+    expect(resolveHeaders({source: {}})).toStrictEqual({});
+    expect(resolveHeaders({source: undefined})).toStrictEqual({});
+    expect(resolveHeaders({source: 10})).toStrictEqual({});
+    expect(resolveHeaders({source: true})).toStrictEqual({});
+    expect(resolveHeaders({source: null})).toStrictEqual({});
   });
 
   test('ignore undefined', () => {
