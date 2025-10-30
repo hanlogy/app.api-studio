@@ -1,14 +1,17 @@
 import {isPlainObject} from '@/helpers/isPlainObject';
-import {RequestHeaders, Variables} from '@/definitions/types';
-import {resolveStringRecord} from './resolveStringRecord';
+import {RequestHeaders, ValuesMap} from '@/definitions/types';
+import {resolveRecordSource} from './resolveRecordSource';
 
-export const buildHeaders = (
-  data?: unknown,
-  variables: Variables = {},
-): RequestHeaders => {
-  if (!data || !isPlainObject(data)) {
+export const buildHeaders = ({
+  source,
+  valuesMap = {},
+}: {
+  source?: unknown;
+  valuesMap?: ValuesMap;
+} = {}): RequestHeaders => {
+  if (!source || !isPlainObject(source)) {
     return {};
   }
 
-  return resolveStringRecord(data, variables);
+  return resolveRecordSource({source, valuesMap, transform: String});
 };

@@ -8,25 +8,28 @@ describe('buildHeaders', () => {
   });
 
   test('not a plain object', () => {
-    const result = buildHeaders(10);
+    const result = buildHeaders({source: 10});
 
     expect(result).toEqual({});
   });
 
   test('ignore undefined', () => {
-    const result = buildHeaders({name: 'foo', b: undefined});
+    const result = buildHeaders({source: {name: 'foo', b: undefined}});
 
     expect(result).toEqual({name: 'foo'});
   });
 
   test('value is always string', () => {
-    const result = buildHeaders({name: true, total: 10});
+    const result = buildHeaders({source: {name: true, total: 10}});
 
     expect(result).toEqual({name: 'true', total: '10'});
   });
 
   test('with variables', () => {
-    const result = buildHeaders({name: '{{name}}', total: 10}, {name: true});
+    const result = buildHeaders({
+      source: {name: '{{name}}', total: 10},
+      valuesMap: {name: true},
+    });
 
     expect(result).toEqual({name: 'true', total: '10'});
   });
