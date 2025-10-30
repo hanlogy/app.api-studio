@@ -18,10 +18,7 @@ export const resolveStringSource = ({
   lookup,
 }: ResolveArgs): PrimitiveType => {
   if (typeof source !== 'string') {
-    throw new StudioError({
-      code: 'invalidSource',
-      message: `resolveStringSource: ${source} is not a valid source`,
-    });
+    throw StudioError.invalidSource('resolveStringSource', source);
   }
 
   source = source.trim();

@@ -12,10 +12,7 @@ export const resolveRecordSource = <T extends PrimitiveType>({
   transform?: (value: PrimitiveType) => T;
 }): Record<string, T> => {
   if (!isPlainObject(source)) {
-    throw new StudioError({
-      code: 'invalidSource',
-      message: `resolveRecordSource: ${source} is not a valid source`,
-    });
+    throw StudioError.invalidSource('resolveRecordSource', source);
   }
 
   const items = Object.entries(source)
