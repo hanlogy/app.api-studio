@@ -24,4 +24,10 @@ describe('buildHeaders', () => {
 
     expect(result).toEqual({name: 'true', total: '10'});
   });
+
+  test('with variables', () => {
+    const result = buildHeaders({name: '{{name}}', total: 10}, {name: true});
+
+    expect(result).toEqual({name: 'true', total: '10'});
+  });
 });

@@ -1,9 +1,11 @@
 import {isPlainObject} from '@/helpers/isPlainObject';
-import {RequestHeaders} from '@/definitions/types';
+import {RequestHeaders, Variables} from '@/definitions/types';
+import {resolveVariablePlaceholders} from './resolveVariablePlaceholders';
 
-// TODO: support varaiable
-
-export const buildHeaders = (data?: unknown): RequestHeaders => {
+export const buildHeaders = (
+  data?: unknown,
+  variables: Variables = {},
+): RequestHeaders => {
   if (!data || !isPlainObject(data)) {
     return {};
   }
@@ -11,7 +13,9 @@ export const buildHeaders = (data?: unknown): RequestHeaders => {
   const items = Object.entries(data)
     .filter(([_, value]) => value !== undefined)
     .map(([name, value]) => {
-      return [name, String(value)];
+      const raw = String(value);
+      const resolved = resolveVariablePlaceholders(raw, variables);
+      return [name, String(resolved)];
     });
 
   return Object.fromEntries(items);
