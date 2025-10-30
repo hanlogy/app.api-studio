@@ -1,6 +1,6 @@
 import {isPlainObject} from '@/helpers/isPlainObject';
 import {isPrimitive} from '@/helpers/isPrimitive';
-import type {ValuesMap} from '@/definitions/types';
+import type {PrimitiveRecord, ValuesMap} from '@/definitions/types';
 import {resolveStringSource} from './resolveStringSource';
 import {StudioError} from '@/definitions';
 
@@ -8,11 +8,11 @@ export const resolveValuesMap = ({
   source,
   valuesMap: externalValuesMap = {},
 }: {
-  source: unknown;
+  source?: PrimitiveRecord;
   valuesMap?: ValuesMap;
-}): ValuesMap => {
-  if (!isPlainObject(source)) {
-    throw StudioError.invalidSource('resolveValuesMap', source);
+} = {}): ValuesMap => {
+  if (!source || !isPlainObject(source)) {
+    return {};
   }
 
   const localValuesMap: ValuesMap = {};

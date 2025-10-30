@@ -1,27 +1,27 @@
-import {type PrimitiveType, StudioError, type ValuesMap} from '@/definitions';
+import {type PrimitiveType, type ValuesMap} from '@/definitions';
 
 type ResolveArgs =
   | {
-      source: string;
+      source?: string;
       valuesMap?: ValuesMap;
       lookup?: never;
     }
   | {
-      source: string;
+      source?: string;
       valuesMap?: never;
       lookup?: (key: string) => PrimitiveType | undefined;
     };
 
 export const resolveStringSource = ({
-  source,
+  source: sourceOriginal,
   valuesMap,
   lookup,
 }: ResolveArgs): PrimitiveType => {
-  if (typeof source !== 'string') {
-    throw StudioError.invalidSource('resolveStringSource', source);
+  if (!sourceOriginal || typeof sourceOriginal !== 'string') {
+    return '';
   }
 
-  source = source.trim();
+  const source = sourceOriginal.trim();
   const pattern = '{{([^{}]+)}}';
   const singlePlaceholderMatch = source.match(new RegExp(`^${pattern}$`));
 

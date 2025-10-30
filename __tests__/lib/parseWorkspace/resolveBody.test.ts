@@ -90,7 +90,7 @@ describe('resolveBody', () => {
       source: {
         name: undefined,
         values: [undefined],
-      },
+      } as any,
     });
 
     expect(result).toStrictEqual({

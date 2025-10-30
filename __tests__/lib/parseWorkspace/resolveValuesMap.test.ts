@@ -2,20 +2,15 @@ import {resolveValuesMap} from '@/lib/parseWorkspace/resolveValuesMap';
 
 describe('resolveValuesMap', () => {
   describe('no internal variables', () => {
-    test('empty', () => {
-      const result = resolveValuesMap({source: {}});
-
-      expect(result).toEqual({});
-    });
-
-    test('not a plain object', () => {
-      expect(() => resolveValuesMap({source: 10})).toThrow(
-        expect.objectContaining({code: 'invalidSource'}),
-      );
+    test('return empty', () => {
+      expect(resolveValuesMap({source: {}})).toEqual({});
+      expect(resolveValuesMap({source: 10} as any)).toEqual({});
     });
 
     test('ignore undefined', () => {
-      const result = resolveValuesMap({source: {':name': 'foo', b: undefined}});
+      const result = resolveValuesMap({
+        source: {':name': 'foo', b: undefined} as any,
+      });
 
       expect(result).toEqual({name: 'foo'});
     });

@@ -1,12 +1,12 @@
 import {resolveRecordSource} from '@/lib/parseWorkspace/resolveRecordSource';
 
 describe('resolveRecordSource', () => {
-  test('empty', () => {
-    const result = resolveRecordSource({
-      source: {},
-    });
-
-    expect(result).toStrictEqual({});
+  test('return empty', () => {
+    expect(resolveRecordSource()).toStrictEqual({});
+    expect(resolveRecordSource({source: null} as any)).toStrictEqual({});
+    expect(resolveRecordSource({source: true} as any)).toStrictEqual({});
+    expect(resolveRecordSource({source: 10} as any)).toStrictEqual({});
+    expect(resolveRecordSource({source: {}})).toStrictEqual({});
   });
 
   test('result a string record', () => {
@@ -20,6 +20,8 @@ describe('resolveRecordSource', () => {
       transform: String,
     });
 
-    expect(result).toStrictEqual({});
+    expect(result).toStrictEqual({
+      level: '10',
+    });
   });
 });

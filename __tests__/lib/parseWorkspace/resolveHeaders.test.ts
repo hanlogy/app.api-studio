@@ -4,13 +4,13 @@ describe('resolveHeaders', () => {
   test('return empty', () => {
     expect(resolveHeaders({source: {}})).toStrictEqual({});
     expect(resolveHeaders({source: undefined})).toStrictEqual({});
-    expect(resolveHeaders({source: 10})).toStrictEqual({});
-    expect(resolveHeaders({source: true})).toStrictEqual({});
-    expect(resolveHeaders({source: null})).toStrictEqual({});
+    expect(resolveHeaders({source: 10 as any})).toStrictEqual({});
+    expect(resolveHeaders({source: true as any})).toStrictEqual({});
+    expect(resolveHeaders({source: null as any})).toStrictEqual({});
   });
 
   test('ignore undefined', () => {
-    const result = resolveHeaders({source: {name: 'foo', b: undefined}});
+    const result = resolveHeaders({source: {name: 'foo', b: undefined} as any});
 
     expect(result).toEqual({name: 'foo'});
   });

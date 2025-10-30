@@ -6,7 +6,7 @@ export const resolveBody = ({
   source,
   valuesMap = {},
 }: {
-  source?: unknown;
+  source?: RequestBody;
   valuesMap?: ValuesMap;
 } = {}): RequestBody | undefined => {
   if (source === undefined) {
