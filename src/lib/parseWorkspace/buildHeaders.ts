@@ -1,6 +1,6 @@
 import {isPlainObject} from '@/helpers/isPlainObject';
 import {RequestHeaders, Variables} from '@/definitions/types';
-import {resolveVariablePlaceholders} from './resolveVariablePlaceholders';
+import {resolveStringRecord} from './resolveStringRecord';
 
 export const buildHeaders = (
   data?: unknown,
@@ -10,13 +10,5 @@ export const buildHeaders = (
     return {};
   }
 
-  const items = Object.entries(data)
-    .filter(([_, value]) => value !== undefined)
-    .map(([name, value]) => {
-      const raw = String(value);
-      const resolved = resolveVariablePlaceholders(raw, variables);
-      return [name, String(resolved)];
-    });
-
-  return Object.fromEntries(items);
+  return resolveStringRecord(data, variables);
 };

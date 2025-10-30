@@ -1,9 +1,9 @@
 import {CONFIG_FILE} from './constants';
 
 export type PrimitiveType = string | number | boolean | null;
-type PrimitiveRecord<T = PrimitiveType> = Record<string, T>;
+export type PrimitiveRecord<T = PrimitiveType> = Record<string, T>;
 
-export type VariableName = `:${string}`;
+export type VariableKey = `:${string}`;
 
 export type Variables = PrimitiveRecord;
 export type RequestHeaders = PrimitiveRecord<string>;
@@ -12,7 +12,6 @@ export type RequestBody =
   | RequestBody[]
   | {[key: string]: RequestBody};
 
-type RequestQuery = PrimitiveRecord<string>;
 type RequestMethod = 'GET' | 'POST' | 'DELETE' | 'PATCH';
 
 export interface WorkspaceFiles {
@@ -33,7 +32,7 @@ export type WorkspaceEnvironment =
       readonly headers: RequestHeaders;
     };
 
-// NOTE: The url, headers, query, and body should be the assembled result.
+// NOTE: The url, headers, and body should be the assembled result.
 export interface ApiResource {
   // The id must globally unique in a workspace.
   readonly id?: string;
@@ -42,7 +41,6 @@ export interface ApiResource {
   readonly url: string;
   readonly method: RequestMethod;
   readonly headers: RequestHeaders;
-  readonly query: RequestQuery;
   readonly variables: Variables;
   readonly body?: RequestBody;
 }
