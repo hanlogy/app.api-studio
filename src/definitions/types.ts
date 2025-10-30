@@ -5,6 +5,10 @@ export type PrimitiveRecord<T = PrimitiveType> = Record<string, T>;
 
 export type VariableKey = `:${string}`;
 
+export type ValuesMap = PrimitiveRecord;
+/**
+ * @deprecated use `ValuesMap`
+ */
 export type Variables = PrimitiveRecord;
 export type RequestHeaders = PrimitiveRecord<string>;
 export type RequestBody =
