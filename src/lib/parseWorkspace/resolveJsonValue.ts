@@ -8,25 +8,15 @@ export const resolveJsonValue = ({
 }: {
   source: JsonValue;
   valuesMap?: ValuesMap;
-}): JsonValue | undefined => {
-  if (source === undefined) {
-    return undefined;
-  }
-
+}): JsonValue => {
   if (Array.isArray(source)) {
-    return source.map(item => {
-      const resolved = resolveJsonValue({source: item, valuesMap});
-      return resolved === undefined ? null : resolved;
-    });
+    return source.map(item => resolveJsonValue({source: item, valuesMap}));
   }
 
   if (isPlainObject(source)) {
     const result: {[key: string]: JsonValue} = {};
     for (const [key, value] of Object.entries(source)) {
-      const resolved = resolveJsonValue({source: value, valuesMap});
-      if (resolved !== undefined) {
-        result[key] = resolved;
-      }
+      result[key] = resolveJsonValue({source: value, valuesMap});
     }
 
     return result;
@@ -36,13 +26,5 @@ export const resolveJsonValue = ({
     return resolveString({source, valuesMap});
   }
 
-  if (
-    typeof source === 'number' ||
-    typeof source === 'boolean' ||
-    source === null
-  ) {
-    return source;
-  }
-
-  return undefined;
+  return source;
 };

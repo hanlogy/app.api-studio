@@ -19,10 +19,7 @@ export type JsonValue =
 export type JsonRecord = Record<string, JsonValue>;
 
 export type VariableDefinitionKey = `:${string}`;
-export type VariableDefinitions = Record<
-  VariableDefinitionKey,
-  PrimitiveRecord
->;
+export type VariableDefinitions = Record<VariableDefinitionKey, PrimitiveValue>;
 
 //
 export type ValuesMap = PrimitiveRecord;

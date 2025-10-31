@@ -1,11 +1,6 @@
 import {resolveJsonValue} from '@/lib/parseWorkspace/resolveJsonValue';
 
 describe('resolveJsonValue', () => {
-  test('undefined', () => {
-    expect(resolveJsonValue({source: undefined} as any)).toBeUndefined();
-    expect(resolveJsonValue(undefined as any)).toBeUndefined();
-  });
-
   test('primitive type body', () => {
     expect(resolveJsonValue({source: null})).toBeNull();
     expect(resolveJsonValue({source: 1})).toBe(1);
@@ -82,19 +77,6 @@ describe('resolveJsonValue', () => {
         lastName: 'baz',
       },
       values: [100, '200'],
-    });
-  });
-
-  test('handle undefined in json, the same behavior as JSON.stringify', () => {
-    const result = resolveJsonValue({
-      source: {
-        name: undefined,
-        values: [undefined],
-      } as any,
-    });
-
-    expect(result).toStrictEqual({
-      values: [null],
     });
   });
 });

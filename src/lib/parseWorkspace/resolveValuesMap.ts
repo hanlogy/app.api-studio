@@ -1,4 +1,3 @@
-import {isPlainObject} from '@/helpers/isPlainObject';
 import {isPrimitive} from '@/helpers/isPrimitive';
 import type {ValuesMap, VariableDefinitions} from '@/definitions';
 import {resolveString} from './resolveString';
@@ -8,13 +7,9 @@ export const resolveValuesMap = ({
   source,
   valuesMap: externalValuesMap = {},
 }: {
-  source?: VariableDefinitions;
+  source: VariableDefinitions;
   valuesMap?: ValuesMap;
-} = {}): ValuesMap => {
-  if (!source || !isPlainObject(source)) {
-    return {};
-  }
-
+}): ValuesMap => {
   const localValuesMap: ValuesMap = {};
 
   for (const [name, value] of Object.entries(source)) {

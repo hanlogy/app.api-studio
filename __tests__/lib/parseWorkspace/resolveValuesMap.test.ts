@@ -2,29 +2,21 @@ import {resolveValuesMap} from '@/lib/parseWorkspace/resolveValuesMap';
 
 describe('resolveValuesMap', () => {
   describe('no internal variables', () => {
-    test('return empty', () => {
+    test('empty', () => {
       expect(resolveValuesMap({source: {}})).toEqual({});
-      expect(resolveValuesMap({source: 10} as any)).toEqual({});
-    });
-
-    test('ignore undefined', () => {
-      const result = resolveValuesMap({
-        source: {':name': 'foo', b: undefined} as any,
-      });
-
-      expect(result).toEqual({name: 'foo'});
     });
   });
 
   describe('with internal variables', () => {
     test('success', () => {
-      const source = {
-        ':firstName': 'foo',
-        ':lastName': 'bar',
-        ':fullName': '{{firstName}}-{{lastName}}',
-        ':level': 1,
-      };
-      const result = resolveValuesMap({source});
+      const result = resolveValuesMap({
+        source: {
+          ':firstName': 'foo',
+          ':lastName': 'bar',
+          ':fullName': '{{firstName}}-{{lastName}}',
+          ':level': 1,
+        },
+      });
 
       expect(result).toEqual({
         firstName: 'foo',

@@ -2,12 +2,12 @@ import {type PrimitiveValue, type ValuesMap} from '@/definitions';
 
 type ResolveArgs =
   | {
-      source?: string;
+      source: string;
       valuesMap?: ValuesMap;
       lookup?: never;
     }
   | {
-      source?: string;
+      source: string;
       valuesMap?: never;
       lookup?: (key: string) => PrimitiveValue | undefined;
     };
@@ -16,11 +16,7 @@ export const resolveString = ({
   source: sourceOriginal,
   valuesMap,
   lookup,
-}: ResolveArgs = {}): PrimitiveValue => {
-  if (!sourceOriginal || typeof sourceOriginal !== 'string') {
-    return '';
-  }
-
+}: ResolveArgs): PrimitiveValue => {
   const source = sourceOriginal.trim();
   const pattern = '{{([^{}]+)}}';
   const singlePlaceholderMatch = source.match(new RegExp(`^${pattern}$`));

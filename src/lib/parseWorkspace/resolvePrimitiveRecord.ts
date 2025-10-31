@@ -4,7 +4,6 @@ import {
   type ValuesMap,
 } from '@/definitions';
 import {resolveString} from './resolveString';
-import {isPlainObject} from '@/helpers/isPlainObject';
 
 export const resolvePrimitiveRecord = <T extends PrimitiveValue>({
   source,
@@ -15,10 +14,6 @@ export const resolvePrimitiveRecord = <T extends PrimitiveValue>({
   valuesMap?: ValuesMap;
   transform?: (value: PrimitiveValue) => T;
 }): PrimitiveRecord<T> => {
-  if (!source || !isPlainObject(source)) {
-    return {};
-  }
-
   const items = Object.entries(source)
     .filter(([_, value]) => value !== undefined)
     .map(([name, value]) => {
