@@ -30,13 +30,13 @@ describe('parseConfigFile', () => {
           name: '@global',
           isGlobal: true,
           headers: {name: 'foo'},
-          variables: {},
+          valuesMap: {},
         },
         {
           name: 'dev',
           isGlobal: false,
           headers: {},
-          variables: {api: 'https://dev.api'},
+          valuesMap: {api: 'https://dev.api'},
         },
       ],
     });

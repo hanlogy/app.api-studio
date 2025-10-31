@@ -1,15 +1,8 @@
 import {readJsonFile} from '@/helpers/readJsonFile';
-import type {Workspace} from '@/definitions';
-import {buildHeaders} from './buildHeaders';
-import {buildVariables} from './buildVariables';
-
-const GLOBAL = '@global';
-
-interface RawConfig {
-  readonly name: string;
-  readonly description: string;
-  readonly environments: Record<string, Record<string, unknown>>;
-}
+import {GLOBAL_ENV_NAME, type Workspace} from '@/definitions';
+import {resolveValuesMap} from './resolveValuesMap';
+import type {RawWorkspaceConfig} from './types';
+import {resolvePrimitiveRecordSource} from './resolvePrimitiveRecordSource';
 
 export const parseConfigFile = async (
   filePath: string,
@@ -18,17 +11,21 @@ export const parseConfigFile = async (
     name: workspaceName,
     description,
     environments: rawEnvironments,
-  } = await readJsonFile<RawConfig>(`${filePath}`);
+  } = await readJsonFile<RawWorkspaceConfig>(`${filePath}`);
 
   const environments = Object.entries(rawEnvironments).map(
-    ([environmentName, {headers, ...rest}]) => {
-      const variables = buildVariables(rest);
+    ([environmentName, {headers = {}, ...rest}]) => {
+      const valuesMap = resolveValuesMap({source: rest});
 
       return {
         name: environmentName,
-        isGlobal: environmentName === GLOBAL,
-        headers: buildHeaders(headers, variables),
-        variables,
+        isGlobal: environmentName === GLOBAL_ENV_NAME,
+        headers: resolvePrimitiveRecordSource({
+          source: headers,
+          valuesMap,
+          transform: String,
+        }),
+        valuesMap,
       };
     },
   );
