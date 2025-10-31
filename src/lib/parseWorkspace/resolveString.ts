@@ -10,24 +10,23 @@
 
 import {JsonValue, type PrimitiveValue, type ValuesMap} from '@/definitions';
 
-type ResolveArgs =
-  | {
-      source: JsonValue;
-      valuesMap?: ValuesMap;
-      lookup?: never;
-    }
-  | {
-      source: JsonValue;
-      valuesMap?: never;
-      lookup?: (key: string) => PrimitiveValue | undefined;
-    };
+type ArgBase =
+  | {valuesMap?: ValuesMap; lookup?: never}
+  | {valuesMap?: never; lookup?: (key: string) => PrimitiveValue | undefined};
 
-export const resolveString = ({
+export function resolveString(args: ArgBase & {source: string}): PrimitiveValue;
+export function resolveString(
+  args: ArgBase & {source: JsonValue},
+): PrimitiveValue | undefined;
+
+export function resolveString({
   source: sourceOriginal,
   valuesMap,
   lookup,
-}: ResolveArgs): PrimitiveValue | undefined => {
-  if (!sourceOriginal || typeof sourceOriginal !== 'string') {
+}: ArgBase & {source: JsonValue}): PrimitiveValue | undefined {
+  // Be careful:
+  // Do not return undefined if the source is an empty string.
+  if (typeof sourceOriginal !== 'string') {
     return undefined;
   }
 
@@ -57,4 +56,4 @@ export const resolveString = ({
     const value = getValue(key);
     return value === undefined ? `{{${key}}}` : String(value);
   });
-};
+}
