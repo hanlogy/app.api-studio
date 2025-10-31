@@ -17,13 +17,14 @@ export interface WorkspaceFiles {
 export type WorkspaceEnvironment =
   | {
       readonly isGlobal: true;
-      readonly variables: ValuesMap;
+      readonly valuesMap: ValuesMap;
       readonly headers: RequestHeaders;
     }
   | {
       readonly name: string;
-      readonly variables: ValuesMap;
-      // NOTE: The assembled headers. It also support variables from current node.
+      readonly valuesMap: ValuesMap;
+      // NOTE: The assembled headers. It also support valuesMap from current
+      // node.
       readonly headers: RequestHeaders;
     };
 
@@ -36,7 +37,7 @@ export interface ApiResource {
   readonly url: string;
   readonly method: RequestMethod;
   readonly headers: RequestHeaders;
-  readonly variables: ValuesMap;
+  readonly valuesMap: ValuesMap;
   readonly body?: RequestBody;
 }
 
@@ -45,7 +46,7 @@ export interface CollectionResource {
   readonly name: string;
   readonly description?: string;
   readonly headers: RequestHeaders;
-  readonly variables: ValuesMap;
+  readonly valuesMap: ValuesMap;
   readonly baseUrl?: string;
   readonly apis: readonly ApiResource[];
 }
