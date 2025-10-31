@@ -27,8 +27,8 @@ export function resolvePrimitiveRecord<T extends PrimitiveValue>(
 ): PrimitiveRecord<T>;
 
 export function resolvePrimitiveRecord<T extends PrimitiveValue>(
-  args: ArgBase<T> & {source: Exclude<JsonValue, PrimitiveRecord>},
-): undefined;
+  args: ArgBase<T> & {source: JsonValue},
+): PrimitiveRecord<T> | undefined;
 
 export function resolvePrimitiveRecord<T extends PrimitiveValue>({
   source,

@@ -1,6 +1,11 @@
 import {resolveValuesMap} from '@/lib/parseWorkspace/resolveValuesMap';
 
 describe('resolveValuesMap', () => {
+  test('return undefined', () => {
+    expect(resolveValuesMap({source: true})).toEqual(undefined);
+    expect(resolveValuesMap({source: 10})).toEqual(undefined);
+  });
+
   describe('no internal variables', () => {
     test('empty', () => {
       expect(resolveValuesMap({source: {}})).toEqual({});

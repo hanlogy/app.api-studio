@@ -1,22 +1,43 @@
+/**
+ * NOTE:
+ * For resolving, the source is always a `JsonValue`. The user-provided config
+ * is not guaranteed, so we should be as tolerant as possible.
+ *
+ * Also, we should always return `undefined` instead of assigning a default
+ * value when the source is invalid, so the consumer can decide their own
+ * defaults.
+ */
+
 import {isPrimitive} from '@/helpers/isPrimitive';
-import type {ValuesMap, VariableDefinitions} from '@/definitions';
+import type {JsonValue, PrimitiveRecord, ValuesMap} from '@/definitions';
 import {resolveString} from './resolveString';
 import {StudioError} from '@/definitions';
+import {isPlainObject} from '@/helpers/isPlainObject';
 
-export const resolveValuesMap = ({
+type ArgBase = {
+  valuesMap?: ValuesMap;
+};
+
+export function resolveValuesMap(
+  args: ArgBase & {source: PrimitiveRecord},
+): ValuesMap;
+
+export function resolveValuesMap(
+  args: ArgBase & {source: JsonValue},
+): ValuesMap | undefined;
+export function resolveValuesMap({
   source,
   valuesMap: externalValuesMap = {},
-}: {
-  source: VariableDefinitions;
-  valuesMap?: ValuesMap;
-}): ValuesMap => {
-  const localValuesMap: ValuesMap = {};
-
-  for (const [name, value] of Object.entries(source)) {
-    if (name.startsWith(':') && isPrimitive(value)) {
-      localValuesMap[name.slice(1)] = value;
-    }
+}: ArgBase & {source: JsonValue}): ValuesMap | undefined {
+  if (!source || !isPlainObject(source)) {
+    return undefined;
   }
+
+  const definitionItems = Object.entries(source)
+    .filter(([name, value]) => name.startsWith(':') && isPrimitive(value))
+    .map(([name, value]) => [name.slice(1), value]);
+
+  const localValuesMap: ValuesMap = Object.fromEntries(definitionItems);
 
   const resolveVar = (
     variableName: string,
@@ -60,4 +81,4 @@ export const resolveValuesMap = ({
   }
 
   return localValuesMap;
-};
+}

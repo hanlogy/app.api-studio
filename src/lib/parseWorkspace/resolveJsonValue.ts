@@ -1,7 +1,7 @@
 /**
  * NOTE:
  * The `source` comes from parsing a JSON string, so its type is always
- * `JsonValue`. So we do not need to handle `undefined`.
+ * `JsonValue`. So there is not a chance to return undefined.
  */
 
 import {isPlainObject} from '@/helpers/isPlainObject';
