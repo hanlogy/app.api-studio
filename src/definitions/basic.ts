@@ -1,6 +1,6 @@
-export type PrimitiveType = string | number | boolean | null;
+export type PrimitiveValue = string | number | boolean | null;
 
-export type PrimitiveRecord<T extends PrimitiveType = PrimitiveType> = Record<
+export type PrimitiveRecord<T extends PrimitiveValue = PrimitiveValue> = Record<
   string,
   T
 >;
@@ -9,10 +9,7 @@ export type PrimitiveRecord<T extends PrimitiveType = PrimitiveType> = Record<
  *  All possible values that can be parsed from a JSON string.
  */
 export type JsonValue =
-  | string
-  | number
-  | boolean
-  | null
+  | PrimitiveValue
   | JsonValue[]
   | {[key: string]: JsonValue};
 

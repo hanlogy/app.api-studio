@@ -1,4 +1,4 @@
-import {type PrimitiveType, type ValuesMap} from '@/definitions';
+import {type PrimitiveValue, type ValuesMap} from '@/definitions';
 
 type ResolveArgs =
   | {
@@ -9,14 +9,14 @@ type ResolveArgs =
   | {
       source?: string;
       valuesMap?: never;
-      lookup?: (key: string) => PrimitiveType | undefined;
+      lookup?: (key: string) => PrimitiveValue | undefined;
     };
 
 export const resolveStringSource = ({
   source: sourceOriginal,
   valuesMap,
   lookup,
-}: ResolveArgs = {}): PrimitiveType => {
+}: ResolveArgs = {}): PrimitiveValue => {
   if (!sourceOriginal || typeof sourceOriginal !== 'string') {
     return '';
   }
@@ -25,7 +25,7 @@ export const resolveStringSource = ({
   const pattern = '{{([^{}]+)}}';
   const singlePlaceholderMatch = source.match(new RegExp(`^${pattern}$`));
 
-  const getValue = (key: string): PrimitiveType | undefined => {
+  const getValue = (key: string): PrimitiveValue | undefined => {
     key = key.trim();
     if (lookup) {
       return lookup(key);

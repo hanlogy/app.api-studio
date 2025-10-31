@@ -1,19 +1,19 @@
 import {
   PrimitiveRecord,
-  type PrimitiveType,
+  type PrimitiveValue,
   type ValuesMap,
 } from '@/definitions';
 import {resolveStringSource} from './resolveStringSource';
 import {isPlainObject} from '@/helpers/isPlainObject';
 
-export const resolvePrimitiveRecordSource = <T extends PrimitiveType>({
+export const resolvePrimitiveRecordSource = <T extends PrimitiveValue>({
   source,
   valuesMap = {},
   transform,
 }: {
   source: PrimitiveRecord;
   valuesMap?: ValuesMap;
-  transform?: (value: PrimitiveType) => T;
+  transform?: (value: PrimitiveValue) => T;
 }): PrimitiveRecord<T> => {
   if (!source || !isPlainObject(source)) {
     return {};

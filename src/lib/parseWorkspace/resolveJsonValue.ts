@@ -1,29 +1,29 @@
 import {isPlainObject} from '@/helpers/isPlainObject';
 import {resolveStringSource} from './resolveStringSource';
-import type {RequestBody, ValuesMap} from '@/definitions';
+import type {JsonValue, ValuesMap} from '@/definitions';
 
-export const resolveBody = ({
+export const resolveJsonValue = ({
   source,
   valuesMap = {},
 }: {
-  source?: RequestBody;
+  source: JsonValue;
   valuesMap?: ValuesMap;
-} = {}): RequestBody | undefined => {
+}): JsonValue | undefined => {
   if (source === undefined) {
     return undefined;
   }
 
   if (Array.isArray(source)) {
     return source.map(item => {
-      const resolved = resolveBody({source: item, valuesMap});
+      const resolved = resolveJsonValue({source: item, valuesMap});
       return resolved === undefined ? null : resolved;
     });
   }
 
   if (isPlainObject(source)) {
-    const result: {[key: string]: RequestBody} = {};
+    const result: {[key: string]: JsonValue} = {};
     for (const [key, value] of Object.entries(source)) {
-      const resolved = resolveBody({source: value, valuesMap});
+      const resolved = resolveJsonValue({source: value, valuesMap});
       if (resolved !== undefined) {
         result[key] = resolved;
       }

@@ -18,14 +18,13 @@ describe('resolveValuesMap', () => {
 
   describe('with internal variables', () => {
     test('success', () => {
-      const result = resolveValuesMap({
-        source: {
-          ':firstName': 'foo',
-          ':lastName': 'bar',
-          ':fullName': '{{firstName}}-{{lastName}}',
-          ':level': 1,
-        },
-      });
+      const source = {
+        ':firstName': 'foo',
+        ':lastName': 'bar',
+        ':fullName': '{{firstName}}-{{lastName}}',
+        ':level': 1,
+      };
+      const result = resolveValuesMap({source});
 
       expect(result).toEqual({
         firstName: 'foo',

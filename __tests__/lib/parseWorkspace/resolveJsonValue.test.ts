@@ -1,42 +1,42 @@
-import {resolveBody} from '@/lib/parseWorkspace/resolveBody';
+import {resolveJsonValue} from '@/lib/parseWorkspace/resolveJsonValue';
 
-describe('resolveBody', () => {
+describe('resolveJsonValue', () => {
   test('undefined', () => {
-    expect(resolveBody({source: undefined})).toBeUndefined();
-    expect(resolveBody()).toBeUndefined();
+    expect(resolveJsonValue({source: undefined} as any)).toBeUndefined();
+    expect(resolveJsonValue(undefined as any)).toBeUndefined();
   });
 
   test('primitive type body', () => {
-    expect(resolveBody({source: null})).toBeNull();
-    expect(resolveBody({source: 1})).toBe(1);
-    expect(resolveBody({source: true})).toBe(true);
-    expect(resolveBody({source: 'foo'})).toBe('foo');
+    expect(resolveJsonValue({source: null})).toBeNull();
+    expect(resolveJsonValue({source: 1})).toBe(1);
+    expect(resolveJsonValue({source: true})).toBe(true);
+    expect(resolveJsonValue({source: 'foo'})).toBe('foo');
   });
 
   test('primitive values from variables', () => {
     expect(
-      resolveBody({
+      resolveJsonValue({
         source: '{{body}}',
         valuesMap: {body: null},
       }),
     ).toBeNull();
 
     expect(
-      resolveBody({
+      resolveJsonValue({
         source: '{{body}}',
         valuesMap: {body: 1},
       }),
     ).toBe(1);
 
     expect(
-      resolveBody({
+      resolveJsonValue({
         source: '{{body}}',
         valuesMap: {body: true},
       }),
     ).toBe(true);
 
     expect(
-      resolveBody({
+      resolveJsonValue({
         source: '{{body}}',
         valuesMap: {body: 'foo'},
       }),
@@ -44,7 +44,7 @@ describe('resolveBody', () => {
   });
 
   test('json body', () => {
-    const result = resolveBody({
+    const result = resolveJsonValue({
       source: {
         name: 'foo',
         value: '{{value}}',
@@ -61,7 +61,7 @@ describe('resolveBody', () => {
   });
 
   test('nested json body', () => {
-    const result = resolveBody({
+    const result = resolveJsonValue({
       source: {
         name: {
           firtName: 'foo',
@@ -86,7 +86,7 @@ describe('resolveBody', () => {
   });
 
   test('handle undefined in json, the same behavior as JSON.stringify', () => {
-    const result = resolveBody({
+    const result = resolveJsonValue({
       source: {
         name: undefined,
         values: [undefined],
