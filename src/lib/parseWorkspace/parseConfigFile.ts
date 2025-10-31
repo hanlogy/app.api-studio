@@ -1,8 +1,12 @@
-import {readJsonFile} from '@/helpers/readJsonFile';
-import {GLOBAL_ENV_NAME, type Workspace} from '@/definitions';
+import {readJsonRecordFile} from '@/helpers/readJsonRecordFile';
+import {
+  GLOBAL_ENV_NAME,
+  WorkspaceEnvironment,
+  type Workspace,
+} from '@/definitions';
 import {resolveValuesMap} from './resolveValuesMap';
-import type {RawWorkspaceConfig} from './types';
 import {resolvePrimitiveRecord} from './resolvePrimitiveRecord';
+import {isPlainObject} from '@/helpers/isPlainObject';
 
 export const parseConfigFile = async (
   filePath: string,
@@ -11,28 +15,37 @@ export const parseConfigFile = async (
     name: workspaceName,
     description,
     environments: rawEnvironments,
-  } = await readJsonFile<RawWorkspaceConfig>(`${filePath}`);
+  } = await readJsonRecordFile(`${filePath}`);
 
-  const environments = Object.entries(rawEnvironments).map(
-    ([environmentName, {headers = {}, ...rest}]) => {
-      const valuesMap = resolveValuesMap({source: rest});
+  let environments: WorkspaceEnvironment[] = [];
+  if (isPlainObject(rawEnvironments)) {
+    environments = Object.entries(rawEnvironments)
+      .map(([environmentName, rawEnvironment]) => {
+        if (!isPlainObject(rawEnvironment)) {
+          return undefined;
+        }
 
-      return {
-        name: environmentName,
-        isGlobal: environmentName === GLOBAL_ENV_NAME,
-        headers: resolvePrimitiveRecord({
+        const {headers, ...rest} = rawEnvironment;
+        const valuesMap = resolveValuesMap({source: rest});
+        const resolvedHeaders = resolvePrimitiveRecord({
           source: headers,
           valuesMap,
           transform: String,
-        }),
-        valuesMap,
-      };
-    },
-  );
+        });
+
+        return {
+          name: environmentName,
+          isGlobal: environmentName === GLOBAL_ENV_NAME,
+          headers: resolvedHeaders ?? {},
+          valuesMap: valuesMap ?? {},
+        };
+      })
+      .filter(e => e !== undefined);
+  }
 
   return {
-    name: workspaceName,
-    description,
+    name: typeof workspaceName === 'string' ? workspaceName : '',
+    ...(typeof description === 'string' ? {description} : {}),
     environments,
   };
 };
