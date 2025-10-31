@@ -1,29 +1,27 @@
 import {
-  type ValuesMap,
-  type ApiResource,
-  type JsonValue,
-  type RequestMethod,
-  requestMethods,
+  ApiResource,
+  CollectionResource,
+  JsonValue,
+  ValuesMap,
 } from '@/definitions';
 import {isPlainObject} from '@/helpers/checkTypes';
 import {resolveValuesMap} from './resolveValuesMap';
-import {resolveJsonValue} from './resolveJsonValue';
 import {pickDefinedString, removeUndefined} from '@/helpers/filterValues';
+import {resolveApiResource} from './resolveApiResource';
 import {resolveStringRecord, resolveUrl} from './simpleResolvers';
 
-export function resolveApiResource({
+export function resolveCollectionResource({
   source,
   valuesMap: externalValuesMap = {},
 }: {
   source: JsonValue;
   valuesMap?: ValuesMap;
-}): ApiResource | undefined {
+}): CollectionResource | undefined {
   if (!isPlainObject(source)) {
     return undefined;
   }
 
-  const {id, name, description, url, method, headers, query, body, ...rest} =
-    source;
+  const {name, baseUrl, description, headers, apis = [], ...rest} = source;
 
   const localValuesMap = resolveValuesMap({
     source: rest,
@@ -33,30 +31,27 @@ export function resolveApiResource({
   const valuesMap = {...externalValuesMap, ...(localValuesMap ?? {})};
 
   return removeUndefined({
-    id: pickDefinedString(id),
     name: pickDefinedString(name),
     description: pickDefinedString(description),
-    url: resolveUrl({source: url, valuesMap}),
-    method: resolveMethod({source: method}),
+    baseUrl: resolveUrl({source: baseUrl, valuesMap}),
     headers: resolveStringRecord({source: headers, valuesMap}),
-    query: resolveStringRecord({source: query, valuesMap}),
-    body: resolveJsonValue({source: body, valuesMap}),
+    valuesMap: localValuesMap,
+    apis: resolveApis({source: apis, valuesMap}),
   });
 }
 
-function resolveMethod({
+function resolveApis({
   source,
+  valuesMap,
 }: {
   source: JsonValue;
-}): RequestMethod | undefined {
-  if (!source || typeof source !== 'string') {
-    return undefined;
+  valuesMap: ValuesMap;
+}): ApiResource[] {
+  if (!source || !Array.isArray(source)) {
+    return [];
   }
 
-  source = source.toUpperCase();
-
-  if (requestMethods.some(e => e === source)) {
-    return source as RequestMethod;
-  }
-  return undefined;
+  return source
+    .map(item => resolveApiResource({source: item, valuesMap}))
+    .filter(e => e !== undefined);
 }
