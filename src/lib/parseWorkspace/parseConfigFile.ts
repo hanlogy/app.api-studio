@@ -6,7 +6,7 @@ import {
 } from '@/definitions';
 import {resolveValuesMap} from './resolveValuesMap';
 import {resolvePrimitiveRecord} from './resolvePrimitiveRecord';
-import {isPlainObject} from '@/helpers/isPlainObject';
+import {isPlainObject} from '@/helpers/checkTypes';
 
 export const parseConfigFile = async (
   filePath: string,

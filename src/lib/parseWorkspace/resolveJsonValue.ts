@@ -4,7 +4,7 @@
  * `JsonValue`. So there is not a chance to return undefined.
  */
 
-import {isPlainObject} from '@/helpers/isPlainObject';
+import { isPlainObject } from '@/helpers/checkTypes';
 import {resolveString} from './resolveString';
 import type {JsonValue, ValuesMap} from '@/definitions';
 

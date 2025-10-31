@@ -1,6 +1,6 @@
 import {JsonRecord} from '@/definitions';
 import RNFS from 'react-native-fs';
-import {isPlainObject} from './isPlainObject';
+import {isPlainObject} from './checkTypes';
 
 export const readJsonRecordFile = async (
   filePath: string,

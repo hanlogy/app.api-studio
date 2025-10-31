@@ -8,11 +8,10 @@
  * defaults.
  */
 
-import {isPrimitive} from '@/helpers/isPrimitive';
+import {isPlainObject, isPrimitive} from '@/helpers/checkTypes';
 import type {JsonValue, PrimitiveRecord, ValuesMap} from '@/definitions';
 import {resolveString} from './resolveString';
 import {StudioError} from '@/definitions';
-import {isPlainObject} from '@/helpers/isPlainObject';
 
 type ArgBase = {
   valuesMap?: ValuesMap;
