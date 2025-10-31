@@ -1,6 +1,12 @@
 import {resolveString} from '@/lib/parseWorkspace/resolveString';
 
 describe('resolveString', () => {
+  test('return undefined', () => {
+    expect(resolveString({source: {level: 100}})).toBeUndefined();
+    expect(resolveString({source: true})).toBeUndefined();
+    expect(resolveString({source: false})).toBeUndefined();
+  });
+
   test('not match', () => {
     const result = resolveString({
       source: 'hello',
