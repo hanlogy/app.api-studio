@@ -1,14 +1,20 @@
+/**
+ * NOTE:
+ * The `source` comes from parsing a JSON string, so its type is always
+ * `JsonValue`. So we do not need to handle `undefined`.
+ */
+
 import {isPlainObject} from '@/helpers/isPlainObject';
 import {resolveString} from './resolveString';
 import type {JsonValue, ValuesMap} from '@/definitions';
 
-export const resolveJsonValue = ({
+export function resolveJsonValue({
   source,
   valuesMap = {},
 }: {
   source: JsonValue;
   valuesMap?: ValuesMap;
-}): JsonValue => {
+}): JsonValue {
   if (Array.isArray(source)) {
     return source.map(item => resolveJsonValue({source: item, valuesMap}));
   }
@@ -27,4 +33,4 @@ export const resolveJsonValue = ({
   }
 
   return source;
-};
+}
