@@ -1,4 +1,4 @@
-import {WorkspaceEnvironment} from '@/definitions/types';
+import {WorkspaceEnvironment} from '@/definitions';
 
 export const resolveEnvironmentSettings = (
   environments: readonly Partial<WorkspaceEnvironment>[] = [],

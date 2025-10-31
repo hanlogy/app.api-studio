@@ -1,8 +1,4 @@
-import type {
-  PrimitiveRecord,
-  RequestHeaders,
-  ValuesMap,
-} from '@/definitions/types';
+import type {PrimitiveRecord, RequestHeaders, ValuesMap} from '@/definitions';
 import {resolveRecordSource} from './resolveRecordSource';
 
 export const resolveHeaders = (

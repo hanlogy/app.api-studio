@@ -1,6 +1,6 @@
 import {isPlainObject} from '@/helpers/isPlainObject';
 import {resolveStringSource} from './resolveStringSource';
-import type {RequestBody, ValuesMap} from '@/definitions/types';
+import type {RequestBody, ValuesMap} from '@/definitions';
 
 export const resolveBody = ({
   source,

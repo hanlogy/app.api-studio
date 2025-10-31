@@ -1,6 +1,6 @@
 import {isPlainObject} from '@/helpers/isPlainObject';
 import {isPrimitive} from '@/helpers/isPrimitive';
-import type {PrimitiveRecord, ValuesMap} from '@/definitions/types';
+import type {PrimitiveRecord, ValuesMap} from '@/definitions';
 import {resolveStringSource} from './resolveStringSource';
 import {StudioError} from '@/definitions';
 
