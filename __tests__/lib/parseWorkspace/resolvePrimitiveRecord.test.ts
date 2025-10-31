@@ -1,6 +1,14 @@
 import {resolvePrimitiveRecord} from '@/lib/parseWorkspace/resolvePrimitiveRecord';
 
 describe('resolvePrimitiveRecord', () => {
+  test('return undefined', () => {
+    expect(resolvePrimitiveRecord({source: null})).toBeUndefined();
+    expect(resolvePrimitiveRecord({source: true})).toBeUndefined();
+    expect(resolvePrimitiveRecord({source: 10})).toBeUndefined();
+    expect(resolvePrimitiveRecord({source: true})).toBeUndefined();
+    expect(resolvePrimitiveRecord({source: false})).toBeUndefined();
+  });
+
   test('empty', () => {
     expect(resolvePrimitiveRecord({source: {}})).toStrictEqual({});
   });

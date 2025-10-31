@@ -16,8 +16,8 @@ type ArgBase =
 
 export function resolveString(args: ArgBase & {source: string}): PrimitiveValue;
 export function resolveString(
-  args: ArgBase & {source: JsonValue},
-): PrimitiveValue | undefined;
+  args: ArgBase & {source: Exclude<JsonValue, string>},
+): undefined;
 
 export function resolveString({
   source: sourceOriginal,
