@@ -1,7 +1,7 @@
 import {isPlainObject} from '@/helpers/isPlainObject';
 import {isPrimitive} from '@/helpers/isPrimitive';
 import type {ValuesMap, VariableDefinitions} from '@/definitions';
-import {resolveStringSource} from './resolveStringSource';
+import {resolveString} from './resolveString';
 import {StudioError} from '@/definitions';
 
 export const resolveValuesMap = ({
@@ -42,7 +42,7 @@ export const resolveValuesMap = ({
       });
     }
 
-    const replaced = resolveStringSource({
+    const replaced = resolveString({
       source: value,
       lookup: refName => {
         if (refName in localValuesMap) {

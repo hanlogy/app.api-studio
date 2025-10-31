@@ -12,7 +12,7 @@ type ResolveArgs =
       lookup?: (key: string) => PrimitiveValue | undefined;
     };
 
-export const resolveStringSource = ({
+export const resolveString = ({
   source: sourceOriginal,
   valuesMap,
   lookup,

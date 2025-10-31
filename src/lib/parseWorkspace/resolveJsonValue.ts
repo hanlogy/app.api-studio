@@ -1,5 +1,5 @@
 import {isPlainObject} from '@/helpers/isPlainObject';
-import {resolveStringSource} from './resolveStringSource';
+import {resolveString} from './resolveString';
 import type {JsonValue, ValuesMap} from '@/definitions';
 
 export const resolveJsonValue = ({
@@ -33,7 +33,7 @@ export const resolveJsonValue = ({
   }
 
   if (typeof source === 'string') {
-    return resolveStringSource({source, valuesMap});
+    return resolveString({source, valuesMap});
   }
 
   if (

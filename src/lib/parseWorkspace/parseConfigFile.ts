@@ -2,7 +2,7 @@ import {readJsonFile} from '@/helpers/readJsonFile';
 import {GLOBAL_ENV_NAME, type Workspace} from '@/definitions';
 import {resolveValuesMap} from './resolveValuesMap';
 import type {RawWorkspaceConfig} from './types';
-import {resolvePrimitiveRecordSource} from './resolvePrimitiveRecordSource';
+import {resolvePrimitiveRecord} from './resolvePrimitiveRecord';
 
 export const parseConfigFile = async (
   filePath: string,
@@ -20,7 +20,7 @@ export const parseConfigFile = async (
       return {
         name: environmentName,
         isGlobal: environmentName === GLOBAL_ENV_NAME,
-        headers: resolvePrimitiveRecordSource({
+        headers: resolvePrimitiveRecord({
           source: headers,
           valuesMap,
           transform: String,

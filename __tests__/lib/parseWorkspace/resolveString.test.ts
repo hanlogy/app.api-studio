@@ -1,8 +1,8 @@
-import {resolveStringSource} from '@/lib/parseWorkspace/resolveStringSource';
+import {resolveString} from '@/lib/parseWorkspace/resolveString';
 
-describe('resolveStringSource', () => {
+describe('resolveString', () => {
   test('not match', () => {
-    const result = resolveStringSource({
+    const result = resolveString({
       source: 'hello',
     });
 
@@ -10,7 +10,7 @@ describe('resolveStringSource', () => {
   });
 
   test('string result', () => {
-    const result = resolveStringSource({
+    const result = resolveString({
       source: 'level_{{level}}',
       valuesMap: {level: 100},
     });
@@ -19,7 +19,7 @@ describe('resolveStringSource', () => {
   });
 
   test('number result', () => {
-    const result = resolveStringSource({
+    const result = resolveString({
       source: '{{level}}',
       valuesMap: {level: 100},
     });
@@ -28,7 +28,7 @@ describe('resolveStringSource', () => {
   });
 
   test('null result', () => {
-    const result = resolveStringSource({
+    const result = resolveString({
       source: '{{address}}',
       valuesMap: {address: null},
     });
@@ -37,7 +37,7 @@ describe('resolveStringSource', () => {
   });
 
   test('boolean result', () => {
-    const result = resolveStringSource({
+    const result = resolveString({
       source: '{{closed}}',
       valuesMap: {closed: false},
     });
@@ -46,7 +46,7 @@ describe('resolveStringSource', () => {
   });
 
   test('multiple match', () => {
-    const result = resolveStringSource({
+    const result = resolveString({
       source: '{{name}}_{{level}}',
       valuesMap: {
         name: 'foo',
@@ -58,7 +58,7 @@ describe('resolveStringSource', () => {
   });
 
   test('white spaces tolerance and trimming', () => {
-    const result = resolveStringSource({
+    const result = resolveString({
       source: '   {{ name  }}_{{ level  }} ',
       valuesMap: {
         name: 'foo',
@@ -69,7 +69,7 @@ describe('resolveStringSource', () => {
   });
 
   test('use lookup', () => {
-    const result = resolveStringSource({
+    const result = resolveString({
       source: '{{name}}_{{level}}',
       lookup: key => {
         switch (key) {

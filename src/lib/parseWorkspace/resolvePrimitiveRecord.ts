@@ -3,10 +3,10 @@ import {
   type PrimitiveValue,
   type ValuesMap,
 } from '@/definitions';
-import {resolveStringSource} from './resolveStringSource';
+import {resolveString} from './resolveString';
 import {isPlainObject} from '@/helpers/isPlainObject';
 
-export const resolvePrimitiveRecordSource = <T extends PrimitiveValue>({
+export const resolvePrimitiveRecord = <T extends PrimitiveValue>({
   source,
   valuesMap = {},
   transform,
@@ -22,7 +22,7 @@ export const resolvePrimitiveRecordSource = <T extends PrimitiveValue>({
   const items = Object.entries(source)
     .filter(([_, value]) => value !== undefined)
     .map(([name, value]) => {
-      const resolved = resolveStringSource({
+      const resolved = resolveString({
         source: String(value),
         valuesMap,
       });
