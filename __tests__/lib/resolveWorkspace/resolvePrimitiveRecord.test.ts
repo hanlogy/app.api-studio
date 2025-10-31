@@ -1,4 +1,4 @@
-import {resolvePrimitiveRecord} from '@/lib/parseWorkspace/resolvePrimitiveRecord';
+import {resolvePrimitiveRecord} from '@/lib/resolveWorkspace/resolvePrimitiveRecord';
 
 describe('resolvePrimitiveRecord', () => {
   test('return undefined', () => {

@@ -1,8 +1,8 @@
 import {
   GLOBAL_ENV_NAME,
-  JsonValue,
-  Workspace,
-  WorkspaceEnvironment,
+  type JsonValue,
+  type Workspace,
+  type WorkspaceEnvironment,
 } from '@/definitions';
 import {isPlainObject} from '@/helpers/checkTypes';
 import {pickDefinedString, removeUndefined} from '@/helpers/filterValues';

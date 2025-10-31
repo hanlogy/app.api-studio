@@ -1,4 +1,4 @@
-import {resolveJsonValue} from '@/lib/parseWorkspace/resolveJsonValue';
+import {resolveJsonValue} from '@/lib/resolveWorkspace/resolveJsonValue';
 
 describe('resolveJsonValue', () => {
   test('primitive type body', () => {

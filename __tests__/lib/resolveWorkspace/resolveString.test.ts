@@ -1,4 +1,4 @@
-import {resolveString} from '@/lib/parseWorkspace/resolveString';
+import {resolveString} from '@/lib/resolveWorkspace/resolveString';
 
 describe('resolveString', () => {
   test('return undefined', () => {

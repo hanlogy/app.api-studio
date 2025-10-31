@@ -1,4 +1,4 @@
-import {resolveValuesMap} from '@/lib/parseWorkspace/resolveValuesMap';
+import {resolveValuesMap} from '@/lib/resolveWorkspace/resolveValuesMap';
 
 describe('resolveValuesMap', () => {
   test('return undefined', () => {
