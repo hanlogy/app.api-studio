@@ -6,15 +6,15 @@ import {
 import {resolveStringSource} from './resolveStringSource';
 import {isPlainObject} from '@/helpers/isPlainObject';
 
-export const resolveRecordSource = <T extends PrimitiveType>({
+export const resolvePrimitiveRecordSource = <T extends PrimitiveType>({
   source,
   valuesMap = {},
   transform,
 }: {
-  source?: PrimitiveRecord;
+  source: PrimitiveRecord;
   valuesMap?: ValuesMap;
   transform?: (value: PrimitiveType) => T;
-} = {}): Record<string, T> => {
+}): PrimitiveRecord<T> => {
   if (!source || !isPlainObject(source)) {
     return {};
   }
