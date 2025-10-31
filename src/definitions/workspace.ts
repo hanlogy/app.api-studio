@@ -45,7 +45,7 @@ export type WorkspaceEnvironment =
       readonly headers?: RequestHeaders;
     }
   | {
-      readonly name?: string;
+      readonly name: string;
       readonly valuesMap?: ValuesMap;
       readonly headers?: RequestHeaders;
     };
