@@ -10,18 +10,16 @@ import {resolveCollectionResource} from './resolveCollectionResource';
 import {resolveApiResource} from './resolveApiResource';
 
 export function resolveWorkspace({
-  source,
+  source: {config: configSource, apis: apisSources},
   environmentName,
 }: {
   source: {
     config: JsonRecord;
     apis: JsonRecord[];
   };
-  environmentName: string;
-}):
-  | Pick<Workspace, 'name' | 'description' | 'environments' | 'resources'>
-  | undefined {
-  const resolvedConfig = resolveConfig({source: source.config});
+  environmentName?: string;
+}): Omit<Workspace, 'path'> | undefined {
+  const resolvedConfig = resolveConfig({source: configSource});
 
   if (!resolvedConfig) {
     return undefined;
@@ -37,7 +35,7 @@ export function resolveWorkspace({
     name: pickDefinedString(name),
     description: pickDefinedString(description),
     environments,
-    resources: source.apis
+    apis: apisSources
       .map(rawApiResource => {
         if ('apis' in rawApiResource) {
           return resolveCollectionResource({

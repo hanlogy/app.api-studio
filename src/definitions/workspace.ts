@@ -1,10 +1,9 @@
 import type {JsonValue, PrimitiveRecord, ValuesMap} from './basic';
-import {CONFIG_FILE} from './constants';
+import {CONFIG_FILE, requestMethods} from './constants';
 
 export type RequestHeaders = PrimitiveRecord<string>;
 export type RequestQuery = PrimitiveRecord<string>;
 
-export const requestMethods = ['GET', 'POST', 'DELETE', 'PATCH'] as const;
 export type RequestMethod = (typeof requestMethods)[number];
 
 export interface WorkspaceFiles {
@@ -36,8 +35,6 @@ export interface CollectionResource {
   readonly apis: readonly ApiResource[];
 }
 
-export type WorkspaceResource = ApiResource | CollectionResource;
-
 export type WorkspaceEnvironment =
   | {
       readonly isGlobal: true;
@@ -58,5 +55,5 @@ export interface WorkspaceSummary {
 export interface Workspace extends WorkspaceSummary {
   readonly description?: string;
   readonly environments: readonly WorkspaceEnvironment[];
-  readonly resources: readonly WorkspaceResource[];
+  readonly apis: readonly (ApiResource | CollectionResource)[];
 }
