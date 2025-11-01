@@ -5,7 +5,7 @@ import {
   type WorkspaceEnvironment,
 } from '@/definitions';
 import {isPlainObject} from '@/helpers/checkTypes';
-import {pickDefinedString, removeUndefined} from '@/helpers/filterValues';
+import {pickWhenString, removeUndefined} from '@/helpers/filterValues';
 import {resolveValuesMap} from './resolveValuesMap';
 import {resolveStringRecord} from './simpleResolvers';
 
@@ -21,8 +21,8 @@ export function resolveConfig({
   const {name, description, environments} = source;
 
   return removeUndefined({
-    name: pickDefinedString(name),
-    description: pickDefinedString(description),
+    name: pickWhenString(name),
+    description: pickWhenString(description),
     environments: resolveEnvironments({source: environments}) ?? [],
   });
 }

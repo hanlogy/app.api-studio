@@ -1,4 +1,4 @@
-export function pickDefinedString(value: unknown): string | undefined {
+export function pickWhenString(value: unknown): string | undefined {
   return typeof value === 'string' ? value : undefined;
 }
 

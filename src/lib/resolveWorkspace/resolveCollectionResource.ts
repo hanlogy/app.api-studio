@@ -6,7 +6,7 @@ import {
 } from '@/definitions';
 import {isPlainObject} from '@/helpers/checkTypes';
 import {resolveValuesMap} from './resolveValuesMap';
-import {pickDefinedString, removeUndefined} from '@/helpers/filterValues';
+import {pickWhenString, removeUndefined} from '@/helpers/filterValues';
 import {resolveApiResource} from './resolveApiResource';
 import {resolveStringRecord, resolveUrl} from './simpleResolvers';
 
@@ -31,8 +31,8 @@ export function resolveCollectionResource({
   const valuesMap = {...externalValuesMap, ...(localValuesMap ?? {})};
 
   return removeUndefined({
-    name: pickDefinedString(name),
-    description: pickDefinedString(description),
+    name: pickWhenString(name),
+    description: pickWhenString(description),
     baseUrl: resolveUrl({source: baseUrl, valuesMap}),
     headers: resolveStringRecord({source: headers, valuesMap}),
     valuesMap: localValuesMap,

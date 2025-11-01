@@ -1,21 +1,22 @@
 import {
-  JsonRecord,
-  ValuesMap,
-  Workspace,
-  WorkspaceEnvironment,
+  type JsonValue,
+  type ValuesMap,
+  type Workspace,
+  type WorkspaceEnvironment,
 } from '@/definitions';
 import {resolveConfig} from './resolveConfig';
-import {pickDefinedString} from '@/helpers/filterValues';
+import {removeUndefined} from '@/helpers/filterValues';
 import {resolveCollectionResource} from './resolveCollectionResource';
 import {resolveApiResource} from './resolveApiResource';
+import {isPlainObject} from '@/helpers/checkTypes';
 
 export function resolveWorkspace({
   source: {config: configSource, apis: apisSources},
   environmentName,
 }: {
   source: {
-    config: JsonRecord;
-    apis: JsonRecord[];
+    config: JsonValue;
+    apis: JsonValue[];
   };
   environmentName?: string;
 }): Omit<Workspace, 'path'> | undefined {
@@ -31,12 +32,15 @@ export function resolveWorkspace({
     environmentName,
   });
 
-  return {
-    name: pickDefinedString(name),
-    description: pickDefinedString(description),
+  return removeUndefined({
+    name,
+    description,
     environments,
     apis: apisSources
       .map(rawApiResource => {
+        if (!isPlainObject(rawApiResource)) {
+          return undefined;
+        }
         if ('apis' in rawApiResource) {
           return resolveCollectionResource({
             source: rawApiResource,
@@ -50,7 +54,7 @@ export function resolveWorkspace({
         }
       })
       .filter(e => e !== undefined),
-  };
+  });
 }
 
 export const resolveValuesMap = ({

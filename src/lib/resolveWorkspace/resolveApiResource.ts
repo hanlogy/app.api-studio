@@ -8,7 +8,7 @@ import {
 import {isPlainObject} from '@/helpers/checkTypes';
 import {resolveValuesMap} from './resolveValuesMap';
 import {resolveJsonValue} from './resolveJsonValue';
-import {pickDefinedString, removeUndefined} from '@/helpers/filterValues';
+import {pickWhenString, removeUndefined} from '@/helpers/filterValues';
 import {resolveStringRecord, resolveUrl} from './simpleResolvers';
 
 export function resolveApiResource({
@@ -33,9 +33,9 @@ export function resolveApiResource({
   const valuesMap = {...externalValuesMap, ...(localValuesMap ?? {})};
 
   return removeUndefined({
-    id: pickDefinedString(id),
-    name: pickDefinedString(name),
-    description: pickDefinedString(description),
+    id: pickWhenString(id),
+    name: pickWhenString(name),
+    description: pickWhenString(description),
     url: resolveUrl({source: url, valuesMap}),
     method: resolveMethod({source: method}),
     headers: resolveStringRecord({source: headers, valuesMap}),
