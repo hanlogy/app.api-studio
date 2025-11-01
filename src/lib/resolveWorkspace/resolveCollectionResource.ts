@@ -1,8 +1,8 @@
 import {
-  ApiResource,
-  CollectionResource,
-  JsonValue,
-  ValuesMap,
+  type ApiResource,
+  type CollectionResource,
+  type JsonValue,
+  type ValuesMap,
 } from '@/definitions';
 import {isPlainObject} from '@/helpers/checkTypes';
 import {resolveValuesMap} from './resolveValuesMap';

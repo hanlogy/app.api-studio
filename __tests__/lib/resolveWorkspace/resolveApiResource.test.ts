@@ -17,7 +17,7 @@ describe('resolveApiResource', () => {
           method: 'POST',
           url: 'api',
           ':lastName': 'bar',
-          query: {limit: 10},
+          query: {limit: '{{limit}}'},
           body: {
             firstName: '{{name}}',
             lastName: '{{lastName}}',
@@ -25,6 +25,7 @@ describe('resolveApiResource', () => {
         },
         valuesMap: {
           name: 'foo',
+          limit: 10,
         },
       }),
     ).toStrictEqual({
