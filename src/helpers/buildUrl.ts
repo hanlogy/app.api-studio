@@ -1,6 +1,6 @@
-import {PrimitiveRecord} from '@/definitions';
+import {type PrimitiveRecord} from '@/definitions';
 
-export const buildUrl = ({
+export function buildUrl({
   url,
   baseUrl,
   query = {},
@@ -8,7 +8,7 @@ export const buildUrl = ({
   url?: string;
   baseUrl?: string;
   query?: PrimitiveRecord<string>;
-} = {}): string => {
+} = {}): string {
   const queryString = Object.entries(query)
     .map(
       ([key, value]) =>
@@ -27,4 +27,4 @@ export const buildUrl = ({
     .join('&');
 
   return fullQuery ? `${path}?${fullQuery}` : path;
-};
+}

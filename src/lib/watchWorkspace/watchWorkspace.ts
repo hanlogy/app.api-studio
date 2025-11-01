@@ -6,7 +6,7 @@ interface Snapshot {
   readonly apis?: Record<string, number>;
 }
 
-export const createSnapshot = async (dir: string): Promise<Snapshot> => {
+export async function createSnapshot(dir: string): Promise<Snapshot> {
   const files = await RNFS.readDir(dir);
 
   // Find config.json
@@ -35,7 +35,7 @@ export const createSnapshot = async (dir: string): Promise<Snapshot> => {
     [CONFIG_FILE]: configFile?.mtime?.getTime(),
     apis: apisMap,
   };
-};
+}
 
 const toFiles = (snapshot: Snapshot) => {
   return {
@@ -44,10 +44,10 @@ const toFiles = (snapshot: Snapshot) => {
   };
 };
 
-export const watchWorkspace = async (
+export async function watchWorkspace(
   dir: string,
   onChange: (files: WorkspaceFiles) => void,
-) => {
+) {
   const interval = 2000;
 
   let prev = await createSnapshot(dir);
@@ -62,6 +62,6 @@ export const watchWorkspace = async (
   }, interval);
 
   return {stop: () => clearInterval(timer)};
-};
+}
 
 export type WorkspaceWatcher = Awaited<ReturnType<typeof watchWorkspace>>;

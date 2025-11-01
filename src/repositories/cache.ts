@@ -1,4 +1,4 @@
-import {JsonRecord} from '@/definitions';
+import {type JsonRecord} from '@/definitions';
 import {readJsonRecord, writeJsonRecord} from '@/helpers/fileIO';
 import RNFS from 'react-native-fs';
 

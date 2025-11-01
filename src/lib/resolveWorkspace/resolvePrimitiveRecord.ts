@@ -15,7 +15,7 @@ import {
   type ValuesMap,
 } from '@/definitions';
 import {resolveString} from './resolveString';
-import { isPlainObject } from '@/helpers/checkTypes';
+import {isPlainObject} from '@/helpers/checkTypes';
 
 type ArgBase<T> = {
   valuesMap?: ValuesMap;

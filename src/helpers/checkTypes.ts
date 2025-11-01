@@ -1,10 +1,10 @@
 import type {PrimitiveValue} from '@/definitions';
 
-export const isPrimitive = (value: unknown): value is PrimitiveValue => {
+export function isPrimitive(value: unknown): value is PrimitiveValue {
   return (
     value === null || ['string', 'number', 'boolean'].includes(typeof value)
   );
-};
+}
 
 export function isPlainObject(
   value: unknown,

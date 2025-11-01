@@ -1,4 +1,4 @@
-import {JsonRecord} from '@/definitions';
+import {type JsonRecord} from '@/definitions';
 import RNFS from 'react-native-fs';
 import {isPlainObject} from './checkTypes';
 
@@ -31,7 +31,7 @@ export async function readJsonRecord({
   }
 }
 
-export const writeJsonRecord = async ({
+export async function writeJsonRecord({
   dir,
   fileName,
   data,
@@ -39,7 +39,7 @@ export const writeJsonRecord = async ({
   dir: string;
   fileName: string;
   data: JsonRecord;
-}) => {
+}) {
   if (!isPlainObject(data)) {
     return;
   }
@@ -47,4 +47,4 @@ export const writeJsonRecord = async ({
   const path = buildFilePath({dir, fileName});
   await RNFS.mkdir(dir);
   await RNFS.writeFile(path, JSON.stringify(data), 'utf8');
-};
+}
