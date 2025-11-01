@@ -6,10 +6,8 @@ describe('resolveValuesMap', () => {
     expect(resolveValuesMap({source: 10})).toEqual(undefined);
   });
 
-  describe('no internal variables', () => {
-    test('empty', () => {
-      expect(resolveValuesMap({source: {}})).toEqual({});
-    });
+  test('empty also results undefined', () => {
+    expect(resolveValuesMap({source: {}})).toBeUndefined();
   });
 
   describe('with internal variables', () => {

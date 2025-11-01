@@ -41,6 +41,7 @@ export function resolveApiResource({
     headers: resolveStringRecord({source: headers, valuesMap}),
     query: resolveStringRecord({source: query, valuesMap}),
     body: resolveJsonValue({source: body, valuesMap}),
+    valuesMap: localValuesMap,
   });
 }
 

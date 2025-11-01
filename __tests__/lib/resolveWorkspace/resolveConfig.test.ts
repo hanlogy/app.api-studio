@@ -33,7 +33,6 @@ describe('resolveApiResource', () => {
           headers: {
             name: 'foo',
           },
-          valuesMap: {},
         },
         {
           isGlobal: false,

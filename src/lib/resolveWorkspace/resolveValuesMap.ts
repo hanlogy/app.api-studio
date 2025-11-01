@@ -36,6 +36,11 @@ export function resolveValuesMap({
     .filter(([name, value]) => name.startsWith(':') && isPrimitive(value))
     .map(([name, value]) => [name.slice(1), value]);
 
+  // return `undefined` if empty, to facilitate test cases.
+  if (!definitionItems.length) {
+    return undefined;
+  }
+
   const localValuesMap: ValuesMap = Object.fromEntries(definitionItems);
 
   const resolveVar = (

@@ -1,26 +1,21 @@
-/*
-import * as readJsonModule from '@/helpers/fileIO';
-import {parseApiFile} from '@/lib/parseWorkspace/parseApiFile';
+import {resolveApiResource} from '@/lib/resolveWorkspace/resolveApiResource';
 
-jest.mock('react-native-fs', () => ({
-  readFile: jest.fn(),
-  writeFile: jest.fn(),
-  readDir: jest.fn(),
-}));
+describe('resolveApiResource', () => {
+  test('invalid source', () => {
+    expect(resolveApiResource({source: null})).toBeUndefined();
+  });
 
-describe('parseApiFile', () => {
-  test('A collection', async () => {
-    const spy = jest.spyOn(readJsonModule, 'readJsonRecordFile').mockResolvedValue({
-      name: 'My Collection',
-      description: 'Test app',
-      baseUrl: 'api',
-      ':name': 'foo',
-      headers: {ping: '{{name}}'},
-      apis: [
-        {
+  test('empty', () => {
+    expect(resolveApiResource({source: {}})).toStrictEqual({});
+  });
+
+  test('with everything', () => {
+    expect(
+      resolveApiResource({
+        source: {
           name: 'api-1',
           method: 'POST',
-          url: 'look',
+          url: 'api',
           ':lastName': 'bar',
           query: {limit: 10},
           body: {
@@ -28,45 +23,22 @@ describe('parseApiFile', () => {
             lastName: '{{lastName}}',
           },
         },
-      ],
-    });
-
-    const result = await parseApiFile('/tmp/api.json');
-    console.log(JSON.stringify(result, undefined, '  '));
-    //
-    spy.mockRestore();
-  });
-
-  test('A single API', async () => {
-    const spy = jest.spyOn(readJsonModule, 'readJsonRecordFile').mockResolvedValue({
-      name: 'Test Api',
-      url: '{{host}}/test',
+        valuesMap: {
+          name: 'foo',
+        },
+      }),
+    ).toStrictEqual({
+      name: 'api-1',
       method: 'POST',
-      ':authToken': 'fake-token',
-      headers: {
-        Authorization: '{{authToken}}',
-      },
+      url: 'api',
+      query: {limit: '10'},
       body: {
-        label: '{{label}}',
+        firstName: 'foo',
+        lastName: 'bar',
+      },
+      valuesMap: {
+        lastName: 'bar',
       },
     });
-
-    const result = await parseApiFile('/tmp/api.json', {
-      variables: {
-        host: 'api',
-        label: 'foo',
-      },
-    });
-    expect(result).toStrictEqual({
-      name: 'Test Api',
-      url: 'api/test',
-      method: 'POST',
-      headers: {Authorization: 'fake-token'},
-      body: {label: 'foo'},
-      variables: {authToken: 'fake-token'},
-    });
-    //
-    spy.mockRestore();
   });
 });
-*/
