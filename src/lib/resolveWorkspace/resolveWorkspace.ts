@@ -60,10 +60,8 @@ export const resolveValuesMap = ({
   environments: readonly WorkspaceEnvironment[];
   environmentName?: string;
 }): ValuesMap => {
-  const global = environments.find(e => 'isGlobal' in e && e.isGlobal === true);
-  const local = environments.find(
-    e => 'name' in e && e.name === environmentName,
-  );
+  const global = environments.find(e => e.isGlobal);
+  const local = environments.find(e => e.name === environmentName);
 
   return {...(global?.valuesMap ?? {}), ...(local?.valuesMap ?? {})};
 };

@@ -1,47 +1,48 @@
-/*
-import {parseConfigFile} from '@/lib/parseWorkspace/parseConfigFile';
-import * as readJsonModule from '@/helpers/fileIO';
+import {resolveConfig} from '@/lib/resolveWorkspace/resolveConfig';
 
-jest.mock('react-native-fs', () => ({
-  readFile: jest.fn(),
-  writeFile: jest.fn(),
-  readDir: jest.fn(),
-}));
+describe('resolveApiResource', () => {
+  test('invalid source', () => {
+    expect(resolveConfig({source: null})).toBeUndefined();
+  });
 
-describe('parseConfigFile', () => {
-  test('parseConfigFile', async () => {
-    const spy = jest.spyOn(readJsonModule, 'readJsonRecordFile').mockResolvedValue({
-      name: 'My App',
-      description: 'Test app',
-      environments: {
-        '@global': {
-          headers: {name: 'foo'},
+  test('empty input', () => {
+    expect(resolveConfig({source: {}})).toStrictEqual({environments: []});
+  });
+
+  test('with everything', () => {
+    expect(
+      resolveConfig({
+        source: {
+          name: 'foo',
+          description: 'bar',
+          environments: {
+            '@global': {
+              headers: {name: 'foo'},
+            },
+            dev: {':api': 'https://dev.api'},
+          },
         },
-        dev: {':api': 'https://dev.api'},
-      },
-    });
-
-    const result = await parseConfigFile('/tmp/config.json');
-
-    expect(result).toStrictEqual({
-      name: 'My App',
-      description: 'Test app',
+      }),
+    ).toStrictEqual({
+      name: 'foo',
+      description: 'bar',
       environments: [
         {
-          name: '@global',
           isGlobal: true,
-          headers: {name: 'foo'},
+          name: '@global',
+          headers: {
+            name: 'foo',
+          },
           valuesMap: {},
         },
         {
-          name: 'dev',
           isGlobal: false,
-          headers: {},
-          valuesMap: {api: 'https://dev.api'},
+          name: 'dev',
+          valuesMap: {
+            api: 'https://dev.api',
+          },
         },
       ],
     });
-    spy.mockRestore();
   });
 });
-*/

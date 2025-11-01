@@ -32,7 +32,7 @@ function resolveEnvironments({
 }: {
   source: JsonValue;
 }): WorkspaceEnvironment[] | undefined {
-  if (!source || !Array.isArray(source)) {
+  if (!source || !isPlainObject(source)) {
     return undefined;
   }
 
@@ -45,7 +45,7 @@ function resolveEnvironments({
       const {headers, ...rest} = rawEnvironment;
       const valuesMap = resolveValuesMap({source: rest});
 
-      return {
+      return removeUndefined({
         name,
         isGlobal: name === GLOBAL_ENV_NAME,
         headers: resolveStringRecord({
@@ -53,7 +53,7 @@ function resolveEnvironments({
           valuesMap,
         }),
         valuesMap,
-      };
+      });
     })
     .filter(e => e !== undefined);
 }

@@ -35,17 +35,12 @@ export interface CollectionResource {
   readonly apis: readonly ApiResource[];
 }
 
-export type WorkspaceEnvironment =
-  | {
-      readonly isGlobal: true;
-      readonly valuesMap?: ValuesMap;
-      readonly headers?: RequestHeaders;
-    }
-  | {
-      readonly name: string;
-      readonly valuesMap?: ValuesMap;
-      readonly headers?: RequestHeaders;
-    };
+export interface WorkspaceEnvironment {
+  readonly isGlobal: boolean;
+  readonly name: string;
+  readonly valuesMap?: ValuesMap;
+  readonly headers?: RequestHeaders;
+}
 
 export interface WorkspaceSummary {
   readonly name?: string;
