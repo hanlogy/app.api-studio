@@ -8,5 +8,5 @@ export const saveStudioState = async (state: StudioStateCache) => {
 };
 
 export const fetchStudioState = async () => {
-  return readFromCache<StudioStateCache>(cacheFileName);
+  return readFromCache(cacheFileName);
 };

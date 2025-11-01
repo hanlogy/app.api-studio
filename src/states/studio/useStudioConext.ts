@@ -1,6 +1,6 @@
 import {useContext} from 'react';
-import {StudioContextValue} from './types';
 import {StudioContext} from './StudioContext';
+import {StudioContextValue} from './types';
 
 export const useStudioConext = () => {
   const value = useContext<StudioContextValue | null>(StudioContext);

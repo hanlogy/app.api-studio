@@ -38,7 +38,7 @@ export async function writeJsonRecord({
 }: {
   dir: string;
   fileName: string;
-  data: JsonRecord;
+  data: unknown;
 }) {
   if (!isPlainObject(data)) {
     return;

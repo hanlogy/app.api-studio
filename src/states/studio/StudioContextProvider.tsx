@@ -1,8 +1,8 @@
 import {PropsWithChildren, useCallback, useEffect, useState} from 'react';
 import {StudioContext} from './StudioContext';
-import {StudioState} from './types';
 import {fetchStudioState} from './repository';
 import {useWorkspace} from './useWorkspace';
+import {StudioState} from './types';
 
 export const StudioContextProvider = ({children}: PropsWithChildren<{}>) => {
   const [state, setState] = useState<StudioState>({status: 'initializing'});
