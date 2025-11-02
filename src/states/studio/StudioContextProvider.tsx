@@ -2,12 +2,14 @@ import {PropsWithChildren, useCallback, useEffect, useState} from 'react';
 import {StudioContext} from './StudioContext';
 import {useWorkspace} from './useWorkspace';
 import {StudioState} from './types';
+import {readStudioCache} from '@/repositories/studioCache';
 
 export const StudioContextProvider = ({children}: PropsWithChildren<{}>) => {
   const [state, setState] = useState<StudioState>({status: 'initializing'});
   const {setWorkspacePath} = useWorkspace();
 
-  // Load cache
+  // When `initializing`:
+  // Load cache, change status to `waiting` when cache loaded.
   useEffect(() => {
     (async () => {
       if (state.status !== 'initializing') {
@@ -15,14 +17,15 @@ export const StudioContextProvider = ({children}: PropsWithChildren<{}>) => {
       }
 
       const cache = await readStudioCache();
-      if (cache) {
-        setState(prev => ({...prev, ...cache}));
-      } else {
-        setState({status: 'waiting'});
-      }
+      setState(prev => ({
+        ...prev,
+        status: 'waiting' as const,
+        workspaces: cache?.workspaces,
+      }));
     })();
   }, [state.status]);
 
+  // When `currentWorkspacePath` changed:
   // Load workspace and update cache
   useEffect(() => {
     const currentWorkspacePath = state.currentWorkspacePath;
