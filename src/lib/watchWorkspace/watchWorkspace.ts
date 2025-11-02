@@ -1,8 +1,8 @@
-import {APIS_DIR, CONFIG_FILE, type WorkspaceFiles} from '@/definitions';
+import {WORKSPACE_APIS_DIR, WORKSPACE_CONFIG_FILE} from '@/definitions';
 import RNFS from 'react-native-fs';
 
 interface Snapshot {
-  readonly [CONFIG_FILE]?: number;
+  readonly [WORKSPACE_CONFIG_FILE]?: number;
   readonly apis?: Record<string, number>;
 }
 
@@ -11,12 +11,12 @@ export async function createSnapshot(dir: string): Promise<Snapshot> {
 
   // Find config.json
   const configFile = files.find(
-    ({name, isDirectory}) => name === CONFIG_FILE && !isDirectory(),
+    ({name, isDirectory}) => name === WORKSPACE_CONFIG_FILE && !isDirectory(),
   );
 
   // Find apis folder
   const apisDir = files.find(
-    ({name, isDirectory}) => name === APIS_DIR && isDirectory(),
+    ({name, isDirectory}) => name === WORKSPACE_APIS_DIR && isDirectory(),
   );
 
   let apisMap: Record<string, number> | undefined;
@@ -32,21 +32,24 @@ export async function createSnapshot(dir: string): Promise<Snapshot> {
   }
 
   return {
-    [CONFIG_FILE]: configFile?.mtime?.getTime(),
+    [WORKSPACE_CONFIG_FILE]: configFile?.mtime?.getTime(),
     apis: apisMap,
   };
 }
 
 const toFiles = (snapshot: Snapshot) => {
   return {
-    config: snapshot[CONFIG_FILE] ? CONFIG_FILE : undefined,
+    config: snapshot[WORKSPACE_CONFIG_FILE] ? WORKSPACE_CONFIG_FILE : undefined,
     apis: snapshot.apis ? Object.keys(snapshot.apis) : undefined,
   };
 };
 
 export async function watchWorkspace(
   dir: string,
-  onChange: (files: WorkspaceFiles) => void,
+  onChange: (files: {
+    readonly config?: typeof WORKSPACE_CONFIG_FILE;
+    readonly apis?: string[];
+  }) => void,
 ) {
   const interval = 2000;
 

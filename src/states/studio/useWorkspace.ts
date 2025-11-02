@@ -1,12 +1,20 @@
+import {Workspace} from '@/definitions';
 import {watchWorkspace, type WorkspaceWatcher} from '@/lib';
+import {loadWorkspace} from '@/repositories/loadWorkspace';
 import {useEffect, useRef, useState} from 'react';
+import {WorkspaceFiles} from './types';
 
 export const useWorkspace = () => {
-  const [workspacePath, setWorkspacePath] = useState<string>();
+  const [path, setWorkspacePath] = useState<string>();
+  const [environmentName, selectEnvironment] = useState<string>();
+  const [workspace, setWorkspace] = useState<Workspace>();
+  const [files, setFiles] = useState<WorkspaceFiles>();
+
   const watcherRef = useRef<WorkspaceWatcher>(null);
 
+  // when path changed.
   useEffect(() => {
-    if (!workspacePath) {
+    if (!path) {
       return;
     }
 
@@ -16,11 +24,31 @@ export const useWorkspace = () => {
         watcherRef.current = null;
       }
 
-      watcherRef.current = await watchWorkspace(workspacePath, files => {
-        console.log(files);
+      watcherRef.current = await watchWorkspace(path, ({config, apis = []}) => {
+        if (!config) {
+          // TODO: set error here
+          return;
+        }
+        setFiles({config, apis});
       });
     })();
-  }, [workspacePath]);
+  }, [path]);
 
-  return {setWorkspacePath};
+  // when files changed
+  useEffect(() => {
+    if (!files || !path) {
+      return;
+    }
+
+    (async () => {
+      const data = await loadWorkspace({
+        workspacePath: path,
+        ...files,
+      });
+      console.log(data);
+      // TOOD: Resolve data
+    })();
+  }, [files, path]);
+
+  return {setWorkspacePath, selectEnvironment, workspace};
 };

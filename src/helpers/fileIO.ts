@@ -4,17 +4,17 @@ import {isPlainObject} from './checkTypes';
 
 export const CACHE_FOLDER = `${RNFS.LibraryDirectoryPath}/Application Support/ApiStudio`;
 
-const buildFilePath = ({dir, fileName}: {dir: string; fileName: string}) =>
-  `${dir}/${fileName}.json`;
+const buildFilePath = ({dir, file}: {dir: string; file: string}) =>
+  `${dir}/${file}`;
 
 export async function readJsonRecord({
   dir = CACHE_FOLDER,
-  fileName,
+  file,
 }: {
   dir?: string;
-  fileName: string;
+  file: string;
 }): Promise<JsonRecord | null> {
-  const path = buildFilePath({dir, fileName});
+  const path = buildFilePath({dir, file});
   const exists = await RNFS.exists(path);
   if (!exists) {
     return null;
@@ -35,18 +35,18 @@ export async function readJsonRecord({
 
 export async function writeJsonRecord({
   dir = CACHE_FOLDER,
-  fileName,
+  file,
   data,
 }: {
   dir?: string;
-  fileName: string;
+  file: string;
   data: unknown;
 }) {
   if (!isPlainObject(data)) {
     return;
   }
 
-  const path = buildFilePath({dir, fileName});
+  const path = buildFilePath({dir, file});
   await RNFS.mkdir(dir);
   await RNFS.writeFile(path, JSON.stringify(data), 'utf8');
 }

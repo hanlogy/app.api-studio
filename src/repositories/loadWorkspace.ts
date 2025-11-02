@@ -1,4 +1,4 @@
-import {APIS_DIR} from '@/definitions';
+import {WORKSPACE_APIS_DIR} from '@/definitions';
 import {readJsonRecord} from '@/helpers/fileIO';
 
 // NOTE:
@@ -18,14 +18,14 @@ export async function loadWorkspace({
 
   const configData = await readJsonRecord({
     dir: workspacePath,
-    fileName: configFile,
+    file: configFile,
   });
 
   const apisData = await Promise.all(
     apiFiles.map(async apiFile =>
       readJsonRecord({
-        dir: [workspacePath, APIS_DIR].join('/'),
-        fileName: apiFile,
+        dir: [workspacePath, WORKSPACE_APIS_DIR].join('/'),
+        file: apiFile,
       }),
     ),
   );

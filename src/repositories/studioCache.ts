@@ -1,4 +1,4 @@
-import {type JsonRecord, STUDIO_CACHE} from '@/definitions';
+import {type JsonRecord, STUDIO_CACHE_FILE} from '@/definitions';
 import {readJsonRecord, writeJsonRecord} from '@/helpers/fileIO';
 import {isPlainObject} from '@/helpers/checkTypes';
 import {StudioStateCache} from '@/states/studio/types';
@@ -6,14 +6,14 @@ import {pickWhenString} from '@/helpers/filterValues';
 
 export async function saveStudioCache(state: StudioStateCache) {
   await writeJsonRecord({
-    fileName: STUDIO_CACHE,
+    file: STUDIO_CACHE_FILE,
     data: state,
   });
 }
 
 export async function readStudioCache(): Promise<StudioStateCache | null> {
   const cache = await readJsonRecord({
-    fileName: STUDIO_CACHE,
+    file: STUDIO_CACHE_FILE,
   });
 
   if (!cache) {

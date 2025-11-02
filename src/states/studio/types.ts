@@ -1,32 +1,42 @@
-import type {Workspace, WorkspaceSummary} from '@/definitions';
+import type {
+  WORKSPACE_CONFIG_FILE,
+  Workspace,
+  WorkspaceSummary,
+} from '@/definitions';
+
+export interface WorkspaceFiles {
+  readonly config: typeof WORKSPACE_CONFIG_FILE;
+  readonly apis: string[];
+}
+
+/**
+ * - `initializing`: reading from cache
+ * - `waiting`: no workspace opened
+ * - `loading`: when reading and parsing workspace files (initial,
+ *   background refresh, or workspace switched).
+ * - `ready`: when data is ready and no file operations are in progress.
+ */
+export type StudioStateStatus =
+  | 'initializing'
+  | 'waiting'
+  | 'loading'
+  | 'ready';
 
 export type StudioState =
   | {
-      /**
-       * - `initializing`: reading from cache
-       * - `waiting`: no workspace opened
-       */
-      readonly status: 'initializing' | 'waiting';
-      // currentWorkspacePath, workspaces are from cache at this state.
-      readonly currentWorkspacePath?: string;
-      readonly workspaces?: readonly WorkspaceSummary[];
+      readonly status: 'initializing';
     }
   | {
-      /**
-       * - `loading`: when reading and parsing workspace files (initial,
-       *   background refresh, or workspace switched).
-       */
+      readonly status: 'waiting';
+      readonly workspaces: readonly WorkspaceSummary[];
+    }
+  | {
       readonly status: 'loading';
-      readonly currentWorkspacePath: string;
-      readonly workspaces?: readonly WorkspaceSummary[];
+      readonly workspaces: readonly WorkspaceSummary[];
       readonly workspace?: Workspace;
     }
   | {
-      /**
-       * - `ready`: when data is ready and no file operations are in progress.
-       */
       readonly status: 'ready';
-      readonly currentWorkspacePath: string;
       readonly workspaces: readonly WorkspaceSummary[];
       readonly workspace: Workspace;
     };

@@ -1,15 +1,10 @@
 import type {JsonValue, PrimitiveRecord, ValuesMap} from './basic';
-import {CONFIG_FILE, requestMethods} from './constants';
+import {requestMethods} from './constants';
 
 export type RequestHeaders = PrimitiveRecord<string>;
 export type RequestQuery = PrimitiveRecord<string>;
 
 export type RequestMethod = (typeof requestMethods)[number];
-
-export interface WorkspaceFiles {
-  readonly config?: typeof CONFIG_FILE;
-  readonly apis?: string[];
-}
 
 // NOTE: The url, headers, and body should be the only resolved result, but not
 // the assembled one, we assemble it at the UI rendering step
