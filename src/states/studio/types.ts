@@ -4,7 +4,7 @@ export type StudioState =
   | {
       /**
        * - `initializing`: reading from cache
-       * - `waiting`: no cache
+       * - `waiting`: no workspace opened
        */
       readonly status: 'initializing' | 'waiting';
       // currentWorkspacePath, workspaces are from cache at this state.
@@ -32,7 +32,6 @@ export type StudioState =
     };
 
 export interface StudioStateCache {
-  readonly currentWorkspacePath: string;
   readonly workspaces: readonly WorkspaceSummary[];
 }
 

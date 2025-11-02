@@ -1,6 +1,5 @@
 import {PropsWithChildren, useCallback, useEffect, useState} from 'react';
 import {StudioContext} from './StudioContext';
-import {fetchStudioState} from './repository';
 import {useWorkspace} from './useWorkspace';
 import {StudioState} from './types';
 
@@ -15,7 +14,7 @@ export const StudioContextProvider = ({children}: PropsWithChildren<{}>) => {
         return;
       }
 
-      const cache = await fetchStudioState();
+      const cache = await readStudioCache();
       if (cache) {
         setState(prev => ({...prev, ...cache}));
       } else {

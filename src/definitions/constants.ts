@@ -10,3 +10,5 @@ export const requestMethods = [
   'HEAD',
   'OPTIONS',
 ] as const;
+
+export const STUDIO_CACHE = 'studio-cache';

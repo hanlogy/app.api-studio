@@ -2,14 +2,16 @@ import {type JsonRecord} from '@/definitions';
 import RNFS from 'react-native-fs';
 import {isPlainObject} from './checkTypes';
 
+export const CACHE_FOLDER = `${RNFS.LibraryDirectoryPath}/Application Support/ApiStudio`;
+
 const buildFilePath = ({dir, fileName}: {dir: string; fileName: string}) =>
   `${dir}/${fileName}.json`;
 
 export async function readJsonRecord({
-  dir,
+  dir = CACHE_FOLDER,
   fileName,
 }: {
-  dir: string;
+  dir?: string;
   fileName: string;
 }): Promise<JsonRecord | null> {
   const path = buildFilePath({dir, fileName});
@@ -32,11 +34,11 @@ export async function readJsonRecord({
 }
 
 export async function writeJsonRecord({
-  dir,
+  dir = CACHE_FOLDER,
   fileName,
   data,
 }: {
-  dir: string;
+  dir?: string;
   fileName: string;
   data: unknown;
 }) {
