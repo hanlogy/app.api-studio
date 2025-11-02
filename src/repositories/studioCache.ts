@@ -30,25 +30,23 @@ function parseStudioCache(cache: JsonRecord): StudioStateCache | null {
 
   const {workspaces} = cache;
 
-  if (!Array.isArray(workspaces)) {
-    return null;
-  }
+  const parsedWorkspaces = Array.isArray(workspaces)
+    ? workspaces
+        .map(item => {
+          if (!isPlainObject(item)) {
+            return undefined;
+          }
 
-  const workspacesResolved = workspaces
-    .map(item => {
-      if (!isPlainObject(item)) {
-        return undefined;
-      }
+          const name = pickWhenString(item.name);
+          const path = pickWhenString(item.path);
+          if (!name || !path) {
+            return undefined;
+          }
 
-      const name = pickWhenString(item.name);
-      const path = pickWhenString(item.path);
-      if (!name || !path) {
-        return undefined;
-      }
+          return {name, path};
+        })
+        .filter(e => e !== undefined)
+    : [];
 
-      return {name, path};
-    })
-    .filter(e => e !== undefined);
-
-  return {workspaces: workspacesResolved};
+  return {workspaces: parsedWorkspaces};
 }
