@@ -1,39 +1,39 @@
-import {resolveJsonValue} from '@/lib/resolveWorkspace/resolveJsonValue';
+import { resolveJsonValue } from '@/lib/resolveWorkspace/resolveJsonValue';
 
 describe('resolveJsonValue', () => {
   test('primitive type body', () => {
-    expect(resolveJsonValue({source: null})).toBeNull();
-    expect(resolveJsonValue({source: 1})).toBe(1);
-    expect(resolveJsonValue({source: true})).toBe(true);
-    expect(resolveJsonValue({source: 'foo'})).toBe('foo');
+    expect(resolveJsonValue({ source: null })).toBeNull();
+    expect(resolveJsonValue({ source: 1 })).toBe(1);
+    expect(resolveJsonValue({ source: true })).toBe(true);
+    expect(resolveJsonValue({ source: 'foo' })).toBe('foo');
   });
 
   test('primitive values from variables', () => {
     expect(
       resolveJsonValue({
         source: '{{body}}',
-        valuesMap: {body: null},
+        valuesMap: { body: null },
       }),
     ).toBeNull();
 
     expect(
       resolveJsonValue({
         source: '{{body}}',
-        valuesMap: {body: 1},
+        valuesMap: { body: 1 },
       }),
     ).toBe(1);
 
     expect(
       resolveJsonValue({
         source: '{{body}}',
-        valuesMap: {body: true},
+        valuesMap: { body: true },
       }),
     ).toBe(true);
 
     expect(
       resolveJsonValue({
         source: '{{body}}',
-        valuesMap: {body: 'foo'},
+        valuesMap: { body: 'foo' },
       }),
     ).toBe('foo');
   });

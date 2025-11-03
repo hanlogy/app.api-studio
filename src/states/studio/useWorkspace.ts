@@ -1,7 +1,10 @@
-import {AppError, type Workspace, type WorkspaceFiles} from '@/definitions';
-import {resolveWorkspace, watchWorkspace, type WorkspaceWatcher} from '@/lib';
-import {loadWorkspace, LoadWorkspaceResult} from '@/repositories/loadWorkspace';
-import {useEffect, useRef, useState} from 'react';
+import { AppError, type Workspace, type WorkspaceFiles } from '@/definitions';
+import { resolveWorkspace, watchWorkspace, type WorkspaceWatcher } from '@/lib';
+import {
+  loadWorkspace,
+  LoadWorkspaceResult,
+} from '@/repositories/loadWorkspace';
+import { useEffect, useRef, useState } from 'react';
 
 export const useWorkspace = () => {
   const [dir, setWorkspaceDir] = useState<string>();
@@ -25,20 +28,23 @@ export const useWorkspace = () => {
         watcherRef.current = null;
       }
 
-      watcherRef.current = await watchWorkspace(dir, ({config, apis = []}) => {
-        if (!config) {
-          setError(
-            new AppError({
-              code: 'configMissing',
-              message: 'Cound not find the config file',
-            }),
-          );
-          return;
-        }
+      watcherRef.current = await watchWorkspace(
+        dir,
+        ({ config, apis = [] }) => {
+          if (!config) {
+            setError(
+              new AppError({
+                code: 'configMissing',
+                message: 'Cound not find the config file',
+              }),
+            );
+            return;
+          }
 
-        setError(undefined);
-        setFiles({config, apis});
-      });
+          setError(undefined);
+          setFiles({ config, apis });
+        },
+      );
     })();
   }, [dir]);
 
@@ -49,7 +55,7 @@ export const useWorkspace = () => {
     }
 
     (async () => {
-      const result = await loadWorkspace({dir, files});
+      const result = await loadWorkspace({ dir, files });
 
       setSources(result);
     })();
@@ -72,8 +78,8 @@ export const useWorkspace = () => {
     }
 
     setError(undefined);
-    setWorkspace({...resolved, dir});
+    setWorkspace({ ...resolved, dir });
   }, [sources, environmentName, dir]);
 
-  return {setWorkspaceDir, selectEnvironment, workspace, error};
+  return { setWorkspaceDir, selectEnvironment, workspace, error };
 };

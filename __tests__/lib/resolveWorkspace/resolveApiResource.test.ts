@@ -1,12 +1,12 @@
-import {resolveApiResource} from '@/lib/resolveWorkspace/resolveApiResource';
+import { resolveApiResource } from '@/lib/resolveWorkspace/resolveApiResource';
 
 describe('resolveApiResource', () => {
   test('invalid source', () => {
-    expect(resolveApiResource({source: null})).toBeUndefined();
+    expect(resolveApiResource({ source: null })).toBeUndefined();
   });
 
   test('empty', () => {
-    expect(resolveApiResource({source: {}})).toStrictEqual({});
+    expect(resolveApiResource({ source: {} })).toStrictEqual({});
   });
 
   test('with everything', () => {
@@ -17,7 +17,7 @@ describe('resolveApiResource', () => {
           method: 'POST',
           url: 'api',
           ':lastName': 'bar',
-          query: {limit: '{{limit}}'},
+          query: { limit: '{{limit}}' },
           body: {
             firstName: '{{name}}',
             lastName: '{{lastName}}',
@@ -32,7 +32,7 @@ describe('resolveApiResource', () => {
       name: 'api-1',
       method: 'POST',
       url: 'api',
-      query: {limit: '10'},
+      query: { limit: '10' },
       body: {
         firstName: 'foo',
         lastName: 'bar',

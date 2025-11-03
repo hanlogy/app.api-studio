@@ -1,11 +1,11 @@
-import {Text, View} from 'react-native';
-import {PropsWithChildren} from 'react';
-import {useStudioConext} from '@/states/studio/useStudioConext';
-import {OpenWorkspaceButton} from '../OpenWorkspaceButton';
-import {styles} from './styles';
+import { Text, View } from 'react-native';
+import { PropsWithChildren } from 'react';
+import { useStudioConext } from '@/states/studio/useStudioConext';
+import { OpenWorkspaceButton } from '../OpenWorkspaceButton';
+import { styles } from './styles';
 
-export const StudioLoader = ({children}: PropsWithChildren) => {
-  const {status, workspace} = useStudioConext();
+export const StudioLoader = ({ children }: PropsWithChildren) => {
+  const { status, workspace } = useStudioConext();
 
   if (status === 'initializing') {
     return (

@@ -1,12 +1,12 @@
-import {type PropsWithChildren, useEffect, useMemo, useState} from 'react';
-import {StudioContext} from './StudioContext';
-import {useWorkspace} from './useWorkspace';
-import type {StudioState, StudioStateStatus} from './types';
-import {readStudioCache, updateStudioCache} from '@/repositories/studioCache';
-import {type WorkspaceSummary} from '@/definitions';
-import {haveWorkspaceSummariesChanged} from './haveWorkspaceSummariesChanged';
+import { type PropsWithChildren, useEffect, useMemo, useState } from 'react';
+import { StudioContext } from './StudioContext';
+import { useWorkspace } from './useWorkspace';
+import type { StudioState, StudioStateStatus } from './types';
+import { readStudioCache, updateStudioCache } from '@/repositories/studioCache';
+import { type WorkspaceSummary } from '@/definitions';
+import { haveWorkspaceSummariesChanged } from './haveWorkspaceSummariesChanged';
 
-export const StudioContextProvider = ({children}: PropsWithChildren<{}>) => {
+export const StudioContextProvider = ({ children }: PropsWithChildren<{}>) => {
   const [status, setStatus] = useState<StudioStateStatus>('initializing');
   const [workspaces, setWorkspaces] = useState<readonly WorkspaceSummary[]>([]);
   const [currentWorkspaceDir, setCurrentWorkspaceDir] = useState<string>();
@@ -56,7 +56,7 @@ export const StudioContextProvider = ({children}: PropsWithChildren<{}>) => {
     }
 
     const updatedWorkspaces = workspaces.filter(
-      ({dir}) => dir !== workspace.dir,
+      ({ dir }) => dir !== workspace.dir,
     );
 
     updatedWorkspaces.unshift({
@@ -84,23 +84,23 @@ export const StudioContextProvider = ({children}: PropsWithChildren<{}>) => {
 
   const state = useMemo<StudioState>(() => {
     if (status === 'initializing') {
-      return {status};
+      return { status };
     }
 
     if (status === 'waiting' && workspaces) {
-      return {status, workspaces};
+      return { status, workspaces };
     }
 
     if (status === 'loading' && workspaces) {
-      return {status, workspaces, workspace};
+      return { status, workspaces, workspace };
     }
 
     if (status === 'ready' && workspaces && workspace) {
-      return {status, workspaces, workspace};
+      return { status, workspaces, workspace };
     }
 
     if (status === 'error' && workspaceError) {
-      return {status, error: workspaceError, workspaces, workspace};
+      return { status, error: workspaceError, workspaces, workspace };
     }
 
     throw new Error('This should never happen.');
@@ -108,7 +108,11 @@ export const StudioContextProvider = ({children}: PropsWithChildren<{}>) => {
 
   return (
     <StudioContext
-      value={{state, openWorkspace: setCurrentWorkspaceDir, selectEnvironment}}>
+      value={{
+        state,
+        openWorkspace: setCurrentWorkspaceDir,
+        selectEnvironment,
+      }}>
       {children}
     </StudioContext>
   );

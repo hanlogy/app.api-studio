@@ -1,4 +1,4 @@
-import {type PrimitiveRecord} from '@/definitions';
+import { type PrimitiveRecord } from '@/definitions';
 
 export function buildUrl({
   url,

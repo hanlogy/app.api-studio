@@ -1,4 +1,4 @@
-import {WorkspaceSummary} from '@/definitions';
+import { WorkspaceSummary } from '@/definitions';
 
 export function haveWorkspaceSummariesChanged(
   itemsA: readonly WorkspaceSummary[],
@@ -9,8 +9,8 @@ export function haveWorkspaceSummariesChanged(
   }
 
   for (const index in itemsA) {
-    const {name: nameA, environmentName: environmentNameA} = itemsA[index];
-    const {name: nameB, environmentName: environmentNameB} = itemsB[index];
+    const { name: nameA, environmentName: environmentNameA } = itemsA[index];
+    const { name: nameB, environmentName: environmentNameB } = itemsB[index];
 
     if (nameA !== nameB || environmentNameA !== environmentNameB) {
       return true;

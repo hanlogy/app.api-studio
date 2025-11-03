@@ -1,8 +1,8 @@
-import {type JsonRecord, STUDIO_CACHE_FILE} from '@/definitions';
-import {readJsonRecord, writeJsonRecord} from '@/helpers/fileIO';
-import {isPlainObject} from '@/helpers/checkTypes';
-import {StudioStateCache} from '@/states/studio/types';
-import {pickWhenString, removeUndefined} from '@/helpers/filterValues';
+import { type JsonRecord, STUDIO_CACHE_FILE } from '@/definitions';
+import { readJsonRecord, writeJsonRecord } from '@/helpers/fileIO';
+import { isPlainObject } from '@/helpers/checkTypes';
+import { StudioStateCache } from '@/states/studio/types';
+import { pickWhenString, removeUndefined } from '@/helpers/filterValues';
 
 var data: StudioStateCache = {};
 
@@ -32,7 +32,7 @@ function parseStudioCache(cache: JsonRecord | null): StudioStateCache | null {
     return null;
   }
 
-  const {workspaces} = cache;
+  const { workspaces } = cache;
 
   const parsedWorkspaces = Array.isArray(workspaces)
     ? workspaces
@@ -48,10 +48,10 @@ function parseStudioCache(cache: JsonRecord | null): StudioStateCache | null {
             return undefined;
           }
 
-          return removeUndefined({name, dir, environmentName});
+          return removeUndefined({ name, dir, environmentName });
         })
         .filter(e => e !== undefined)
     : undefined;
 
-  return removeUndefined({workspaces: parsedWorkspaces});
+  return removeUndefined({ workspaces: parsedWorkspaces });
 }

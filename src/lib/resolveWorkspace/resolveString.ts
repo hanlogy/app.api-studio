@@ -8,22 +8,28 @@
  * defaults.
  */
 
-import {JsonValue, type PrimitiveValue, type ValuesMap} from '@/definitions';
+import {
+  type JsonValue,
+  type PrimitiveValue,
+  type ValuesMap,
+} from '@/definitions';
 
 type ArgBase =
-  | {valuesMap?: ValuesMap; lookup?: never}
-  | {valuesMap?: never; lookup?: (key: string) => PrimitiveValue | undefined};
+  | { valuesMap?: ValuesMap; lookup?: never }
+  | { valuesMap?: never; lookup?: (key: string) => PrimitiveValue | undefined };
 
-export function resolveString(args: ArgBase & {source: string}): PrimitiveValue;
 export function resolveString(
-  args: ArgBase & {source: JsonValue},
+  args: ArgBase & { source: string },
+): PrimitiveValue;
+export function resolveString(
+  args: ArgBase & { source: JsonValue },
 ): PrimitiveValue | undefined;
 
 export function resolveString({
   source: sourceOriginal,
   valuesMap,
   lookup,
-}: ArgBase & {source: JsonValue}): PrimitiveValue | undefined {
+}: ArgBase & { source: JsonValue }): PrimitiveValue | undefined {
   // Be careful:
   // Do not return undefined if the source is an empty string.
   if (typeof sourceOriginal !== 'string') {

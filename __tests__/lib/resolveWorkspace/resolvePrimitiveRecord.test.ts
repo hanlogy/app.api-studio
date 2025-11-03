@@ -1,24 +1,24 @@
-import {resolvePrimitiveRecord} from '@/lib/resolveWorkspace/resolvePrimitiveRecord';
+import { resolvePrimitiveRecord } from '@/lib/resolveWorkspace/resolvePrimitiveRecord';
 
 describe('resolvePrimitiveRecord', () => {
   test('return undefined', () => {
-    expect(resolvePrimitiveRecord({source: null})).toBeUndefined();
-    expect(resolvePrimitiveRecord({source: true})).toBeUndefined();
-    expect(resolvePrimitiveRecord({source: 10})).toBeUndefined();
-    expect(resolvePrimitiveRecord({source: true})).toBeUndefined();
-    expect(resolvePrimitiveRecord({source: false})).toBeUndefined();
+    expect(resolvePrimitiveRecord({ source: null })).toBeUndefined();
+    expect(resolvePrimitiveRecord({ source: true })).toBeUndefined();
+    expect(resolvePrimitiveRecord({ source: 10 })).toBeUndefined();
+    expect(resolvePrimitiveRecord({ source: true })).toBeUndefined();
+    expect(resolvePrimitiveRecord({ source: false })).toBeUndefined();
   });
 
   test('empty', () => {
-    expect(resolvePrimitiveRecord({source: {}})).toStrictEqual({});
+    expect(resolvePrimitiveRecord({ source: {} })).toStrictEqual({});
   });
 
   test('ignore undefined', () => {
     const result = resolvePrimitiveRecord({
-      source: {name: 'foo', b: undefined} as any,
+      source: { name: 'foo', b: undefined } as any,
     });
 
-    expect(result).toEqual({name: 'foo'});
+    expect(result).toEqual({ name: 'foo' });
   });
 
   test('result a string record', () => {

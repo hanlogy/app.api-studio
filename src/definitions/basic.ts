@@ -11,7 +11,7 @@ export type PrimitiveRecord<T extends PrimitiveValue = PrimitiveValue> = Record<
 export type JsonValue =
   | PrimitiveValue
   | JsonValue[]
-  | {[key: string]: JsonValue};
+  | { [key: string]: JsonValue };
 
 /**
  * A JSON object parsed from a string (key-value structure).

@@ -1,4 +1,4 @@
-import {haveWorkspaceSummariesChanged} from '@/states/studio/haveWorkspaceSummariesChanged';
+import { haveWorkspaceSummariesChanged } from '@/states/studio/haveWorkspaceSummariesChanged';
 
 describe('haveWorkspaceSummariesChanged', () => {
   it('false if both empty', () => {

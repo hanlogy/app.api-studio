@@ -1,12 +1,12 @@
-import {resolveConfig} from '@/lib/resolveWorkspace/resolveConfig';
+import { resolveConfig } from '@/lib/resolveWorkspace/resolveConfig';
 
 describe('resolveApiResource', () => {
   test('invalid source', () => {
-    expect(resolveConfig({source: null})).toBeUndefined();
+    expect(resolveConfig({ source: null })).toBeUndefined();
   });
 
   test('empty input', () => {
-    expect(resolveConfig({source: {}})).toStrictEqual({environments: []});
+    expect(resolveConfig({ source: {} })).toStrictEqual({ environments: [] });
   });
 
   test('with everything', () => {
@@ -17,9 +17,9 @@ describe('resolveApiResource', () => {
           description: 'bar',
           environments: {
             '@global': {
-              headers: {name: 'foo'},
+              headers: { name: 'foo' },
             },
-            dev: {':api': 'https://dev.api'},
+            dev: { ':api': 'https://dev.api' },
           },
         },
       }),

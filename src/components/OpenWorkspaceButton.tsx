@@ -1,8 +1,8 @@
-import {Button, NativeModules} from 'react-native';
-import {useStudioConext} from '../states/studio/useStudioConext';
+import { Button, NativeModules } from 'react-native';
+import { useStudioConext } from '../states/studio/useStudioConext';
 
 export const OpenWorkspaceButton = () => {
-  const {status, openWorkspace} = useStudioConext();
+  const { status, openWorkspace } = useStudioConext();
 
   if (status === 'initializing') {
     return <></>;
@@ -26,7 +26,7 @@ export const OpenWorkspaceButton = () => {
 };
 
 const pickFolder = async () => {
-  const {FolderPicker} = NativeModules;
+  const { FolderPicker } = NativeModules;
 
   return await FolderPicker.selectFolder();
 };

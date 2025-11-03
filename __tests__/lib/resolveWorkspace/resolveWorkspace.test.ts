@@ -1,14 +1,16 @@
-import {resolveWorkspace} from '@/lib/resolveWorkspace/resolveWorkspace';
+import { resolveWorkspace } from '@/lib/resolveWorkspace/resolveWorkspace';
 
 describe('resolveWorkspace', () => {
   test('invalid source', () => {
     expect(
-      resolveWorkspace({sources: {config: null, apis: []}}),
+      resolveWorkspace({ sources: { config: null, apis: [] } }),
     ).toBeUndefined();
   });
 
   test('empty', () => {
-    expect(resolveWorkspace({sources: {config: {}, apis: []}})).toStrictEqual({
+    expect(
+      resolveWorkspace({ sources: { config: {}, apis: [] } }),
+    ).toStrictEqual({
       environments: [],
       apis: [],
     });
@@ -23,7 +25,7 @@ describe('resolveWorkspace', () => {
             description: 'bar',
             environments: {
               '@global': {
-                headers: {name: 'foo'},
+                headers: { name: 'foo' },
                 ':limit': 10,
               },
               dev: {
@@ -38,7 +40,7 @@ describe('resolveWorkspace', () => {
               method: 'POST',
               url: '{{host}}/update',
               ':lastName': 'bar',
-              query: {limit: '{{limit}}'},
+              query: { limit: '{{limit}}' },
               body: {
                 firstName: '{{firstName}}',
                 lastName: '{{lastName}}',
@@ -48,7 +50,7 @@ describe('resolveWorkspace', () => {
               name: 'My Collection',
               description: 'Test app',
               baseUrl: '{{host}}/profile',
-              headers: {ping: '{{firstName}}'},
+              headers: { ping: '{{firstName}}' },
               ':level': 8,
               ':lastName': 'bar',
               apis: [
@@ -56,7 +58,7 @@ describe('resolveWorkspace', () => {
                   name: 'api-2',
                   method: 'POST',
                   url: 'update',
-                  query: {limit: 10},
+                  query: { limit: 10 },
                   body: {
                     firstName: '{{firstName}}',
                     lastName: '{{lastName}}',
@@ -76,7 +78,7 @@ describe('resolveWorkspace', () => {
         {
           isGlobal: true,
           name: '@global',
-          headers: {name: 'foo'},
+          headers: { name: 'foo' },
           valuesMap: {
             limit: 10,
           },
@@ -95,7 +97,7 @@ describe('resolveWorkspace', () => {
           name: 'api-1',
           method: 'POST',
           url: 'https://dev.api/update',
-          query: {limit: '10'},
+          query: { limit: '10' },
           body: {
             firstName: 'foo',
             lastName: 'bar',
@@ -108,7 +110,7 @@ describe('resolveWorkspace', () => {
           name: 'My Collection',
           description: 'Test app',
           baseUrl: 'https://dev.api/profile',
-          headers: {ping: 'foo'},
+          headers: { ping: 'foo' },
           valuesMap: {
             level: 8,
             lastName: 'bar',
@@ -118,7 +120,7 @@ describe('resolveWorkspace', () => {
               name: 'api-2',
               method: 'POST',
               url: 'update',
-              query: {limit: '10'},
+              query: { limit: '10' },
               body: {
                 firstName: 'foo',
                 lastName: 'bar',

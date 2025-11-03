@@ -4,14 +4,14 @@ import {
   type Workspace,
   type WorkspaceEnvironment,
 } from '@/definitions';
-import {resolveConfig} from './resolveConfig';
-import {removeUndefined} from '@/helpers/filterValues';
-import {resolveCollectionResource} from './resolveCollectionResource';
-import {resolveApiResource} from './resolveApiResource';
-import {isPlainObject} from '@/helpers/checkTypes';
+import { resolveConfig } from './resolveConfig';
+import { removeUndefined } from '@/helpers/filterValues';
+import { resolveCollectionResource } from './resolveCollectionResource';
+import { resolveApiResource } from './resolveApiResource';
+import { isPlainObject } from '@/helpers/checkTypes';
 
 export function resolveWorkspace({
-  sources: {config: configSource, apis: apisSources},
+  sources: { config: configSource, apis: apisSources },
   environmentName,
 }: {
   sources: {
@@ -20,13 +20,13 @@ export function resolveWorkspace({
   };
   environmentName?: string;
 }): Omit<Workspace, 'dir' | 'environmentName'> | undefined {
-  const resolvedConfig = resolveConfig({source: configSource});
+  const resolvedConfig = resolveConfig({ source: configSource });
 
   if (!resolvedConfig) {
     return undefined;
   }
 
-  const {environments, name, description} = resolvedConfig;
+  const { environments, name, description } = resolvedConfig;
   const environmentValuesMap = resolveValuesMap({
     environments,
     environmentName,
@@ -67,5 +67,5 @@ export const resolveValuesMap = ({
   const global = environments.find(e => e.isGlobal);
   const local = environments.find(e => e.name === environmentName);
 
-  return {...(global?.valuesMap ?? {}), ...(local?.valuesMap ?? {})};
+  return { ...(global?.valuesMap ?? {}), ...(local?.valuesMap ?? {}) };
 };

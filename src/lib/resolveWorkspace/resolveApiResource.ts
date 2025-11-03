@@ -5,11 +5,11 @@ import {
   type RequestMethod,
   requestMethods,
 } from '@/definitions';
-import {isPlainObject} from '@/helpers/checkTypes';
-import {resolveValuesMap} from './resolveValuesMap';
-import {resolveJsonValue} from './resolveJsonValue';
-import {pickWhenString, removeUndefined} from '@/helpers/filterValues';
-import {resolveStringRecord, resolveUrl} from './simpleResolvers';
+import { isPlainObject } from '@/helpers/checkTypes';
+import { resolveValuesMap } from './resolveValuesMap';
+import { resolveJsonValue } from './resolveJsonValue';
+import { pickWhenString, removeUndefined } from '@/helpers/filterValues';
+import { resolveStringRecord, resolveUrl } from './simpleResolvers';
 
 export function resolveApiResource({
   source,
@@ -22,7 +22,7 @@ export function resolveApiResource({
     return undefined;
   }
 
-  const {id, name, description, url, method, headers, query, body, ...rest} =
+  const { id, name, description, url, method, headers, query, body, ...rest } =
     source;
 
   const localValuesMap = resolveValuesMap({
@@ -30,17 +30,17 @@ export function resolveApiResource({
     valuesMap: externalValuesMap,
   });
 
-  const valuesMap = {...externalValuesMap, ...(localValuesMap ?? {})};
+  const valuesMap = { ...externalValuesMap, ...(localValuesMap ?? {}) };
 
   return removeUndefined({
     id: pickWhenString(id),
     name: pickWhenString(name),
     description: pickWhenString(description),
-    url: resolveUrl({source: url, valuesMap}),
-    method: resolveMethod({source: method}),
-    headers: resolveStringRecord({source: headers, valuesMap}),
-    query: resolveStringRecord({source: query, valuesMap}),
-    body: resolveJsonValue({source: body, valuesMap}),
+    url: resolveUrl({ source: url, valuesMap }),
+    method: resolveMethod({ source: method }),
+    headers: resolveStringRecord({ source: headers, valuesMap }),
+    query: resolveStringRecord({ source: query, valuesMap }),
+    body: resolveJsonValue({ source: body, valuesMap }),
     valuesMap: localValuesMap,
   });
 }

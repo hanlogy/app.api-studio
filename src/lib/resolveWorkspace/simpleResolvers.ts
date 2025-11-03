@@ -1,6 +1,6 @@
-import type {JsonValue, PrimitiveRecord, ValuesMap} from '@/definitions';
-import {resolveString} from './resolveString';
-import {resolvePrimitiveRecord} from './resolvePrimitiveRecord';
+import type { JsonValue, PrimitiveRecord, ValuesMap } from '@/definitions';
+import { resolveString } from './resolveString';
+import { resolvePrimitiveRecord } from './resolvePrimitiveRecord';
 
 export function resolveUrl({
   source,
@@ -13,7 +13,7 @@ export function resolveUrl({
     return undefined;
   }
 
-  return String(resolveString({source, valuesMap}));
+  return String(resolveString({ source, valuesMap }));
 }
 
 export function resolveStringRecord(args: {

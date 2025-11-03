@@ -3,4 +3,4 @@ export {
   type WorkspaceWatcher,
 } from './watchWorkspace/watchWorkspace';
 
-export {resolveWorkspace} from './resolveWorkspace/resolveWorkspace';
+export { resolveWorkspace } from './resolveWorkspace/resolveWorkspace';

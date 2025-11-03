@@ -1,13 +1,13 @@
-import {resolveValuesMap} from '@/lib/resolveWorkspace/resolveValuesMap';
+import { resolveValuesMap } from '@/lib/resolveWorkspace/resolveValuesMap';
 
 describe('resolveValuesMap', () => {
   test('return undefined', () => {
-    expect(resolveValuesMap({source: true})).toEqual(undefined);
-    expect(resolveValuesMap({source: 10})).toEqual(undefined);
+    expect(resolveValuesMap({ source: true })).toEqual(undefined);
+    expect(resolveValuesMap({ source: 10 })).toEqual(undefined);
   });
 
   test('empty also results undefined', () => {
-    expect(resolveValuesMap({source: {}})).toBeUndefined();
+    expect(resolveValuesMap({ source: {} })).toBeUndefined();
   });
 
   describe('with internal variables', () => {
@@ -55,7 +55,7 @@ describe('resolveValuesMap', () => {
             ':level': 1,
           },
         });
-      }).toThrow(expect.objectContaining({code: 'recursiveReference'}));
+      }).toThrow(expect.objectContaining({ code: 'recursiveReference' }));
     });
   });
 

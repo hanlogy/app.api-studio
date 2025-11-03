@@ -15,12 +15,12 @@ export async function createSnapshot(dir: string): Promise<Snapshot> {
 
   // Find config.json
   const configFile = files.find(
-    ({name, isDirectory}) => name === WORKSPACE_CONFIG_FILE && !isDirectory(),
+    ({ name, isDirectory }) => name === WORKSPACE_CONFIG_FILE && !isDirectory(),
   );
 
   // Find apis folder
   const apisDir = files.find(
-    ({name, isDirectory}) => name === WORKSPACE_APIS_DIR && isDirectory(),
+    ({ name, isDirectory }) => name === WORKSPACE_APIS_DIR && isDirectory(),
   );
 
   let apisMap: Record<string, number> | undefined;
@@ -28,7 +28,7 @@ export async function createSnapshot(dir: string): Promise<Snapshot> {
   if (apisDir) {
     apisMap = {};
     const apiFiles = await RNFS.readDir(apisDir.path);
-    for (const {isDirectory, name, mtime} of apiFiles) {
+    for (const { isDirectory, name, mtime } of apiFiles) {
       if (!isDirectory() && name.endsWith('.json')) {
         apisMap[name] = mtime?.getTime() ?? 0;
       }
@@ -65,7 +65,7 @@ export async function watchWorkspace(
     }
   }, interval);
 
-  return {stop: () => clearInterval(timer)};
+  return { stop: () => clearInterval(timer) };
 }
 
 export type WorkspaceWatcher = Awaited<ReturnType<typeof watchWorkspace>>;

@@ -1,5 +1,5 @@
-import type {JsonValue, PrimitiveRecord, ValuesMap} from './basic';
-import {requestMethods, WORKSPACE_CONFIG_FILE} from './constants';
+import type { JsonValue, PrimitiveRecord, ValuesMap } from './basic';
+import { requestMethods, WORKSPACE_CONFIG_FILE } from './constants';
 
 export type RequestHeaders = PrimitiveRecord<string>;
 export type RequestQuery = PrimitiveRecord<string>;

@@ -14,8 +14,8 @@ import {
   type PrimitiveValue,
   type ValuesMap,
 } from '@/definitions';
-import {resolveString} from './resolveString';
-import {isPlainObject} from '@/helpers/checkTypes';
+import { resolveString } from './resolveString';
+import { isPlainObject } from '@/helpers/checkTypes';
 
 type ArgBase<T> = {
   valuesMap?: ValuesMap;
@@ -23,11 +23,11 @@ type ArgBase<T> = {
 };
 
 export function resolvePrimitiveRecord<T extends PrimitiveValue>(
-  args: ArgBase<T> & {source: PrimitiveRecord},
+  args: ArgBase<T> & { source: PrimitiveRecord },
 ): PrimitiveRecord<T>;
 
 export function resolvePrimitiveRecord<T extends PrimitiveValue>(
-  args: ArgBase<T> & {source: JsonValue},
+  args: ArgBase<T> & { source: JsonValue },
 ): PrimitiveRecord<T> | undefined;
 
 export function resolvePrimitiveRecord<T extends PrimitiveValue>({

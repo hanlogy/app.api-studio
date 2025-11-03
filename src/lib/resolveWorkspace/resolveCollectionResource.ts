@@ -4,11 +4,11 @@ import {
   type JsonValue,
   type ValuesMap,
 } from '@/definitions';
-import {isPlainObject} from '@/helpers/checkTypes';
-import {resolveValuesMap} from './resolveValuesMap';
-import {pickWhenString, removeUndefined} from '@/helpers/filterValues';
-import {resolveApiResource} from './resolveApiResource';
-import {resolveStringRecord, resolveUrl} from './simpleResolvers';
+import { isPlainObject } from '@/helpers/checkTypes';
+import { resolveValuesMap } from './resolveValuesMap';
+import { pickWhenString, removeUndefined } from '@/helpers/filterValues';
+import { resolveApiResource } from './resolveApiResource';
+import { resolveStringRecord, resolveUrl } from './simpleResolvers';
 
 export function resolveCollectionResource({
   source,
@@ -21,22 +21,22 @@ export function resolveCollectionResource({
     return undefined;
   }
 
-  const {name, baseUrl, description, headers, apis = [], ...rest} = source;
+  const { name, baseUrl, description, headers, apis = [], ...rest } = source;
 
   const localValuesMap = resolveValuesMap({
     source: rest,
     valuesMap: externalValuesMap,
   });
 
-  const valuesMap = {...externalValuesMap, ...(localValuesMap ?? {})};
+  const valuesMap = { ...externalValuesMap, ...(localValuesMap ?? {}) };
 
   return removeUndefined({
     name: pickWhenString(name),
     description: pickWhenString(description),
-    baseUrl: resolveUrl({source: baseUrl, valuesMap}),
-    headers: resolveStringRecord({source: headers, valuesMap}),
+    baseUrl: resolveUrl({ source: baseUrl, valuesMap }),
+    headers: resolveStringRecord({ source: headers, valuesMap }),
     valuesMap: localValuesMap,
-    apis: resolveApis({source: apis, valuesMap}),
+    apis: resolveApis({ source: apis, valuesMap }),
   });
 }
 
@@ -52,6 +52,6 @@ function resolveApis({
   }
 
   return source
-    .map(item => resolveApiResource({source: item, valuesMap}))
+    .map(item => resolveApiResource({ source: item, valuesMap }))
     .filter(e => e !== undefined);
 }

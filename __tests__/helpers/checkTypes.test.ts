@@ -1,4 +1,4 @@
-import {isPrimitive} from '@/helpers/checkTypes';
+import { isPrimitive } from '@/helpers/checkTypes';
 
 describe('isPrimitive', () => {
   test('true', () => {

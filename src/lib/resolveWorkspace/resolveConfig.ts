@@ -4,10 +4,10 @@ import {
   type Workspace,
   type WorkspaceEnvironment,
 } from '@/definitions';
-import {isPlainObject} from '@/helpers/checkTypes';
-import {pickWhenString, removeUndefined} from '@/helpers/filterValues';
-import {resolveValuesMap} from './resolveValuesMap';
-import {resolveStringRecord} from './simpleResolvers';
+import { isPlainObject } from '@/helpers/checkTypes';
+import { pickWhenString, removeUndefined } from '@/helpers/filterValues';
+import { resolveValuesMap } from './resolveValuesMap';
+import { resolveStringRecord } from './simpleResolvers';
 
 export function resolveConfig({
   source,
@@ -18,12 +18,12 @@ export function resolveConfig({
     return undefined;
   }
 
-  const {name, description, environments} = source;
+  const { name, description, environments } = source;
 
   return removeUndefined({
     name: pickWhenString(name),
     description: pickWhenString(description),
-    environments: resolveEnvironments({source: environments}) ?? [],
+    environments: resolveEnvironments({ source: environments }) ?? [],
   });
 }
 
@@ -42,8 +42,8 @@ function resolveEnvironments({
         return undefined;
       }
 
-      const {headers, ...rest} = rawEnvironment;
-      const valuesMap = resolveValuesMap({source: rest});
+      const { headers, ...rest } = rawEnvironment;
+      const valuesMap = resolveValuesMap({ source: rest });
 
       return removeUndefined({
         name,

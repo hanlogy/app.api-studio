@@ -1,10 +1,10 @@
-import {resolveString} from '@/lib/resolveWorkspace/resolveString';
+import { resolveString } from '@/lib/resolveWorkspace/resolveString';
 
 describe('resolveString', () => {
   test('return undefined', () => {
-    expect(resolveString({source: {level: 100}})).toBeUndefined();
-    expect(resolveString({source: true})).toBeUndefined();
-    expect(resolveString({source: false})).toBeUndefined();
+    expect(resolveString({ source: { level: 100 } })).toBeUndefined();
+    expect(resolveString({ source: true })).toBeUndefined();
+    expect(resolveString({ source: false })).toBeUndefined();
   });
 
   test('not match', () => {
@@ -18,7 +18,7 @@ describe('resolveString', () => {
   test('string result', () => {
     const result = resolveString({
       source: 'level_{{level}}',
-      valuesMap: {level: 100},
+      valuesMap: { level: 100 },
     });
 
     expect(result).toBe('level_100');
@@ -27,7 +27,7 @@ describe('resolveString', () => {
   test('number result', () => {
     const result = resolveString({
       source: '{{level}}',
-      valuesMap: {level: 100},
+      valuesMap: { level: 100 },
     });
 
     expect(result).toBe(100);
@@ -36,7 +36,7 @@ describe('resolveString', () => {
   test('null result', () => {
     const result = resolveString({
       source: '{{address}}',
-      valuesMap: {address: null},
+      valuesMap: { address: null },
     });
 
     expect(result).toBe(null);
@@ -45,7 +45,7 @@ describe('resolveString', () => {
   test('boolean result', () => {
     const result = resolveString({
       source: '{{closed}}',
-      valuesMap: {closed: false},
+      valuesMap: { closed: false },
     });
 
     expect(result).toBe(false);

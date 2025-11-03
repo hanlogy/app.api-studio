@@ -1,5 +1,5 @@
-import {WORKSPACE_APIS_DIR, WorkspaceFiles} from '@/definitions';
-import {readJsonRecord} from '@/helpers/fileIO';
+import { WORKSPACE_APIS_DIR, WorkspaceFiles } from '@/definitions';
+import { readJsonRecord } from '@/helpers/fileIO';
 
 // NOTE:
 // DO NOT create the config file if it does not exist, because the user might
@@ -7,7 +7,7 @@ import {readJsonRecord} from '@/helpers/fileIO';
 
 export async function loadWorkspace({
   dir,
-  files: {config: configFile, apis: apiFiles},
+  files: { config: configFile, apis: apiFiles },
 }: {
   dir: string;
   files: WorkspaceFiles;

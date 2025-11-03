@@ -1,5 +1,5 @@
 import * as fileIO from '@/helpers/fileIO';
-import {readStudioCache} from '@/repositories/studioCache';
+import { readStudioCache } from '@/repositories/studioCache';
 
 describe('readStudioCache', () => {
   afterEach(() => {

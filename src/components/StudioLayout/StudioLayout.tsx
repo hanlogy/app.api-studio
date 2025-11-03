@@ -1,5 +1,5 @@
-import {PropsWithChildren} from 'react';
+import { PropsWithChildren } from 'react';
 
-export const StudioLayout = ({children}: PropsWithChildren) => {
+export const StudioLayout = ({ children }: PropsWithChildren) => {
   return <>{children}</>;
 };

@@ -1,4 +1,4 @@
-import type {PrimitiveValue} from '@/definitions';
+import type { PrimitiveValue } from '@/definitions';
 
 export function isPrimitive(value: unknown): value is PrimitiveValue {
   return (

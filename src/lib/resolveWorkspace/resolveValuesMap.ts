@@ -8,27 +8,27 @@
  * defaults.
  */
 
-import {isPlainObject, isPrimitive} from '@/helpers/checkTypes';
-import type {JsonValue, PrimitiveRecord, ValuesMap} from '@/definitions';
-import {resolveString} from './resolveString';
-import {AppError} from '@/definitions';
+import { isPlainObject, isPrimitive } from '@/helpers/checkTypes';
+import type { JsonValue, PrimitiveRecord, ValuesMap } from '@/definitions';
+import { resolveString } from './resolveString';
+import { AppError } from '@/definitions';
 
 type ArgBase = {
   valuesMap?: ValuesMap;
 };
 
 export function resolveValuesMap(
-  args: ArgBase & {source: PrimitiveRecord},
+  args: ArgBase & { source: PrimitiveRecord },
 ): ValuesMap;
 
 export function resolveValuesMap(
-  args: ArgBase & {source: JsonValue},
+  args: ArgBase & { source: JsonValue },
 ): ValuesMap | undefined;
 
 export function resolveValuesMap({
   source,
   valuesMap: externalValuesMap = {},
-}: ArgBase & {source: JsonValue}): ValuesMap | undefined {
+}: ArgBase & { source: JsonValue }): ValuesMap | undefined {
   if (!source || !isPlainObject(source)) {
     return undefined;
   }

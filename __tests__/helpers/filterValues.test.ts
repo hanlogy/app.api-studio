@@ -1,4 +1,4 @@
-import {pickWhenString, removeUndefined} from '@/helpers/filterValues';
+import { pickWhenString, removeUndefined } from '@/helpers/filterValues';
 
 describe('pickWhenString', () => {
   test('return undefined', () => {
