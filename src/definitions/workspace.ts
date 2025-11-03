@@ -39,6 +39,10 @@ export interface WorkspaceEnvironment {
 
 export interface WorkspaceSummary {
   readonly name?: string;
+  /**
+   * Name of the selected environment.
+   */
+  readonly environmentName?: string;
   readonly path: string;
 }
 

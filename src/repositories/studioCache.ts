@@ -39,11 +39,12 @@ function parseStudioCache(cache: JsonRecord): StudioStateCache | null {
 
           const name = pickWhenString(item.name);
           const path = pickWhenString(item.path);
+          const environmentName = pickWhenString(item.environmentName);
           if (!name || !path) {
             return undefined;
           }
 
-          return {name, path};
+          return {name, path, environmentName};
         })
         .filter(e => e !== undefined)
     : [];
