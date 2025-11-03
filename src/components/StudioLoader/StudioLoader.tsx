@@ -1,12 +1,12 @@
 import { Text, View } from 'react-native';
 import { type PropsWithChildren } from 'react';
 import { useStudioConext } from '@/states/studio/useStudioConext';
-import { OpenWorkspaceButton } from '../OpenWorkspaceButton';
-import { styles } from './styles';
+import { WelcomeView } from './WelcomeView';
+import { styles } from './StudioLoader.styles';
 
 export function StudioLoader({ children }: PropsWithChildren) {
   const {
-    state: { status, workspace, workspaces, error },
+    state: { status, workspace, error },
   } = useStudioConext();
 
   if (status === 'initializing') {
@@ -19,14 +19,7 @@ export function StudioLoader({ children }: PropsWithChildren) {
 
   return (
     <>
-      {workspace ? (
-        children
-      ) : (
-        <View>
-          <OpenWorkspaceButton />
-          <Text>Recently opened...</Text>
-        </View>
-      )}
+      {workspace ? children : <WelcomeView />}
       {status === 'error' && (
         <View style={styles.bottomBanner}>
           <Text style={styles.errorText}>{error.message}</Text>
@@ -34,7 +27,7 @@ export function StudioLoader({ children }: PropsWithChildren) {
       )}
       {status === 'loading' && (
         <View style={styles.overlay}>
-          <Text>Loading...</Text>
+          <Text> </Text>
         </View>
       )}
       <></>

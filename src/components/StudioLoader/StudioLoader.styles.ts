@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
+  welcome: {},
   overlay: {
     position: 'absolute',
     left: 0,
@@ -29,5 +30,11 @@ export const styles = StyleSheet.create({
 
   errorText: {
     color: '#FF9933',
+  },
+
+  recentlyOpenedTile: {},
+
+  recentlyOpenedTileText: {
+    color: '#333',
   },
 });
