@@ -20,22 +20,20 @@ export const useStudioConext = () => {
       return {status, openWorkspace} as const;
 
     case 'loading': {
-      const {currentWorkspacePath, workspaces, workspace} = state;
+      const {workspaces, workspace} = state;
       return {
         status,
         openWorkspace,
-        currentWorkspacePath,
         workspaces,
         workspace,
       } as const;
     }
 
     case 'ready': {
-      const {currentWorkspacePath, workspaces, workspace} = state;
+      const {workspaces, workspace} = state;
       return {
         status,
         openWorkspace,
-        currentWorkspacePath,
         workspaces,
         workspace,
       } as const;

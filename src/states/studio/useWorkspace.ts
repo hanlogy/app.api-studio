@@ -1,4 +1,4 @@
-import {Workspace} from '@/definitions';
+import {AppError, Workspace} from '@/definitions';
 import {watchWorkspace, type WorkspaceWatcher} from '@/lib';
 import {loadWorkspace} from '@/repositories/loadWorkspace';
 import {useEffect, useRef, useState} from 'react';
@@ -7,6 +7,7 @@ import {WorkspaceFiles} from './types';
 export const useWorkspace = () => {
   const [path, setWorkspacePath] = useState<string>();
   const [environmentName, selectEnvironment] = useState<string>();
+  const [error, setError] = useState<AppError>();
   const [workspace, setWorkspace] = useState<Workspace>();
   const [files, setFiles] = useState<WorkspaceFiles>();
 
@@ -26,9 +27,16 @@ export const useWorkspace = () => {
 
       watcherRef.current = await watchWorkspace(path, ({config, apis = []}) => {
         if (!config) {
-          // TODO: set error here
+          setError(
+            new AppError({
+              code: 'configMissing',
+              message: 'Cound not find the config file',
+            }),
+          );
           return;
         }
+
+        setError(undefined);
         setFiles({config, apis});
       });
     })();
@@ -50,5 +58,5 @@ export const useWorkspace = () => {
     })();
   }, [files, path]);
 
-  return {setWorkspacePath, selectEnvironment, workspace};
+  return {setWorkspacePath, selectEnvironment, workspace, error};
 };

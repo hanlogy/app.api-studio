@@ -1,8 +1,8 @@
-export class StudioError extends Error {
+export class AppError extends Error {
   constructor({code, message}: {code: string; message?: string}) {
     super(message);
     this.code = code;
-    this.name = 'StudioError';
+    this.name = 'AppError';
   }
 
   readonly code: string;
@@ -20,6 +20,6 @@ export class StudioError extends Error {
   }
 
   static fromCode(code: string) {
-    return new StudioError({code});
+    return new AppError({code});
   }
 }

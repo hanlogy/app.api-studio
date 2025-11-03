@@ -11,7 +11,7 @@
 import {isPlainObject, isPrimitive} from '@/helpers/checkTypes';
 import type {JsonValue, PrimitiveRecord, ValuesMap} from '@/definitions';
 import {resolveString} from './resolveString';
-import {StudioError} from '@/definitions';
+import {AppError} from '@/definitions';
 
 type ArgBase = {
   valuesMap?: ValuesMap;
@@ -54,7 +54,7 @@ export function resolveValuesMap({
     }
 
     if (stack.includes(variableName)) {
-      throw new StudioError({
+      throw new AppError({
         code: 'recursiveReference',
         message: `Recursive variable reference detected: ${[
           ...stack,

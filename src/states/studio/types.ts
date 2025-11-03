@@ -1,7 +1,8 @@
-import type {
+import {
   WORKSPACE_CONFIG_FILE,
-  Workspace,
-  WorkspaceSummary,
+  type AppError,
+  type Workspace,
+  type WorkspaceSummary,
 } from '@/definitions';
 
 export interface WorkspaceFiles {
@@ -20,7 +21,8 @@ export type StudioStateStatus =
   | 'initializing'
   | 'waiting'
   | 'loading'
-  | 'ready';
+  | 'ready'
+  | 'error';
 
 export type StudioState =
   | {
@@ -39,6 +41,10 @@ export type StudioState =
       readonly status: 'ready';
       readonly workspaces: readonly WorkspaceSummary[];
       readonly workspace: Workspace;
+    }
+  | {
+      readonly status: 'error';
+      readonly error: AppError;
     };
 
 export interface StudioStateCache {
