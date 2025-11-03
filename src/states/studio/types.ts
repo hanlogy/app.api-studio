@@ -48,4 +48,5 @@ export interface StudioStateCache {
 export interface StudioContextValue {
   readonly state: StudioState;
   readonly openWorkspace: (dir: string) => void;
+  readonly selectEnvironment: (name?: string) => void;
 }

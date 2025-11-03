@@ -39,8 +39,7 @@ export const StudioContextProvider = ({children}: PropsWithChildren<{}>) => {
 
     setStatus('loading');
     setWorkspaceDir(currentWorkspaceDir);
-    selectEnvironment('f');
-  }, [status, currentWorkspaceDir, setWorkspaceDir, selectEnvironment]);
+  }, [status, currentWorkspaceDir, setWorkspaceDir]);
 
   useEffect(() => {
     if (!workspace) {
@@ -83,7 +82,8 @@ export const StudioContextProvider = ({children}: PropsWithChildren<{}>) => {
   }, [status, workspaces, workspace, workspaceError]);
 
   return (
-    <StudioContext value={{state, openWorkspace: setCurrentWorkspaceDir}}>
+    <StudioContext
+      value={{state, openWorkspace: setCurrentWorkspaceDir, selectEnvironment}}>
       {children}
     </StudioContext>
   );
