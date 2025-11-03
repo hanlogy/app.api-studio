@@ -2,7 +2,7 @@ import { AppError, type Workspace, type WorkspaceFiles } from '@/definitions';
 import { resolveWorkspace, watchWorkspace, type WorkspaceWatcher } from '@/lib';
 import {
   loadWorkspace,
-  LoadWorkspaceResult,
+  type LoadWorkspaceResult,
 } from '@/repositories/loadWorkspace';
 import { useEffect, useRef, useState } from 'react';
 
@@ -73,7 +73,12 @@ export const useWorkspace = () => {
     });
 
     if (!resolved) {
-      setError(AppError.fromCode('parseWorkspaceFailed'));
+      setError(
+        new AppError({
+          code: 'parseWorkspaceFailed',
+          message: 'Failed to parse workspace files',
+        }),
+      );
       return;
     }
 

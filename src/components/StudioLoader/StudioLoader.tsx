@@ -4,10 +4,10 @@ import { useStudioConext } from '@/states/studio/useStudioConext';
 import { OpenWorkspaceButton } from '../OpenWorkspaceButton';
 import { styles } from './styles';
 
-export const StudioLoader = ({ children }: PropsWithChildren) => {
-  const { state } = useStudioConext();
-
-  const { status } = state;
+export function StudioLoader({ children }: PropsWithChildren) {
+  const {
+    state: { status, workspace, workspaces, error },
+  } = useStudioConext();
 
   if (status === 'initializing') {
     return (
@@ -17,34 +17,27 @@ export const StudioLoader = ({ children }: PropsWithChildren) => {
     );
   }
 
-  if (status === 'waiting') {
-    return (
-      <View>
-        <OpenWorkspaceButton />
-      </View>
-    );
-  }
-
-  const { workspace } = state;
-
-  if (status === 'loading' && !workspace) {
-    return (
-      <View>
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
-
-  // TODO: Handle error
-
   return (
     <>
-      {children}
-      {status === 'loading' && (
-        <View style={styles.updatingOverlay}>
-          <Text>Updating...</Text>
+      {workspace ? (
+        children
+      ) : (
+        <View>
+          <OpenWorkspaceButton />
+          <Text>Recently opened...</Text>
         </View>
       )}
+      {status === 'error' && (
+        <View style={styles.bottomBanner}>
+          <Text style={styles.errorText}>{error.message}</Text>
+        </View>
+      )}
+      {status === 'loading' && (
+        <View style={styles.overlay}>
+          <Text>Loading...</Text>
+        </View>
+      )}
+      <></>
     </>
   );
-};
+}

@@ -18,30 +18,28 @@ export type StudioStateStatus =
   | 'ready'
   | 'error';
 
+type BaseStudioState = {
+  readonly workspaces?: readonly WorkspaceSummary[];
+  readonly workspace?: Workspace;
+  readonly error?: AppError;
+};
+
 export type StudioState =
-  | {
+  | (BaseStudioState & {
       readonly status: 'initializing';
-    }
-  | {
+    })
+  | (BaseStudioState & {
       readonly status: 'waiting';
-      readonly workspaces: readonly WorkspaceSummary[];
-    }
-  | {
+    } & Required<Pick<BaseStudioState, 'workspaces'>>)
+  | (BaseStudioState & {
       readonly status: 'loading';
-      readonly workspaces: readonly WorkspaceSummary[];
-      readonly workspace?: Workspace;
-    }
-  | {
+    } & Required<Pick<BaseStudioState, 'workspaces'>>)
+  | (BaseStudioState & {
       readonly status: 'ready';
-      readonly workspaces: readonly WorkspaceSummary[];
-      readonly workspace: Workspace;
-    }
-  | {
+    } & Required<Pick<BaseStudioState, 'workspaces' | 'workspace'>>)
+  | (BaseStudioState & {
       readonly status: 'error';
-      readonly error: AppError;
-      readonly workspaces?: readonly WorkspaceSummary[];
-      readonly workspace?: Workspace;
-    };
+    } & Required<Pick<BaseStudioState, 'error'>>);
 
 export interface StudioStateCache {
   /**
