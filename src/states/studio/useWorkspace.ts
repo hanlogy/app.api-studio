@@ -1,5 +1,5 @@
 import {AppError, Workspace} from '@/definitions';
-import {watchWorkspace, type WorkspaceWatcher} from '@/lib';
+import {resolveWorkspace, watchWorkspace, type WorkspaceWatcher} from '@/lib';
 import {loadWorkspace} from '@/repositories/loadWorkspace';
 import {useEffect, useRef, useState} from 'react';
 import {WorkspaceFiles} from './types';
@@ -49,14 +49,18 @@ export const useWorkspace = () => {
     }
 
     (async () => {
-      const data = await loadWorkspace({
+      const source = await loadWorkspace({
         workspacePath: path,
         ...files,
       });
-      console.log(data);
-      // TOOD: Resolve data
+
+      const resolved = resolveWorkspace({
+        source,
+        environmentName,
+      });
+      console.log(resolved);
     })();
-  }, [files, path]);
+  }, [files, path, environmentName]);
 
   return {setWorkspacePath, selectEnvironment, workspace, error};
 };

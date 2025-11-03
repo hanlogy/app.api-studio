@@ -45,7 +45,7 @@ export const StudioContextProvider = ({children}: PropsWithChildren<{}>) => {
   }, [workspace]);
 
   useEffect(() => {
-    if (workspaceError) {
+    if (!workspaceError) {
       return;
     }
 
