@@ -2,7 +2,10 @@ import { Button, NativeModules } from 'react-native';
 import { useStudioConext } from '../states/studio/useStudioConext';
 
 export const OpenWorkspaceButton = () => {
-  const { status, openWorkspace } = useStudioConext();
+  const {
+    state: { status },
+    openWorkspace,
+  } = useStudioConext();
 
   if (status === 'initializing') {
     return <></>;

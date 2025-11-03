@@ -34,13 +34,13 @@ export const StudioContextProvider = ({ children }: PropsWithChildren<{}>) => {
   // When `currentWorkspaceDir` changed:
   // Load workspace files, parse, resolve, update cache
   useEffect(() => {
-    if (status === 'initializing' || !currentWorkspaceDir) {
+    if (!currentWorkspaceDir) {
       return;
     }
 
     setStatus('loading');
     setWorkspaceDir(currentWorkspaceDir);
-  }, [status, currentWorkspaceDir, setWorkspaceDir]);
+  }, [currentWorkspaceDir, setWorkspaceDir]);
 
   useEffect(() => {
     if (!workspace) {

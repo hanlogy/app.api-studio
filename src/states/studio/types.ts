@@ -39,6 +39,8 @@ export type StudioState =
   | {
       readonly status: 'error';
       readonly error: AppError;
+      readonly workspaces?: readonly WorkspaceSummary[];
+      readonly workspace?: Workspace;
     };
 
 export interface StudioStateCache {

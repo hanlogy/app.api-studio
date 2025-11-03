@@ -1,11 +1,13 @@
 import { Text, View } from 'react-native';
-import { PropsWithChildren } from 'react';
+import { type PropsWithChildren } from 'react';
 import { useStudioConext } from '@/states/studio/useStudioConext';
 import { OpenWorkspaceButton } from '../OpenWorkspaceButton';
 import { styles } from './styles';
 
 export const StudioLoader = ({ children }: PropsWithChildren) => {
-  const { status, workspace } = useStudioConext();
+  const { state } = useStudioConext();
+
+  const { status } = state;
 
   if (status === 'initializing') {
     return (
@@ -23,13 +25,17 @@ export const StudioLoader = ({ children }: PropsWithChildren) => {
     );
   }
 
-  if (!workspace) {
+  const { workspace } = state;
+
+  if (status === 'loading' && !workspace) {
     return (
       <View>
         <Text>Loading...</Text>
       </View>
     );
   }
+
+  // TODO: Handle error
 
   return (
     <>
