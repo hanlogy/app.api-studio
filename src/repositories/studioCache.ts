@@ -4,26 +4,30 @@ import {isPlainObject} from '@/helpers/checkTypes';
 import {StudioStateCache} from '@/states/studio/types';
 import {pickWhenString, removeUndefined} from '@/helpers/filterValues';
 
-export async function saveStudioCache(state: StudioStateCache) {
+var data: StudioStateCache = {};
+
+export async function updateStudioCache<K extends keyof StudioStateCache>(
+  name: K,
+  value: StudioStateCache[K],
+) {
+  data[name] = value;
+
   await writeJsonRecord({
     file: STUDIO_CACHE_FILE,
-    data: state,
+    data: data,
   });
 }
 
-export async function readStudioCache(): Promise<StudioStateCache | null> {
+export async function readStudioCache(): Promise<StudioStateCache> {
   const cache = await readJsonRecord({
     file: STUDIO_CACHE_FILE,
   });
 
-  if (!cache) {
-    return null;
-  }
-
-  return parseStudioCache(cache);
+  data = parseStudioCache(cache) ?? {};
+  return data;
 }
 
-function parseStudioCache(cache: JsonRecord): StudioStateCache | null {
+function parseStudioCache(cache: JsonRecord | null): StudioStateCache | null {
   if (!cache || !isPlainObject(cache)) {
     return null;
   }
@@ -47,7 +51,7 @@ function parseStudioCache(cache: JsonRecord): StudioStateCache | null {
           return removeUndefined({name, dir, environmentName});
         })
         .filter(e => e !== undefined)
-    : [];
+    : undefined;
 
-  return {workspaces: parsedWorkspaces};
+  return removeUndefined({workspaces: parsedWorkspaces});
 }

@@ -6,16 +6,14 @@ describe('readStudioCache', () => {
     jest.resetAllMocks();
   });
 
-  it('returns null when cache is invalid', async () => {
+  it('returns {} when cache is invalid', async () => {
     jest.spyOn(fileIO, 'readJsonRecord').mockResolvedValue(null);
-    expect(await readStudioCache()).toBeNull();
+    expect(await readStudioCache()).toStrictEqual({});
   });
 
-  it('returns empty', async () => {
+  it('returns {}', async () => {
     jest.spyOn(fileIO, 'readJsonRecord').mockResolvedValue({});
-    expect(await readStudioCache()).toStrictEqual({
-      workspaces: [],
-    });
+    expect(await readStudioCache()).toStrictEqual({});
   });
 
   it('returns workspaces', async () => {

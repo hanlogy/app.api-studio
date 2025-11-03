@@ -42,7 +42,10 @@ export type StudioState =
     };
 
 export interface StudioStateCache {
-  readonly workspaces: readonly WorkspaceSummary[];
+  /**
+   * Recently opened workspaces
+   */
+  readonly workspaces?: readonly WorkspaceSummary[];
 }
 
 export interface StudioContextValue {

@@ -2,7 +2,7 @@ import {type PropsWithChildren, useEffect, useMemo, useState} from 'react';
 import {StudioContext} from './StudioContext';
 import {useWorkspace} from './useWorkspace';
 import type {StudioState, StudioStateStatus} from './types';
-import {readStudioCache, saveStudioCache} from '@/repositories/studioCache';
+import {readStudioCache, updateStudioCache} from '@/repositories/studioCache';
 import {type WorkspaceSummary} from '@/definitions';
 import {haveWorkspaceSummariesChanged} from './haveWorkspaceSummariesChanged';
 
@@ -69,7 +69,7 @@ export const StudioContextProvider = ({children}: PropsWithChildren<{}>) => {
       setWorkspaces(updatedWorkspaces);
 
       (async () => {
-        await saveStudioCache({workspaces: updatedWorkspaces});
+        await updateStudioCache('workspaces', updatedWorkspaces);
       })();
     }
   }, [workspace, workspaces]);
