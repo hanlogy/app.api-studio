@@ -2,12 +2,13 @@ import {type PropsWithChildren, useEffect, useMemo, useState} from 'react';
 import {StudioContext} from './StudioContext';
 import {useWorkspace} from './useWorkspace';
 import type {StudioState, StudioStateStatus} from './types';
-import {readStudioCache} from '@/repositories/studioCache';
+import {readStudioCache, saveStudioCache} from '@/repositories/studioCache';
 import {type WorkspaceSummary} from '@/definitions';
+import {haveWorkspaceSummariesChanged} from './haveWorkspaceSummariesChanged';
 
 export const StudioContextProvider = ({children}: PropsWithChildren<{}>) => {
   const [status, setStatus] = useState<StudioStateStatus>('initializing');
-  const [workspaces, setWorkspaces] = useState<readonly WorkspaceSummary[]>();
+  const [workspaces, setWorkspaces] = useState<readonly WorkspaceSummary[]>([]);
   const [currentWorkspaceDir, setCurrentWorkspaceDir] = useState<string>();
   const {
     setWorkspaceDir,
@@ -48,6 +49,30 @@ export const StudioContextProvider = ({children}: PropsWithChildren<{}>) => {
 
     setStatus('ready');
   }, [workspace]);
+
+  useEffect(() => {
+    if (!workspace) {
+      return;
+    }
+
+    const updatedWorkspaces = workspaces.filter(
+      ({dir}) => dir !== workspace.dir,
+    );
+
+    updatedWorkspaces.unshift({
+      name: workspace.name,
+      dir: workspace.dir,
+      environmentName: workspace.environmentName,
+    });
+
+    if (haveWorkspaceSummariesChanged(updatedWorkspaces, workspaces)) {
+      setWorkspaces(updatedWorkspaces);
+
+      (async () => {
+        await saveStudioCache({workspaces: updatedWorkspaces});
+      })();
+    }
+  }, [workspace, workspaces]);
 
   useEffect(() => {
     if (!workspaceError) {

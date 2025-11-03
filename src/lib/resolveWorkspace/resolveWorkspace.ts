@@ -19,7 +19,7 @@ export function resolveWorkspace({
     apis: JsonValue[];
   };
   environmentName?: string;
-}): Omit<Workspace, 'dir'> | undefined {
+}): Omit<Workspace, 'dir' | 'environmentName'> | undefined {
   const resolvedConfig = resolveConfig({source: configSource});
 
   if (!resolvedConfig) {
