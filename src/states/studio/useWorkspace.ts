@@ -1,21 +1,21 @@
-import {AppError, Workspace} from '@/definitions';
+import {AppError, type Workspace, type WorkspaceFiles} from '@/definitions';
 import {resolveWorkspace, watchWorkspace, type WorkspaceWatcher} from '@/lib';
-import {loadWorkspace} from '@/repositories/loadWorkspace';
+import {loadWorkspace, LoadWorkspaceResult} from '@/repositories/loadWorkspace';
 import {useEffect, useRef, useState} from 'react';
-import {WorkspaceFiles} from './types';
 
 export const useWorkspace = () => {
-  const [path, setWorkspacePath] = useState<string>();
+  const [dir, setWorkspaceDir] = useState<string>();
+  const [files, setFiles] = useState<WorkspaceFiles>();
+  const [sources, setSources] = useState<LoadWorkspaceResult>();
   const [environmentName, selectEnvironment] = useState<string>();
   const [error, setError] = useState<AppError>();
   const [workspace, setWorkspace] = useState<Workspace>();
-  const [files, setFiles] = useState<WorkspaceFiles>();
 
   const watcherRef = useRef<WorkspaceWatcher>(null);
 
-  // when path changed.
+  // when workspace dir changed.
   useEffect(() => {
-    if (!path) {
+    if (!dir) {
       return;
     }
 
@@ -25,7 +25,7 @@ export const useWorkspace = () => {
         watcherRef.current = null;
       }
 
-      watcherRef.current = await watchWorkspace(path, ({config, apis = []}) => {
+      watcherRef.current = await watchWorkspace(dir, ({config, apis = []}) => {
         if (!config) {
           setError(
             new AppError({
@@ -40,27 +40,40 @@ export const useWorkspace = () => {
         setFiles({config, apis});
       });
     })();
-  }, [path]);
+  }, [dir]);
 
   // when files changed
   useEffect(() => {
-    if (!files || !path) {
+    if (!dir || !files) {
       return;
     }
 
     (async () => {
-      const source = await loadWorkspace({
-        workspacePath: path,
-        ...files,
-      });
+      const result = await loadWorkspace({dir, files});
 
-      const resolved = resolveWorkspace({
-        source,
-        environmentName,
-      });
-      console.log(resolved);
+      setSources(result);
     })();
-  }, [files, path, environmentName]);
+  }, [dir, files]);
 
-  return {setWorkspacePath, selectEnvironment, workspace, error};
+  // when sources or environmentName changed.
+  useEffect(() => {
+    if (!dir || !sources) {
+      return;
+    }
+
+    const resolved = resolveWorkspace({
+      sources,
+      environmentName,
+    });
+
+    if (!resolved) {
+      setError(AppError.fromCode('parseWorkspaceFailed'));
+      return;
+    }
+
+    setError(undefined);
+    setWorkspace({...resolved, dir});
+  }, [sources, environmentName, dir]);
+
+  return {setWorkspaceDir, selectEnvironment, workspace, error};
 };

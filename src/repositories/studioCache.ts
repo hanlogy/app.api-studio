@@ -2,7 +2,7 @@ import {type JsonRecord, STUDIO_CACHE_FILE} from '@/definitions';
 import {readJsonRecord, writeJsonRecord} from '@/helpers/fileIO';
 import {isPlainObject} from '@/helpers/checkTypes';
 import {StudioStateCache} from '@/states/studio/types';
-import {pickWhenString} from '@/helpers/filterValues';
+import {pickWhenString, removeUndefined} from '@/helpers/filterValues';
 
 export async function saveStudioCache(state: StudioStateCache) {
   await writeJsonRecord({
@@ -38,13 +38,13 @@ function parseStudioCache(cache: JsonRecord): StudioStateCache | null {
           }
 
           const name = pickWhenString(item.name);
-          const path = pickWhenString(item.path);
+          const dir = pickWhenString(item.dir);
           const environmentName = pickWhenString(item.environmentName);
-          if (!name || !path) {
+          if (!name || !dir) {
             return undefined;
           }
 
-          return {name, path, environmentName};
+          return removeUndefined({name, dir, environmentName});
         })
         .filter(e => e !== undefined)
     : [];

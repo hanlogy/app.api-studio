@@ -1,4 +1,4 @@
-import {WORKSPACE_APIS_DIR} from '@/definitions';
+import {WORKSPACE_APIS_DIR, WorkspaceFiles} from '@/definitions';
 import {readJsonRecord} from '@/helpers/fileIO';
 
 // NOTE:
@@ -6,25 +6,23 @@ import {readJsonRecord} from '@/helpers/fileIO';
 // accidentally open the wrong folder.
 
 export async function loadWorkspace({
-  workspacePath,
-  config: configFile,
-  apis: apiFiles,
+  dir,
+  files: {config: configFile, apis: apiFiles},
 }: {
-  workspacePath: string;
-  config: string;
-  apis: string[];
+  dir: string;
+  files: WorkspaceFiles;
 }) {
-  workspacePath = workspacePath.replace(/\/$/, '');
+  dir = dir.replace(/\/$/, '');
 
   const configData = await readJsonRecord({
-    dir: workspacePath,
+    dir,
     file: configFile,
   });
 
   const apisData = await Promise.all(
     apiFiles.map(async apiFile =>
       readJsonRecord({
-        dir: [workspacePath, WORKSPACE_APIS_DIR].join('/'),
+        dir: [dir, WORKSPACE_APIS_DIR].join('/'),
         file: apiFile,
       }),
     ),
@@ -35,3 +33,5 @@ export async function loadWorkspace({
     apis: apisData.filter(e => e !== null),
   };
 }
+
+export type LoadWorkspaceResult = Awaited<ReturnType<typeof loadWorkspace>>;

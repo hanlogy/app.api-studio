@@ -23,7 +23,7 @@ describe('readStudioCache', () => {
       workspaces: [
         {
           name: 'foo',
-          path: '/path/to/workspace',
+          dir: '/path/to/workspace',
         },
       ],
     });
@@ -32,7 +32,7 @@ describe('readStudioCache', () => {
       workspaces: [
         {
           name: 'foo',
-          path: '/path/to/workspace',
+          dir: '/path/to/workspace',
         },
       ],
     });

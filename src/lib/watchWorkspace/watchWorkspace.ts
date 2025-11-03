@@ -1,4 +1,8 @@
-import {WORKSPACE_APIS_DIR, WORKSPACE_CONFIG_FILE} from '@/definitions';
+import {
+  WORKSPACE_APIS_DIR,
+  WORKSPACE_CONFIG_FILE,
+  WorkspaceFiles,
+} from '@/definitions';
 import RNFS from 'react-native-fs';
 
 interface Snapshot {
@@ -46,10 +50,7 @@ const toFiles = (snapshot: Snapshot) => {
 
 export async function watchWorkspace(
   dir: string,
-  onChange: (files: {
-    readonly config?: typeof WORKSPACE_CONFIG_FILE;
-    readonly apis?: string[];
-  }) => void,
+  onChange: (files: Partial<WorkspaceFiles>) => void,
 ) {
   const interval = 2000;
 

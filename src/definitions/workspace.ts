@@ -1,10 +1,15 @@
 import type {JsonValue, PrimitiveRecord, ValuesMap} from './basic';
-import {requestMethods} from './constants';
+import {requestMethods, WORKSPACE_CONFIG_FILE} from './constants';
 
 export type RequestHeaders = PrimitiveRecord<string>;
 export type RequestQuery = PrimitiveRecord<string>;
 
 export type RequestMethod = (typeof requestMethods)[number];
+
+export interface WorkspaceFiles {
+  readonly config: typeof WORKSPACE_CONFIG_FILE;
+  readonly apis: readonly string[];
+}
 
 // NOTE: The url, headers, and body should be the only resolved result, but not
 // the assembled one, we assemble it at the UI rendering step
@@ -39,11 +44,11 @@ export interface WorkspaceEnvironment {
 
 export interface WorkspaceSummary {
   readonly name?: string;
+  readonly dir: string;
   /**
    * Name of the selected environment.
    */
   readonly environmentName?: string;
-  readonly path: string;
 }
 
 export interface Workspace extends WorkspaceSummary {

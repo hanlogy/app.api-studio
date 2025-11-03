@@ -8,8 +8,13 @@ import {type WorkspaceSummary} from '@/definitions';
 export const StudioContextProvider = ({children}: PropsWithChildren<{}>) => {
   const [status, setStatus] = useState<StudioStateStatus>('initializing');
   const [workspaces, setWorkspaces] = useState<readonly WorkspaceSummary[]>();
-  const [currentWorkspacePath, setCurrentWorkspacePath] = useState<string>();
-  const {setWorkspacePath, workspace, error: workspaceError} = useWorkspace();
+  const [currentWorkspaceDir, setCurrentWorkspaceDir] = useState<string>();
+  const {
+    setWorkspaceDir,
+    workspace,
+    error: workspaceError,
+    selectEnvironment,
+  } = useWorkspace();
 
   // When `status` is `initializing`:
   // Load cache, change `status` to `waiting`.
@@ -25,16 +30,17 @@ export const StudioContextProvider = ({children}: PropsWithChildren<{}>) => {
     })();
   }, [status]);
 
-  // When `currentWorkspacePath` changed:
+  // When `currentWorkspaceDir` changed:
   // Load workspace files, parse, resolve, update cache
   useEffect(() => {
-    if (status === 'initializing' || !currentWorkspacePath) {
+    if (status === 'initializing' || !currentWorkspaceDir) {
       return;
     }
 
     setStatus('loading');
-    setWorkspacePath(currentWorkspacePath);
-  }, [status, currentWorkspacePath, setWorkspacePath]);
+    setWorkspaceDir(currentWorkspaceDir);
+    selectEnvironment('f');
+  }, [status, currentWorkspaceDir, setWorkspaceDir, selectEnvironment]);
 
   useEffect(() => {
     if (!workspace) {
@@ -77,7 +83,7 @@ export const StudioContextProvider = ({children}: PropsWithChildren<{}>) => {
   }, [status, workspaces, workspace, workspaceError]);
 
   return (
-    <StudioContext value={{state, openWorkspace: setCurrentWorkspacePath}}>
+    <StudioContext value={{state, openWorkspace: setCurrentWorkspaceDir}}>
       {children}
     </StudioContext>
   );

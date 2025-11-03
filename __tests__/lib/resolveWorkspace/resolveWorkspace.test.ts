@@ -3,12 +3,12 @@ import {resolveWorkspace} from '@/lib/resolveWorkspace/resolveWorkspace';
 describe('resolveWorkspace', () => {
   test('invalid source', () => {
     expect(
-      resolveWorkspace({source: {config: null, apis: []}}),
+      resolveWorkspace({sources: {config: null, apis: []}}),
     ).toBeUndefined();
   });
 
   test('empty', () => {
-    expect(resolveWorkspace({source: {config: {}, apis: []}})).toStrictEqual({
+    expect(resolveWorkspace({sources: {config: {}, apis: []}})).toStrictEqual({
       environments: [],
       apis: [],
     });
@@ -17,7 +17,7 @@ describe('resolveWorkspace', () => {
   test('almost with everything', () => {
     expect(
       resolveWorkspace({
-        source: {
+        sources: {
           config: {
             name: 'workspace',
             description: 'bar',

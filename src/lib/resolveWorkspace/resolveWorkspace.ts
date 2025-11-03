@@ -11,15 +11,15 @@ import {resolveApiResource} from './resolveApiResource';
 import {isPlainObject} from '@/helpers/checkTypes';
 
 export function resolveWorkspace({
-  source: {config: configSource, apis: apisSources},
+  sources: {config: configSource, apis: apisSources},
   environmentName,
 }: {
-  source: {
+  sources: {
     config: JsonValue;
     apis: JsonValue[];
   };
   environmentName?: string;
-}): Omit<Workspace, 'path'> | undefined {
+}): Omit<Workspace, 'dir'> | undefined {
   const resolvedConfig = resolveConfig({source: configSource});
 
   if (!resolvedConfig) {

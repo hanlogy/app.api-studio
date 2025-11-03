@@ -1,14 +1,8 @@
 import {
-  WORKSPACE_CONFIG_FILE,
   type AppError,
   type Workspace,
   type WorkspaceSummary,
 } from '@/definitions';
-
-export interface WorkspaceFiles {
-  readonly config: typeof WORKSPACE_CONFIG_FILE;
-  readonly apis: string[];
-}
 
 /**
  * - `initializing`: reading from cache
@@ -53,5 +47,5 @@ export interface StudioStateCache {
 
 export interface StudioContextValue {
   readonly state: StudioState;
-  readonly openWorkspace: (path: string) => void;
+  readonly openWorkspace: (dir: string) => void;
 }

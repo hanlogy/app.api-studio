@@ -13,9 +13,9 @@ export const OpenWorkspaceButton = () => {
       title="Open Workspace..."
       onPress={async () => {
         try {
-          const path = await pickFolder();
-          if (path) {
-            openWorkspace(path);
+          const dir = await pickFolder();
+          if (dir) {
+            openWorkspace(dir);
           }
         } catch (err) {
           //
