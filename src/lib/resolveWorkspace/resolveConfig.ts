@@ -9,7 +9,7 @@ import { pickWhenString, removeUndefined } from '@/helpers/filterValues';
 import { resolveValuesMap } from './resolveValuesMap';
 import { resolveStringRecord } from './simpleResolvers';
 
-export function resolveSettings({
+export function resolveConfig({
   source,
 }: {
   source: JsonValue;
