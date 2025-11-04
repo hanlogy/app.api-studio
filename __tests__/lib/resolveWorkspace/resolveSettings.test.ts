@@ -1,17 +1,17 @@
-import { resolveConfig } from '@/lib/resolveWorkspace/resolveConfig';
+import { resolveSettings } from '@/lib/resolveWorkspace/resolveSettings';
 
-describe('resolveConfig', () => {
+describe('resolveSettings', () => {
   test('invalid source', () => {
-    expect(resolveConfig({ source: null })).toBeUndefined();
+    expect(resolveSettings({ source: null })).toBeUndefined();
   });
 
   test('empty input', () => {
-    expect(resolveConfig({ source: {} })).toStrictEqual({ environments: [] });
+    expect(resolveSettings({ source: {} })).toStrictEqual({ environments: [] });
   });
 
   test('with everything', () => {
     expect(
-      resolveConfig({
+      resolveSettings({
         source: {
           name: 'foo',
           description: 'bar',

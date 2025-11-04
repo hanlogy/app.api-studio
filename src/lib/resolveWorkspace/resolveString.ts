@@ -1,6 +1,6 @@
 /**
  * NOTE:
- * For resolving, the source is always a `JsonValue`. The user-provided config
+ * For resolving, the source is always a `JsonValue`. The user-provided data
  * is not guaranteed, so we should be as tolerant as possible.
  *
  * Also, we should always return `undefined` instead of assigning a default
