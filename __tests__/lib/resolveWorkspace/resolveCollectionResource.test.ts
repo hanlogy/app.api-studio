@@ -8,7 +8,7 @@ describe('resolveCollectionResource', () => {
   test('empty input', () => {
     expect(resolveCollectionResource({ source: {} })).toStrictEqual({
       key: expect.any(String),
-      apis: [],
+      requests: [],
     });
   });
 
@@ -21,9 +21,9 @@ describe('resolveCollectionResource', () => {
           baseUrl: '{{host}}',
           ':name': 'foo',
           headers: { ping: '{{name}}' },
-          apis: [
+          requests: [
             {
-              name: 'api-1',
+              name: 'request-1',
               method: 'POST',
               url: 'api',
               ':lastName': 'bar',
@@ -51,10 +51,10 @@ describe('resolveCollectionResource', () => {
       valuesMap: {
         name: 'foo',
       },
-      apis: [
+      requests: [
         {
           key: expect.any(String),
-          name: 'api-1',
+          name: 'request-1',
           method: 'POST',
           url: 'api',
           query: { limit: '10' },
