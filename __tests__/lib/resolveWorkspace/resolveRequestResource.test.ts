@@ -1,13 +1,13 @@
-import { resolveApiResource } from '@/lib/resolveWorkspace/resolveApiResource';
+import { resolveRequestResource } from '@/lib/resolveWorkspace/resolveRequestResource';
 
-describe('resolveApiResource', () => {
+describe('resolveRequestResource', () => {
   test('invalid source', () => {
-    expect(resolveApiResource({ source: null })).toBeUndefined();
+    expect(resolveRequestResource({ source: null })).toBeUndefined();
   });
 
   test('empty', () => {
     expect(
-      resolveApiResource({
+      resolveRequestResource({
         source: {},
       }),
     ).toStrictEqual({
@@ -17,9 +17,9 @@ describe('resolveApiResource', () => {
 
   test('with everything', () => {
     expect(
-      resolveApiResource({
+      resolveRequestResource({
         source: {
-          name: 'api-1',
+          name: 'request-1',
           method: 'POST',
           url: 'api',
           ':lastName': 'bar',
@@ -35,8 +35,8 @@ describe('resolveApiResource', () => {
         },
       }),
     ).toStrictEqual({
-      key: expect.stringMatching(/^TEMPORARY_API_ID_/),
-      name: 'api-1',
+      key: expect.stringMatching(/^TEMPORARY_REQUEST_ID_/),
+      name: 'request-1',
       method: 'POST',
       url: 'api',
       query: { limit: '10' },

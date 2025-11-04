@@ -1,6 +1,6 @@
 import {
   type ValuesMap,
-  type ApiResource,
+  type RequestResource,
   type JsonValue,
   type RequestMethod,
   requestMethods,
@@ -16,13 +16,13 @@ import {
 import { resolveStringRecord, resolveUrl } from './simpleResolvers';
 import { generateKey } from './generateKey';
 
-export function resolveApiResource({
+export function resolveRequestResource({
   source,
   valuesMap: externalValuesMap = {},
 }: {
   source: JsonValue;
   valuesMap?: ValuesMap;
-}): ApiResource | undefined {
+}): RequestResource | undefined {
   if (!isPlainObject(source)) {
     return undefined;
   }
@@ -39,7 +39,7 @@ export function resolveApiResource({
   const resolvedId = stringFromStringOrNumber(id);
 
   return removeUndefined({
-    key: generateKey('api', resolvedId),
+    key: generateKey('request', resolvedId),
     id: resolvedId,
     name: pickWhenString(name),
     description: pickWhenString(description),
