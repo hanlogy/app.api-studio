@@ -6,7 +6,13 @@ describe('resolveApiResource', () => {
   });
 
   test('empty', () => {
-    expect(resolveApiResource({ source: {} })).toStrictEqual({});
+    expect(
+      resolveApiResource({
+        source: {},
+      }),
+    ).toStrictEqual({
+      key: expect.any(String),
+    });
   });
 
   test('with everything', () => {
@@ -29,6 +35,7 @@ describe('resolveApiResource', () => {
         },
       }),
     ).toStrictEqual({
+      key: expect.stringMatching(/^TEMPORARY_API_ID_/),
       name: 'api-1',
       method: 'POST',
       url: 'api',

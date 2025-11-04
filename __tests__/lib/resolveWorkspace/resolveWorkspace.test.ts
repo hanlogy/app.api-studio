@@ -94,6 +94,7 @@ describe('resolveWorkspace', () => {
       ],
       apis: [
         {
+          key: expect.any(String),
           name: 'api-1',
           method: 'POST',
           url: 'https://dev.api/update',
@@ -107,6 +108,7 @@ describe('resolveWorkspace', () => {
           },
         },
         {
+          key: expect.any(String),
           name: 'My Collection',
           description: 'Test app',
           baseUrl: 'https://dev.api/profile',
@@ -117,6 +119,7 @@ describe('resolveWorkspace', () => {
           },
           apis: [
             {
+              key: expect.any(String),
               name: 'api-2',
               method: 'POST',
               url: 'update',
