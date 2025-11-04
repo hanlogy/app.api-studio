@@ -7,6 +7,7 @@ import {
   requestItemStyles,
 } from './CollectionsList.styles';
 import { useState } from 'react';
+import { useStudioConext } from '@/states/studio/useStudioConext';
 
 export function CollectionsList({
   collections,
@@ -52,13 +53,13 @@ function CollectionItem({
   );
 }
 
-function RequestItem({
-  request: { name = 'unnamed' },
-}: {
-  request: RequestResource;
-}) {
+function RequestItem({ request }: { request: RequestResource }) {
+  const { openRequest } = useStudioConext();
+  const { name = 'unnamed' } = request;
+
   return (
     <Button
+      onPress={() => openRequest(request.key)}
       style={requestItemStyles.button}
       hoveredStyle={requestItemStyles.buttonHovered}
       pressedStyle={requestItemStyles.buttonPressed}>

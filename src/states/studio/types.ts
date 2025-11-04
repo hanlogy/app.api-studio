@@ -1,5 +1,6 @@
 import {
   type AppError,
+  type RequestResource,
   type Workspace,
   type WorkspaceSummary,
 } from '@/definitions';
@@ -50,6 +51,8 @@ export interface StudioStateCache {
 
 export interface StudioContextValue {
   readonly state: StudioState;
+  readonly openedRequest?: RequestResource;
+  readonly openRequest: (key: string) => void;
   readonly openWorkspace: (dir: string) => void;
   readonly selectEnvironment: (name?: string) => void;
 }

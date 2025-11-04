@@ -10,6 +10,7 @@ export const StudioContextProvider = ({ children }: PropsWithChildren<{}>) => {
   const [status, setStatus] = useState<StudioStateStatus>('initializing');
   const [workspaces, setWorkspaces] = useState<readonly WorkspaceSummary[]>([]);
   const [currentWorkspaceDir, setCurrentWorkspaceDir] = useState<string>();
+  const [openedRequestKey, openRequest] = useState<string>();
   const {
     setWorkspaceDir,
     workspace,
@@ -106,11 +107,28 @@ export const StudioContextProvider = ({ children }: PropsWithChildren<{}>) => {
     throw new Error('This should never happen.');
   }, [status, workspaces, workspace, workspaceError]);
 
+  const openedRequest = useMemo(() => {
+    const collections = workspace?.collections;
+    if (!collections) {
+      return undefined;
+    }
+    for (const collection of collections) {
+      for (const request of collection.requests) {
+        if (request.key === openedRequestKey) {
+          return request;
+        }
+      }
+    }
+    return undefined;
+  }, [openedRequestKey, workspace?.collections]);
+
   return (
     <StudioContext
       value={{
         state,
         openWorkspace: setCurrentWorkspaceDir,
+        openedRequest,
+        openRequest,
         selectEnvironment,
       }}>
       {children}

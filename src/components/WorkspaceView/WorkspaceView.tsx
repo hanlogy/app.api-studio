@@ -1,11 +1,14 @@
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { styles } from './WorkspaceView.styles';
 import { useStudioConext } from '@/states/studio/useStudioConext';
 import { CollectionsList } from './CollectionsList';
+import React from 'react';
+import { RequestView } from './RequestView';
 
 export function WorkspaceView() {
   const {
     state: { workspace },
+    openedRequest,
   } = useStudioConext();
 
   if (!workspace) {
@@ -23,7 +26,7 @@ export function WorkspaceView() {
       </ScrollView>
       <ScrollView style={styles.rightView}>
         <View style={styles.rightContent}>
-          <Text>TODO</Text>
+          {openedRequest && <RequestView request={openedRequest} />}
         </View>
       </ScrollView>
     </View>
