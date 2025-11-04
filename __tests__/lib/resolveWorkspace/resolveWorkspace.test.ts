@@ -3,16 +3,16 @@ import { resolveWorkspace } from '@/lib/resolveWorkspace/resolveWorkspace';
 describe('resolveWorkspace', () => {
   test('invalid source', () => {
     expect(
-      resolveWorkspace({ sources: { config: null, apis: [] } }),
+      resolveWorkspace({ sources: { config: null, collections: [] } }),
     ).toBeUndefined();
   });
 
   test('empty', () => {
     expect(
-      resolveWorkspace({ sources: { config: {}, apis: [] } }),
+      resolveWorkspace({ sources: { config: {}, collections: [] } }),
     ).toStrictEqual({
       environments: [],
-      apis: [],
+      collections: [],
     });
   });
 
@@ -34,18 +34,7 @@ describe('resolveWorkspace', () => {
               },
             },
           },
-          apis: [
-            {
-              name: 'api-1',
-              method: 'POST',
-              url: '{{host}}/update',
-              ':lastName': 'bar',
-              query: { limit: '{{limit}}' },
-              body: {
-                firstName: '{{firstName}}',
-                lastName: '{{lastName}}',
-              },
-            },
+          collections: [
             {
               name: 'My Collection',
               description: 'Test app',
@@ -53,9 +42,9 @@ describe('resolveWorkspace', () => {
               headers: { ping: '{{firstName}}' },
               ':level': 8,
               ':lastName': 'bar',
-              apis: [
+              requests: [
                 {
-                  name: 'api-2',
+                  name: 'api-1',
                   method: 'POST',
                   url: 'update',
                   query: { limit: 10 },
@@ -92,21 +81,7 @@ describe('resolveWorkspace', () => {
           },
         },
       ],
-      apis: [
-        {
-          key: expect.any(String),
-          name: 'api-1',
-          method: 'POST',
-          url: 'https://dev.api/update',
-          query: { limit: '10' },
-          body: {
-            firstName: 'foo',
-            lastName: 'bar',
-          },
-          valuesMap: {
-            lastName: 'bar',
-          },
-        },
+      collections: [
         {
           key: expect.any(String),
           name: 'My Collection',
@@ -117,10 +92,10 @@ describe('resolveWorkspace', () => {
             level: 8,
             lastName: 'bar',
           },
-          apis: [
+          requests: [
             {
               key: expect.any(String),
-              name: 'api-2',
+              name: 'api-1',
               method: 'POST',
               url: 'update',
               query: { limit: '10' },

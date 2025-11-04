@@ -1,13 +1,13 @@
 import {
-  WORKSPACE_APIS_DIR,
+  WORKSPACE_COLLECTIONS_DIR,
   WORKSPACE_CONFIG_FILE,
-  WorkspaceFiles,
+  type WorkspaceFiles,
 } from '@/definitions';
 import RNFS from 'react-native-fs';
 
 interface Snapshot {
   readonly [WORKSPACE_CONFIG_FILE]?: number;
-  readonly apis?: Record<string, number>;
+  readonly collections?: Record<string, number>;
 }
 
 export async function createSnapshot(dir: string): Promise<Snapshot> {
@@ -18,33 +18,36 @@ export async function createSnapshot(dir: string): Promise<Snapshot> {
     ({ name, isDirectory }) => name === WORKSPACE_CONFIG_FILE && !isDirectory(),
   );
 
-  // Find apis folder
-  const apisDir = files.find(
-    ({ name, isDirectory }) => name === WORKSPACE_APIS_DIR && isDirectory(),
+  // Find collections folder
+  const collectionsDir = files.find(
+    ({ name, isDirectory }) =>
+      name === WORKSPACE_COLLECTIONS_DIR && isDirectory(),
   );
 
-  let apisMap: Record<string, number> | undefined;
+  let collectionsMap: Record<string, number> | undefined;
 
-  if (apisDir) {
-    apisMap = {};
-    const apiFiles = await RNFS.readDir(apisDir.path);
-    for (const { isDirectory, name, mtime } of apiFiles) {
+  if (collectionsDir) {
+    collectionsMap = {};
+    const collectionFiles = await RNFS.readDir(collectionsDir.path);
+    for (const { isDirectory, name, mtime } of collectionFiles) {
       if (!isDirectory() && name.endsWith('.json')) {
-        apisMap[name] = mtime?.getTime() ?? 0;
+        collectionsMap[name] = mtime?.getTime() ?? 0;
       }
     }
   }
 
   return {
     [WORKSPACE_CONFIG_FILE]: configFile?.mtime?.getTime(),
-    apis: apisMap,
+    collections: collectionsMap,
   };
 }
 
 const toFiles = (snapshot: Snapshot) => {
   return {
     config: snapshot[WORKSPACE_CONFIG_FILE] ? WORKSPACE_CONFIG_FILE : undefined,
-    apis: snapshot.apis ? Object.keys(snapshot.apis) : undefined,
+    collections: snapshot.collections
+      ? Object.keys(snapshot.collections)
+      : undefined,
   };
 };
 

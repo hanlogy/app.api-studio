@@ -1,4 +1,4 @@
-import { WORKSPACE_APIS_DIR, WorkspaceFiles } from '@/definitions';
+import { WORKSPACE_COLLECTIONS_DIR, type WorkspaceFiles } from '@/definitions';
 import { readJsonRecord } from '@/helpers/fileIO';
 
 // NOTE:
@@ -7,7 +7,7 @@ import { readJsonRecord } from '@/helpers/fileIO';
 
 export async function loadWorkspace({
   dir,
-  files: { config: configFile, apis: apiFiles },
+  files: { config: configFile, collections: collectionFiles },
 }: {
   dir: string;
   files: WorkspaceFiles;
@@ -19,18 +19,18 @@ export async function loadWorkspace({
     file: configFile,
   });
 
-  const apisData = await Promise.all(
-    apiFiles.map(async apiFile =>
+  const collectionsData = await Promise.all(
+    collectionFiles.map(async collectionFile =>
       readJsonRecord({
-        dir: [dir, WORKSPACE_APIS_DIR].join('/'),
-        file: apiFile,
+        dir: [dir, WORKSPACE_COLLECTIONS_DIR].join('/'),
+        file: collectionFile,
       }),
     ),
   );
 
   return {
     config: configData,
-    apis: apisData.filter(e => e !== null),
+    collections: collectionsData.filter(e => e !== null),
   };
 }
 

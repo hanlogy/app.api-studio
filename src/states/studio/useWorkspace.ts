@@ -30,7 +30,7 @@ export const useWorkspace = () => {
 
       watcherRef.current = await watchWorkspace(
         dir,
-        ({ config, apis = [] }) => {
+        ({ config, collections = [] }) => {
           if (!config) {
             setError(
               new AppError({
@@ -42,7 +42,7 @@ export const useWorkspace = () => {
           }
 
           setError(undefined);
-          setFiles({ config, apis });
+          setFiles({ config, collections });
         },
       );
     })();

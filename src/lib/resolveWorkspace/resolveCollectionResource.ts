@@ -1,5 +1,5 @@
 import {
-  type ApiResource,
+  type RequestResource,
   type CollectionResource,
   type JsonValue,
   type ValuesMap,
@@ -11,7 +11,7 @@ import {
   stringFromStringOrNumber,
   removeUndefined,
 } from '@/helpers/filterValues';
-import { resolveApiResource } from './resolveApiResource';
+import { resolveRequestResource } from './resolveRequestResource';
 import { resolveStringRecord, resolveUrl } from './simpleResolvers';
 import { generateKey } from './generateKey';
 
@@ -32,7 +32,7 @@ export function resolveCollectionResource({
     baseUrl,
     description,
     headers,
-    apis = [],
+    requests = [],
     ...rest
   } = source;
 
@@ -52,22 +52,22 @@ export function resolveCollectionResource({
     baseUrl: resolveUrl({ source: baseUrl, valuesMap }),
     headers: resolveStringRecord({ source: headers, valuesMap }),
     valuesMap: localValuesMap,
-    apis: resolveApis({ source: apis, valuesMap }),
+    requests: resolveRequests({ source: requests, valuesMap }),
   });
 }
 
-function resolveApis({
+function resolveRequests({
   source,
   valuesMap,
 }: {
   source: JsonValue;
   valuesMap: ValuesMap;
-}): ApiResource[] {
+}): RequestResource[] {
   if (!source || !Array.isArray(source)) {
     return [];
   }
 
   return source
-    .map(item => resolveApiResource({ source: item, valuesMap }))
+    .map(item => resolveRequestResource({ source: item, valuesMap }))
     .filter(e => e !== undefined);
 }

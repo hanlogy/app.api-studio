@@ -7,16 +7,15 @@ import {
 import { resolveConfig } from './resolveConfig';
 import { removeUndefined } from '@/helpers/filterValues';
 import { resolveCollectionResource } from './resolveCollectionResource';
-import { resolveApiResource } from './resolveApiResource';
 import { isPlainObject } from '@/helpers/checkTypes';
 
 export function resolveWorkspace({
-  sources: { config: configSource, apis: apisSources },
+  sources: { config: configSource, collections: collectionsSources },
   environmentName,
 }: {
   sources: {
     config: JsonValue;
-    apis: JsonValue[];
+    collections: JsonValue[];
   };
   environmentName?: string;
 }): Omit<Workspace, 'dir' | 'environmentName'> | undefined {
@@ -36,22 +35,15 @@ export function resolveWorkspace({
     name,
     description,
     environments,
-    apis: apisSources
-      .map(rawApiResource => {
-        if (!isPlainObject(rawApiResource)) {
+    collections: collectionsSources
+      .map(rawEndpontResource => {
+        if (!isPlainObject(rawEndpontResource)) {
           return undefined;
         }
-        if ('apis' in rawApiResource) {
-          return resolveCollectionResource({
-            source: rawApiResource,
-            valuesMap: environmentValuesMap,
-          });
-        } else {
-          return resolveApiResource({
-            source: rawApiResource,
-            valuesMap: environmentValuesMap,
-          });
-        }
+        return resolveCollectionResource({
+          source: rawEndpontResource,
+          valuesMap: environmentValuesMap,
+        });
       })
       .filter(e => e !== undefined),
   });

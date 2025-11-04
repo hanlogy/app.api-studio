@@ -8,14 +8,15 @@ export type RequestMethod = (typeof requestMethods)[number];
 
 export interface WorkspaceFiles {
   readonly config: typeof WORKSPACE_CONFIG_FILE;
-  readonly apis: readonly string[];
+  readonly collections: readonly string[];
 }
 
 // NOTE: The url, headers, and body should be the only resolved result, but not
 // the assembled one, we assemble it at the UI rendering step
-export interface ApiResource {
+export interface RequestResource {
   readonly key: string;
-  // Must unique in current collection
+  // Must unique globally in current **workspace**, it allows users to move
+  // the request to differnt collection
   readonly id?: string;
   readonly name?: string;
   readonly description?: string;
@@ -29,14 +30,14 @@ export interface ApiResource {
 
 export interface CollectionResource {
   readonly key: string;
-  // Must unique in current workspace
+  // Must unique globally in current **workspace**.
   readonly id?: string;
   readonly name?: string;
   readonly description?: string;
   readonly headers?: RequestHeaders;
   readonly valuesMap?: ValuesMap;
   readonly baseUrl?: string;
-  readonly apis: readonly ApiResource[];
+  readonly requests: readonly RequestResource[];
 }
 
 export interface WorkspaceEnvironment {
@@ -55,10 +56,8 @@ export interface WorkspaceSummary {
   readonly environmentName?: string;
 }
 
-export type WorkspaceResource = ApiResource | CollectionResource;
-
 export interface Workspace extends WorkspaceSummary {
   readonly description?: string;
   readonly environments: readonly WorkspaceEnvironment[];
-  readonly apis: readonly WorkspaceResource[];
+  readonly collections: readonly CollectionResource[];
 }
