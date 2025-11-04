@@ -1,6 +1,6 @@
 import { resolveConfig } from '@/lib/resolveWorkspace/resolveConfig';
 
-describe('resolveApiResource', () => {
+describe('resolveConfig', () => {
   test('invalid source', () => {
     expect(resolveConfig({ source: null })).toBeUndefined();
   });
