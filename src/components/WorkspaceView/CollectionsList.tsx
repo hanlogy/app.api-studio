@@ -1,6 +1,12 @@
 import type { RequestResource, CollectionResource } from '@/definitions';
 import { Text, View } from 'react-native';
 import { Button } from '../Button';
+import { ChevronDown, ChevronRight } from '../icons/icons';
+import {
+  collectionItemStyles,
+  requestItemStyles,
+} from './CollectionsList.styles';
+import { useState } from 'react';
 
 export function CollectionsList({
   collections,
@@ -21,19 +27,27 @@ function CollectionItem({
 }: {
   collection: CollectionResource;
 }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   return (
     <View>
-      <Button>
-        <View>
-          <Text> &gt; {name}</Text>
-        </View>
+      <Button
+        onPress={() => setIsExpanded(prev => !prev)}
+        style={collectionItemStyles.button}
+        hoveredStyle={collectionItemStyles.buttonHovered}
+        pressedStyle={collectionItemStyles.buttonPressed}>
+        {isExpanded ? <ChevronDown /> : <ChevronRight />}
+
+        <Text>{name}</Text>
       </Button>
 
-      <View>
-        {requests.map(request => {
-          return <RequestItem key={request.key} request={request} />;
-        })}
-      </View>
+      {isExpanded && (
+        <View style={collectionItemStyles.requestsList}>
+          {requests.map(request => {
+            return <RequestItem key={request.key} request={request} />;
+          })}
+        </View>
+      )}
     </View>
   );
 }
@@ -44,8 +58,16 @@ function RequestItem({
   request: RequestResource;
 }) {
   return (
-    <View>
-      <Text>{name}</Text>
-    </View>
+    <Button
+      style={requestItemStyles.button}
+      hoveredStyle={requestItemStyles.buttonHovered}
+      pressedStyle={requestItemStyles.buttonPressed}>
+      <Text
+        numberOfLines={1}
+        ellipsizeMode="tail"
+        style={requestItemStyles.text}>
+        {name}
+      </Text>
+    </Button>
   );
 }
