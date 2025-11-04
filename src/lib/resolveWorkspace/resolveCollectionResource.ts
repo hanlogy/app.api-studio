@@ -6,9 +6,14 @@ import {
 } from '@/definitions';
 import { isPlainObject } from '@/helpers/checkTypes';
 import { resolveValuesMap } from './resolveValuesMap';
-import { pickWhenString, removeUndefined } from '@/helpers/filterValues';
+import {
+  pickWhenString,
+  stringFromStringOrNumber,
+  removeUndefined,
+} from '@/helpers/filterValues';
 import { resolveApiResource } from './resolveApiResource';
 import { resolveStringRecord, resolveUrl } from './simpleResolvers';
+import { generateKey } from './generateKey';
 
 export function resolveCollectionResource({
   source,
@@ -21,7 +26,15 @@ export function resolveCollectionResource({
     return undefined;
   }
 
-  const { name, baseUrl, description, headers, apis = [], ...rest } = source;
+  const {
+    id,
+    name,
+    baseUrl,
+    description,
+    headers,
+    apis = [],
+    ...rest
+  } = source;
 
   const localValuesMap = resolveValuesMap({
     source: rest,
@@ -29,8 +42,11 @@ export function resolveCollectionResource({
   });
 
   const valuesMap = { ...externalValuesMap, ...(localValuesMap ?? {}) };
+  const resolvedId = stringFromStringOrNumber(id);
 
   return removeUndefined({
+    key: generateKey('collection', resolvedId),
+    id: resolvedId,
     name: pickWhenString(name),
     description: pickWhenString(description),
     baseUrl: resolveUrl({ source: baseUrl, valuesMap }),

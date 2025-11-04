@@ -8,8 +8,13 @@ import {
 import { isPlainObject } from '@/helpers/checkTypes';
 import { resolveValuesMap } from './resolveValuesMap';
 import { resolveJsonValue } from './resolveJsonValue';
-import { pickWhenString, removeUndefined } from '@/helpers/filterValues';
+import {
+  pickWhenString,
+  removeUndefined,
+  stringFromStringOrNumber,
+} from '@/helpers/filterValues';
 import { resolveStringRecord, resolveUrl } from './simpleResolvers';
+import { generateKey } from './generateKey';
 
 export function resolveApiResource({
   source,
@@ -31,9 +36,11 @@ export function resolveApiResource({
   });
 
   const valuesMap = { ...externalValuesMap, ...(localValuesMap ?? {}) };
+  const resolvedId = stringFromStringOrNumber(id);
 
   return removeUndefined({
-    id: pickWhenString(id),
+    key: generateKey('api', resolvedId),
+    id: resolvedId,
     name: pickWhenString(name),
     description: pickWhenString(description),
     url: resolveUrl({ source: url, valuesMap }),

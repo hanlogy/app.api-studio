@@ -14,7 +14,8 @@ export interface WorkspaceFiles {
 // NOTE: The url, headers, and body should be the only resolved result, but not
 // the assembled one, we assemble it at the UI rendering step
 export interface ApiResource {
-  // The id must globally unique in a workspace.
+  readonly key: string;
+  // Must unique in current collection
   readonly id?: string;
   readonly name?: string;
   readonly description?: string;
@@ -27,6 +28,9 @@ export interface ApiResource {
 }
 
 export interface CollectionResource {
+  readonly key: string;
+  // Must unique in current workspace
+  readonly id?: string;
   readonly name?: string;
   readonly description?: string;
   readonly headers?: RequestHeaders;
@@ -51,8 +55,10 @@ export interface WorkspaceSummary {
   readonly environmentName?: string;
 }
 
+export type WorkspaceResource = ApiResource | CollectionResource;
+
 export interface Workspace extends WorkspaceSummary {
   readonly description?: string;
   readonly environments: readonly WorkspaceEnvironment[];
-  readonly apis: readonly (ApiResource | CollectionResource)[];
+  readonly apis: readonly WorkspaceResource[];
 }
