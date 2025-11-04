@@ -1,7 +1,7 @@
 import { ScrollView, Text, View } from 'react-native';
 import { styles } from './WorkspaceView.styles';
 import { useStudioConext } from '@/states/studio/useStudioConext';
-import { ApiList } from './ApiList';
+import { CollectionsList } from './CollectionsList';
 
 export function WorkspaceView() {
   const {
@@ -12,13 +12,13 @@ export function WorkspaceView() {
     return <></>;
   }
 
-  const { apis } = workspace;
+  const { collections } = workspace;
 
   return (
     <View style={styles.container}>
       <ScrollView style={styles.leftView}>
         <View style={styles.leftContent}>
-          <ApiList apis={apis} />
+          <CollectionsList collections={collections} />
         </View>
       </ScrollView>
       <ScrollView style={styles.rightView}>
