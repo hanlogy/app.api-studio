@@ -1,5 +1,6 @@
 import type { JsonValue } from '@/definitions';
 import { stringFromStringOrNumber } from '@/helpers/filterValues';
+import { toSafeId } from '@/helpers/toSafeId';
 
 interface Args {
   accumulateIds: string[];
@@ -46,13 +47,7 @@ export function resolveResourceKeys(
   const resolvedName = stringFromStringOrNumber(name);
 
   if (!resolvedId) {
-    resolvedId = resolvedName
-      ? resolvedName
-          .trim()
-          .replaceAll(/\s+/g, '_')
-          .replaceAll(/-+/g, '_')
-          .toLocaleLowerCase()
-      : undefined;
+    resolvedId = resolvedName ? toSafeId(resolvedName) : undefined;
   }
 
   if (!resolvedId) {
