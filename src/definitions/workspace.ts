@@ -22,8 +22,8 @@ export interface RequestResource {
   readonly key: [key: string, collectionKey: string];
   // Must unique globally in current **workspace**, it allows users to move
   // the request to differnt collection
-  readonly id?: string;
-  readonly name?: string;
+  readonly id: string;
+  readonly name: string;
   readonly description?: string;
   readonly method?: RequestMethod;
   readonly url?: string;
@@ -36,8 +36,8 @@ export interface RequestResource {
 export interface CollectionResource {
   readonly key: string;
   // Must unique globally in current **workspace**.
-  readonly id?: string;
-  readonly name?: string;
+  readonly id: string;
+  readonly name: string;
   readonly description?: string;
   readonly headers?: RequestHeaders;
   readonly valuesMap?: ValuesMap;

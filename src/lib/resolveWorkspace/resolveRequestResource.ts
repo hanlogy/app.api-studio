@@ -8,21 +8,19 @@ import {
 import { isPlainObject } from '@/helpers/checkTypes';
 import { resolveValuesMap } from './resolveValuesMap';
 import { resolveJsonValue } from './resolveJsonValue';
-import {
-  pickWhenString,
-  removeUndefined,
-  stringFromStringOrNumber,
-} from '@/helpers/filterValues';
+import { pickWhenString, removeUndefined } from '@/helpers/filterValues';
 import { resolveStringRecord, resolveUrl } from './simpleResolvers';
-import { resolveResourceKey } from './resolveResourceKey';
+import { resolveResourceKeys } from './resolveResourceKeys';
 
 export function resolveRequestResource({
   source,
   collectionKey,
+  accumulateIds,
   valuesMap: externalValuesMap = {},
 }: {
   source: JsonValue;
   collectionKey: string;
+  accumulateIds: string[];
   valuesMap?: ValuesMap;
 }): RequestResource | undefined {
   if (!isPlainObject(source)) {
@@ -38,17 +36,19 @@ export function resolveRequestResource({
   });
 
   const valuesMap = { ...externalValuesMap, ...(localValuesMap ?? {}) };
-  const resolvedId = stringFromStringOrNumber(id);
-  const resolvedName = stringFromStringOrNumber(name);
+  const keys = resolveResourceKeys('request', {
+    collectionKey,
+    name,
+    id,
+    accumulateIds,
+  });
+
+  if (!keys) {
+    return undefined;
+  }
 
   return removeUndefined({
-    key: resolveResourceKey('request', {
-      collectionKey,
-      id: resolvedId,
-      name: resolvedName,
-    }),
-    id: resolvedId,
-    name: resolvedName,
+    ...keys,
     description: pickWhenString(description),
     url: resolveUrl({ source: url, valuesMap }),
     method: resolveMethod({ source: method }),

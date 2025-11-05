@@ -6,20 +6,18 @@ import {
 } from '@/definitions';
 import { isPlainObject } from '@/helpers/checkTypes';
 import { resolveValuesMap } from './resolveValuesMap';
-import {
-  pickWhenString,
-  stringFromStringOrNumber,
-  removeUndefined,
-} from '@/helpers/filterValues';
+import { pickWhenString, removeUndefined } from '@/helpers/filterValues';
 import { resolveRequestResource } from './resolveRequestResource';
 import { resolveStringRecord, resolveUrl } from './simpleResolvers';
-import { resolveResourceKey } from './resolveResourceKey';
+import { resolveResourceKeys } from './resolveResourceKeys';
 
 export function resolveCollectionResource({
   source,
   valuesMap: externalValuesMap = {},
+  accumulateIds,
 }: {
   source: JsonValue;
+  accumulateIds: string[];
   valuesMap?: ValuesMap;
 }): CollectionResource | undefined {
   if (!isPlainObject(source)) {
@@ -42,17 +40,18 @@ export function resolveCollectionResource({
   });
 
   const valuesMap = { ...externalValuesMap, ...(localValuesMap ?? {}) };
-  const resolvedId = stringFromStringOrNumber(id);
-  const resolvedName = stringFromStringOrNumber(name);
-  const key = resolveResourceKey('collection', {
-    id: resolvedId,
-    name: resolvedName,
+  const keys = resolveResourceKeys('collection', {
+    name,
+    id,
+    accumulateIds,
   });
 
+  if (!keys) {
+    return undefined;
+  }
+
   return removeUndefined({
-    key,
-    id: resolvedId,
-    name: resolvedName,
+    ...keys,
     description: pickWhenString(description),
     baseUrl: resolveUrl({ source: baseUrl, valuesMap }),
     headers: resolveStringRecord({ source: headers, valuesMap }),
@@ -60,7 +59,7 @@ export function resolveCollectionResource({
     requests: resolveRequests({
       source: requests,
       valuesMap,
-      collectionKey: key,
+      collectionKey: keys.key,
     }),
   });
 }
@@ -78,9 +77,16 @@ function resolveRequests({
     return [];
   }
 
+  const accumulateIds: string[] = [];
+
   return source
     .map(item =>
-      resolveRequestResource({ source: item, valuesMap, collectionKey }),
+      resolveRequestResource({
+        source: item,
+        valuesMap,
+        collectionKey,
+        accumulateIds,
+      }),
     )
     .filter(e => e !== undefined);
 }

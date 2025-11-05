@@ -3,7 +3,11 @@ import { resolveRequestResource } from '@/lib/resolveWorkspace/resolveRequestRes
 describe('resolveRequestResource', () => {
   test('invalid source', () => {
     expect(
-      resolveRequestResource({ collectionKey: '1', source: null }),
+      resolveRequestResource({
+        collectionKey: '1',
+        source: null,
+        accumulateIds: [],
+      }),
     ).toBeUndefined();
   });
 
@@ -12,15 +16,15 @@ describe('resolveRequestResource', () => {
       resolveRequestResource({
         collectionKey: '1',
         source: {},
+        accumulateIds: [],
       }),
-    ).toStrictEqual({
-      key: expect.any(Array),
-    });
+    ).toBeUndefined();
   });
 
   test('with everything', () => {
     expect(
       resolveRequestResource({
+        accumulateIds: [],
         collectionKey: 'collection_1',
         source: {
           name: 'request-1',
@@ -40,6 +44,7 @@ describe('resolveRequestResource', () => {
       }),
     ).toStrictEqual({
       key: expect.any(Array),
+      id: 'request_1',
       name: 'request-1',
       method: 'POST',
       url: 'api',

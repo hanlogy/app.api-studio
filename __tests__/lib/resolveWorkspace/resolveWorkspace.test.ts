@@ -84,6 +84,7 @@ describe('resolveWorkspace', () => {
       collections: [
         {
           key: expect.any(String),
+          id: 'my_collection',
           name: 'My Collection',
           description: 'Test app',
           baseUrl: 'https://dev.api/profile',
@@ -95,6 +96,7 @@ describe('resolveWorkspace', () => {
           requests: [
             {
               key: expect.any(Array),
+              id: 'api_1',
               name: 'api-1',
               method: 'POST',
               url: 'update',

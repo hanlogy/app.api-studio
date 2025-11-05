@@ -31,6 +31,8 @@ export function resolveWorkspace({
     environmentName,
   });
 
+  const accumulateCollectionIds: string[] = [];
+
   return removeUndefined({
     name,
     description,
@@ -43,6 +45,7 @@ export function resolveWorkspace({
         return resolveCollectionResource({
           source: rawEndpontResource,
           valuesMap: environmentValuesMap,
+          accumulateIds: accumulateCollectionIds,
         });
       })
       .filter(e => e !== undefined),

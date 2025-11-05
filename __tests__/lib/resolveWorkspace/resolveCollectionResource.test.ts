@@ -2,19 +2,21 @@ import { resolveCollectionResource } from '@/lib/resolveWorkspace/resolveCollect
 
 describe('resolveCollectionResource', () => {
   test('invalid source', () => {
-    expect(resolveCollectionResource({ source: null })).toBeUndefined();
+    expect(
+      resolveCollectionResource({ source: null, accumulateIds: [] }),
+    ).toBeUndefined();
   });
 
   test('empty input', () => {
-    expect(resolveCollectionResource({ source: {} })).toStrictEqual({
-      key: expect.any(String),
-      requests: [],
-    });
+    expect(
+      resolveCollectionResource({ source: {}, accumulateIds: [] }),
+    ).toBeUndefined();
   });
 
   test('with everything', () => {
     expect(
       resolveCollectionResource({
+        accumulateIds: [],
         source: {
           name: 'My Collection',
           description: 'Test app',
@@ -44,6 +46,7 @@ describe('resolveCollectionResource', () => {
       }),
     ).toStrictEqual({
       key: expect.any(String),
+      id: 'my_collection',
       name: 'My Collection',
       description: 'Test app',
       baseUrl: 'https://api.dev',
@@ -54,6 +57,7 @@ describe('resolveCollectionResource', () => {
       requests: [
         {
           key: expect.any(Array),
+          id: 'request_1',
           name: 'request-1',
           method: 'POST',
           url: 'api',
