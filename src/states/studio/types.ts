@@ -1,46 +1,6 @@
-import {
-  type AppError,
-  type RequestResource,
-  type Workspace,
-  type WorkspaceSummary,
-} from '@/definitions';
+import { type WorkspaceSummary } from '@/definitions';
 
-/**
- * - `initializing`: reading from cache
- * - `waiting`: no workspace opened
- * - `loading`: when reading and parsing workspace files (initial,
- *   background refresh, or workspace switched).
- * - `ready`: when data is ready and no file operations are in progress.
- */
-export type StudioStateStatus =
-  | 'initializing'
-  | 'waiting'
-  | 'loading'
-  | 'ready'
-  | 'error';
-
-type BaseStudioState = {
-  readonly workspaces?: readonly WorkspaceSummary[];
-  readonly workspace?: Workspace;
-  readonly error?: AppError;
-};
-
-export type StudioState =
-  | (BaseStudioState & {
-      readonly status: 'initializing';
-    })
-  | (BaseStudioState & {
-      readonly status: 'waiting';
-    } & Required<Pick<BaseStudioState, 'workspaces'>>)
-  | (BaseStudioState & {
-      readonly status: 'loading';
-    } & Required<Pick<BaseStudioState, 'workspaces'>>)
-  | (BaseStudioState & {
-      readonly status: 'ready';
-    } & Required<Pick<BaseStudioState, 'workspaces' | 'workspace'>>)
-  | (BaseStudioState & {
-      readonly status: 'error';
-    } & Required<Pick<BaseStudioState, 'error'>>);
+export type StudioStateStatus = 'initializing' | 'ready';
 
 export interface StudioStateCache {
   /**
@@ -49,10 +9,12 @@ export interface StudioStateCache {
   readonly workspaces?: readonly WorkspaceSummary[];
 }
 
-export interface StudioContextValue {
-  readonly state: StudioState;
-  readonly openedRequest?: RequestResource;
-  readonly openRequest: (key: string) => void;
-  readonly openWorkspace: (dir: string) => void;
-  readonly selectEnvironment: (name?: string) => void;
-}
+export type StudioContextValue =
+  | {
+      readonly status: 'initializing';
+      workspaces?: readonly WorkspaceSummary[];
+    }
+  | {
+      readonly status: 'ready';
+      workspaces: readonly WorkspaceSummary[];
+    };

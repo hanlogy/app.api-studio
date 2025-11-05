@@ -1,25 +1,22 @@
 import React from 'react';
 import { LogBox } from 'react-native';
-
 import { StudioLayout } from '@/components/StudioLayout/StudioLayout';
-import { StudioLoader } from '@/components/StudioLoader/StudioLoader';
-import { StudioContextProvider } from '@/states/studio/StudioContextProvider';
-import { WorkspaceView } from './components/WorkspaceView/WorkspaceView';
+import { WorkspaceView } from '@/components/WorkspaceView/WorkspaceView';
+import { WorkspaceContextProvider } from '@/states/workspace/WorkspaceContextProvider';
+import { StudioContextProvider } from '@/states/studio';
 
 LogBox.ignoreLogs([
   'Sending `onAnimatedValueUpdate` with no listeners registered.',
 ]);
 
-const App = (): React.JSX.Element => {
+export default function App() {
   return (
     <StudioContextProvider>
-      <StudioLoader>
-        <StudioLayout>
+      <StudioLayout>
+        <WorkspaceContextProvider>
           <WorkspaceView />
-        </StudioLayout>
-      </StudioLoader>
+        </WorkspaceContextProvider>
+      </StudioLayout>
     </StudioContextProvider>
   );
-};
-
-export default App;
+}
