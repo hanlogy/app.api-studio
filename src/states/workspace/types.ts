@@ -7,7 +7,7 @@ type WorkspaceContextValueBase = {
   readonly workspace?: Workspace;
   readonly error?: AppError;
   readonly openWorkspace: (dir: string) => void;
-  readonly openRequest?: (key: string) => void;
+  readonly openRequest?: (key: [string, string]) => void;
   readonly selectEnvironment?: (name?: string) => void;
 };
 

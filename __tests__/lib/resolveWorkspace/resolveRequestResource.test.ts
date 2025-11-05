@@ -2,22 +2,26 @@ import { resolveRequestResource } from '@/lib/resolveWorkspace/resolveRequestRes
 
 describe('resolveRequestResource', () => {
   test('invalid source', () => {
-    expect(resolveRequestResource({ source: null })).toBeUndefined();
+    expect(
+      resolveRequestResource({ collectionKey: '1', source: null }),
+    ).toBeUndefined();
   });
 
   test('empty', () => {
     expect(
       resolveRequestResource({
+        collectionKey: '1',
         source: {},
       }),
     ).toStrictEqual({
-      key: expect.any(String),
+      key: expect.any(Array),
     });
   });
 
   test('with everything', () => {
     expect(
       resolveRequestResource({
+        collectionKey: 'collection_1',
         source: {
           name: 'request-1',
           method: 'POST',
@@ -35,7 +39,7 @@ describe('resolveRequestResource', () => {
         },
       }),
     ).toStrictEqual({
-      key: expect.stringMatching(/^TEMPORARY_REQUEST_ID_/),
+      key: expect.any(Array),
       name: 'request-1',
       method: 'POST',
       url: 'api',

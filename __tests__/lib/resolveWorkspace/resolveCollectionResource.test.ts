@@ -43,7 +43,7 @@ describe('resolveCollectionResource', () => {
         },
       }),
     ).toStrictEqual({
-      key: expect.stringMatching(/^TEMPORARY_COLLECTION_ID_/),
+      key: expect.any(String),
       name: 'My Collection',
       description: 'Test app',
       baseUrl: 'https://api.dev',
@@ -53,7 +53,7 @@ describe('resolveCollectionResource', () => {
       },
       requests: [
         {
-          key: expect.any(String),
+          key: expect.any(Array),
           name: 'request-1',
           method: 'POST',
           url: 'api',

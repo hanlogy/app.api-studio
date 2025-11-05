@@ -14,13 +14,15 @@ import {
   stringFromStringOrNumber,
 } from '@/helpers/filterValues';
 import { resolveStringRecord, resolveUrl } from './simpleResolvers';
-import { generateKey } from './generateKey';
+import { resolveResourceKey } from './resolveResourceKey';
 
 export function resolveRequestResource({
   source,
+  collectionKey,
   valuesMap: externalValuesMap = {},
 }: {
   source: JsonValue;
+  collectionKey: string;
   valuesMap?: ValuesMap;
 }): RequestResource | undefined {
   if (!isPlainObject(source)) {
@@ -37,11 +39,16 @@ export function resolveRequestResource({
 
   const valuesMap = { ...externalValuesMap, ...(localValuesMap ?? {}) };
   const resolvedId = stringFromStringOrNumber(id);
+  const resolvedName = stringFromStringOrNumber(name);
 
   return removeUndefined({
-    key: generateKey('request', resolvedId),
+    key: resolveResourceKey('request', {
+      collectionKey,
+      id: resolvedId,
+      name: resolvedName,
+    }),
     id: resolvedId,
-    name: pickWhenString(name),
+    name: resolvedName,
     description: pickWhenString(description),
     url: resolveUrl({ source: url, valuesMap }),
     method: resolveMethod({ source: method }),

@@ -13,7 +13,7 @@ import {
 } from '@/helpers/filterValues';
 import { resolveRequestResource } from './resolveRequestResource';
 import { resolveStringRecord, resolveUrl } from './simpleResolvers';
-import { generateKey } from './generateKey';
+import { resolveResourceKey } from './resolveResourceKey';
 
 export function resolveCollectionResource({
   source,
@@ -43,24 +43,35 @@ export function resolveCollectionResource({
 
   const valuesMap = { ...externalValuesMap, ...(localValuesMap ?? {}) };
   const resolvedId = stringFromStringOrNumber(id);
+  const resolvedName = stringFromStringOrNumber(name);
+  const key = resolveResourceKey('collection', {
+    id: resolvedId,
+    name: resolvedName,
+  });
 
   return removeUndefined({
-    key: generateKey('collection', resolvedId),
+    key,
     id: resolvedId,
-    name: pickWhenString(name),
+    name: resolvedName,
     description: pickWhenString(description),
     baseUrl: resolveUrl({ source: baseUrl, valuesMap }),
     headers: resolveStringRecord({ source: headers, valuesMap }),
     valuesMap: localValuesMap,
-    requests: resolveRequests({ source: requests, valuesMap }),
+    requests: resolveRequests({
+      source: requests,
+      valuesMap,
+      collectionKey: key,
+    }),
   });
 }
 
 function resolveRequests({
   source,
+  collectionKey,
   valuesMap,
 }: {
   source: JsonValue;
+  collectionKey: string;
   valuesMap: ValuesMap;
 }): RequestResource[] {
   if (!source || !Array.isArray(source)) {
@@ -68,6 +79,8 @@ function resolveRequests({
   }
 
   return source
-    .map(item => resolveRequestResource({ source: item, valuesMap }))
+    .map(item =>
+      resolveRequestResource({ source: item, valuesMap, collectionKey }),
+    )
     .filter(e => e !== undefined);
 }

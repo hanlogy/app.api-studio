@@ -45,7 +45,9 @@ function CollectionItem({
       {isExpanded && (
         <View style={collectionItemStyles.requestsList}>
           {requests.map(request => {
-            return <RequestItem key={request.key} request={request} />;
+            return (
+              <RequestItem key={request.key.join('-')} request={request} />
+            );
           })}
         </View>
       )}

@@ -15,7 +15,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   const [status, setStatus] = useState<WorkspaceStatus>('waiting');
   const [dir, setWorkspaceDir] = useState<string>();
   const [sources, setSources] = useState<WorkspaceResources>();
-  const [openedRequestKey, openRequest] = useState<string>();
+  const [openedRequestKey, openRequest] = useState<[string, string]>();
   const [environmentName, selectEnvironment] = useState<string>();
   const [workspace, setWorkspace] = useState<Workspace>();
 
@@ -82,7 +82,11 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     }
     for (const collection of collections) {
       for (const request of collection.requests) {
-        if (request.key === openedRequestKey) {
+        if (
+          openedRequestKey &&
+          request.key[0] === openedRequestKey[0] &&
+          request.key[1] === openedRequestKey[1]
+        ) {
           return request;
         }
       }

@@ -19,7 +19,7 @@ export interface WorkspaceResources {
 // NOTE: The url, headers, and body should be the only resolved result, but not
 // the assembled one, we assemble it at the UI rendering step
 export interface RequestResource {
-  readonly key: string;
+  readonly key: [key: string, collectionKey: string];
   // Must unique globally in current **workspace**, it allows users to move
   // the request to differnt collection
   readonly id?: string;

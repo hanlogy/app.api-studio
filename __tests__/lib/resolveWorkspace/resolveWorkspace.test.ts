@@ -94,7 +94,7 @@ describe('resolveWorkspace', () => {
           },
           requests: [
             {
-              key: expect.any(String),
+              key: expect.any(Array),
               name: 'api-1',
               method: 'POST',
               url: 'update',
