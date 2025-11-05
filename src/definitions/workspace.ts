@@ -1,14 +1,19 @@
-import type { JsonValue, PrimitiveRecord, ValuesMap } from './basic';
-import { requestMethods, WORKSPACE_CONFIG_FILE } from './constants';
+import type {
+  JsonRecord,
+  JsonValue,
+  PrimitiveRecord,
+  ValuesMap,
+} from './basic';
+import { requestMethods } from './constants';
 
 export type RequestHeaders = PrimitiveRecord<string>;
 export type RequestQuery = PrimitiveRecord<string>;
 
 export type RequestMethod = (typeof requestMethods)[number];
 
-export interface WorkspaceFiles {
-  readonly config: typeof WORKSPACE_CONFIG_FILE;
-  readonly collections: readonly string[];
+export interface WorkspaceResources {
+  readonly config: JsonRecord;
+  readonly collections: readonly JsonRecord[];
 }
 
 // NOTE: The url, headers, and body should be the only resolved result, but not
