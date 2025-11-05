@@ -1,5 +1,5 @@
 import { Button, NativeModules } from 'react-native';
-import { useStudioConext } from '../states/studio/useStudioConext';
+import { useStudioConext } from '../states/studio/context';
 
 export const OpenWorkspaceButton = () => {
   const {

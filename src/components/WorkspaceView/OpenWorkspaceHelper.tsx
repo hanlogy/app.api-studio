@@ -1,15 +1,18 @@
 import { Text, View } from 'react-native';
 
-import { useStudioConext } from '@/states/studio/useStudioConext';
 import { pickFolder } from '@/helpers/pickFolder';
-import { styles, tileStyles, openButtonStyles } from './WelcomeView.styles';
+import {
+  styles,
+  tileStyles,
+  openButtonStyles,
+} from './OpenWorkspaceHelper.styles';
 import { Button } from '../Button';
+import { useWorkspaceConext } from '@/states/workspace/context';
+import { useStudioConext } from '@/states/studio';
 
-export function WelcomeView() {
-  const {
-    state: { workspaces },
-    openWorkspace,
-  } = useStudioConext();
+export function OpenWorkspaceHelper() {
+  const { workspaces } = useStudioConext();
+  const { openWorkspace } = useWorkspaceConext();
 
   return (
     <View style={styles.container}>
