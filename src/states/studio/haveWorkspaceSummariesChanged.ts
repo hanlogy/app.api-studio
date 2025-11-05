@@ -1,4 +1,4 @@
-import { WorkspaceSummary } from '@/definitions';
+import { type WorkspaceSummary } from '@/definitions';
 
 export function haveWorkspaceSummariesChanged(
   itemsA: readonly WorkspaceSummary[],

@@ -14,8 +14,8 @@ export function resolveWorkspace({
   environmentName,
 }: {
   sources: {
-    config: JsonValue;
-    collections: JsonValue[];
+    readonly config: JsonValue;
+    readonly collections: readonly JsonValue[];
   };
   environmentName?: string;
 }): Omit<Workspace, 'dir' | 'environmentName'> | undefined {
