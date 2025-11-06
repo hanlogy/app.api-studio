@@ -1,6 +1,6 @@
 import type { RequestResource, CollectionResource } from '@/definitions';
 import { Text, View } from 'react-native';
-import { Button } from '../Button';
+import { Clickable } from '../clickables';
 import { ChevronDown, ChevronRight } from '../icons/icons';
 import {
   collectionItemStyles,
@@ -32,7 +32,7 @@ function CollectionItem({
 
   return (
     <View>
-      <Button
+      <Clickable
         onPress={() => setIsExpanded(prev => !prev)}
         style={collectionItemStyles.button}
         hoveredStyle={collectionItemStyles.buttonHovered}
@@ -40,7 +40,7 @@ function CollectionItem({
         {isExpanded ? <ChevronDown /> : <ChevronRight />}
 
         <Text>{name}</Text>
-      </Button>
+      </Clickable>
 
       {isExpanded && (
         <View style={collectionItemStyles.requestsList}>
@@ -60,7 +60,7 @@ function RequestItem({ request }: { request: RequestResource }) {
   const { name = 'unnamed' } = request;
 
   return (
-    <Button
+    <Clickable
       onPress={() => openRequest?.(request.key)}
       style={requestItemStyles.button}
       hoveredStyle={requestItemStyles.buttonHovered}
@@ -71,6 +71,6 @@ function RequestItem({ request }: { request: RequestResource }) {
         style={requestItemStyles.text}>
         {name}
       </Text>
-    </Button>
+    </Clickable>
   );
 }

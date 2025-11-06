@@ -2,7 +2,7 @@ import { useWorkspaceConext } from '@/states/workspace';
 import { Text, View } from 'react-native';
 import { styles } from './EnvironmentSelect.styles';
 import { ChevronDown } from '../icons/icons';
-import { Button } from '../Button';
+import { Clickable } from '../clickables';
 import { useState } from 'react';
 
 export function EnvironmentSelect() {
@@ -18,7 +18,7 @@ export function EnvironmentSelect() {
 
   return (
     <View style={styles.container}>
-      <Button
+      <Clickable
         onPress={() => {
           setDropdownShown(prev => !prev);
         }}
@@ -29,14 +29,14 @@ export function EnvironmentSelect() {
           {selectedEnvironment ?? 'No Environment'}
         </Text>
         <ChevronDown />
-      </Button>
+      </Clickable>
       {dropdownShown && (
         <View style={styles.dropdown}>
           {environments
             .filter(({ isGlobal }) => !isGlobal)
             .map(({ name }) => {
               return (
-                <Button
+                <Clickable
                   onPress={() => {
                     setDropdownShown(false);
                     selectEnvironment?.(name);
@@ -46,7 +46,7 @@ export function EnvironmentSelect() {
                   hoveredStyle={styles.dropdownItemHovered}
                   pressedStyle={styles.dropdownItemPressed}>
                   <Text>{name}</Text>
-                </Button>
+                </Clickable>
               );
             })}
         </View>

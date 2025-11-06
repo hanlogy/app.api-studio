@@ -9,7 +9,7 @@ type Props = PropsWithChildren<
   }
 >;
 
-export function Button({
+export function Clickable({
   children,
   style,
   pressedStyle,
@@ -24,7 +24,7 @@ export function Button({
       onHoverIn={hasHoveredStyle ? () => setHovered(true) : undefined}
       onHoverOut={hasHoveredStyle ? () => setHovered(false) : undefined}
       style={({ pressed }) => [
-        {cursor: 'pointer'},
+        { cursor: 'pointer' },
         style,
         hovered && hoveredStyle,
         pressed && pressedStyle,

@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
 import { styles } from './RequestView.styles';
-import { Button } from '../Button';
+import { Clickable } from '../clickables';
 import { sendRequest } from '@/lib/sendRequest';
 import { useWorkspaceConext } from '@/states/workspace';
 
@@ -36,13 +36,13 @@ export function RequestView({}: {}) {
             <Text style={styles.urlText}>{url}</Text>
           </View>
         </View>
-        <Button
+        <Clickable
           onPress={onSendRequest}
           style={styles.sendButton}
           hoveredStyle={styles.sendButtonHovered}
           pressedStyle={styles.sendButtonPressed}>
           <Text style={styles.sendButtonText}>Send</Text>
-        </Button>
+        </Clickable>
       </View>
       {body && (
         <View style={styles.body}>

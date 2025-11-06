@@ -1,14 +1,13 @@
 import { Text, View } from 'react-native';
-
 import { pickFolder } from '@/helpers/pickFolder';
+import { Clickable } from '../clickables';
+import { useWorkspaceConext } from '@/states/workspace/context';
+import { useStudioConext } from '@/states/studio';
 import {
   styles,
   tileStyles,
   openButtonStyles,
 } from './OpenWorkspaceHelper.styles';
-import { Button } from '../Button';
-import { useWorkspaceConext } from '@/states/workspace/context';
-import { useStudioConext } from '@/states/studio';
 
 export function OpenWorkspaceHelper() {
   const { workspaces } = useStudioConext();
@@ -17,7 +16,7 @@ export function OpenWorkspaceHelper() {
   return (
     <View style={styles.container}>
       <View style={styles.left}>
-        <Button
+        <Clickable
           style={openButtonStyles.default}
           hoveredStyle={openButtonStyles.hovered}
           pressedStyle={openButtonStyles.pressed}
@@ -25,7 +24,7 @@ export function OpenWorkspaceHelper() {
             openWorkspace(await pickFolder());
           }}>
           <Text>Open Workspace...</Text>
-        </Button>
+        </Clickable>
       </View>
       <View style={styles.right}>
         {workspaces && workspaces.length > 0 && (
@@ -33,7 +32,7 @@ export function OpenWorkspaceHelper() {
             <Text style={styles.openRecentTitle}>Open Recent...</Text>
             {workspaces.map(({ name, dir }) => {
               return (
-                <Button
+                <Clickable
                   key={dir}
                   onPress={() => openWorkspace(dir)}
                   style={tileStyles.default}
@@ -41,7 +40,7 @@ export function OpenWorkspaceHelper() {
                   pressedStyle={tileStyles.pressed}>
                   <Text style={tileStyles.name}>{name ?? 'unnamed'}</Text>
                   <Text style={tileStyles.dir}>{dir}</Text>
-                </Button>
+                </Clickable>
               );
             })}
           </>
