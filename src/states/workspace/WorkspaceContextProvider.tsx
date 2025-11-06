@@ -1,5 +1,6 @@
 import {
   AppError,
+  type RequestResourceKey,
   type Workspace,
   type WorkspaceResources,
 } from '@/definitions';
@@ -22,11 +23,11 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   const [status, setStatus] = useState<WorkspaceStatus>('waiting');
   const [dir, setWorkspaceDir] = useState<string>();
   const [sources, setSources] = useState<WorkspaceResources>();
-  const [openedRequestKey, openRequest] = useState<[string, string]>();
-  const [environmentName, selectEnvironment] = useState<string>();
+  const [openedRequestKey, openRequest] = useState<RequestResourceKey>();
+  const [selectedEnvironment, selectEnvironment] = useState<string>();
   const [workspace, setWorkspace] = useState<Workspace>();
   const [histories, setHistories] = useState<
-    { key: [string, string]; items: HttpResponse[] }[]
+    { key: RequestResourceKey; items: HttpResponse[] }[]
   >([]);
 
   //When `dir` changed:
@@ -39,7 +40,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     loadWorkspace({ dir, onData: setSources, onError: setError });
   }, [dir, setWorkspaceDir, setError]);
 
-  // when sources or environmentName changed.
+  // when sources or selectedEnvironment changed.
   useEffect(() => {
     if (!dir || !sources) {
       return;
@@ -47,7 +48,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
 
     const resolved = resolveWorkspace({
       sources,
-      environmentName,
+      environmentName: selectedEnvironment,
     });
 
     if (!resolved) {
@@ -62,7 +63,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
 
     setError();
     setWorkspace({ ...resolved, dir });
-  }, [sources, environmentName, dir, setError]);
+  }, [sources, selectedEnvironment, dir, setError]);
 
   useEffect(() => {
     if (!workspace) {
@@ -78,15 +79,20 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
       return;
     }
 
-    const summary = {
+    const cache = {
+      selectedEnvironment,
       name: workspace.name,
       dir: workspace.dir,
     };
-    updateRecentWorkspace?.(summary);
-  }, [workspace, updateRecentWorkspace]);
+    updateRecentWorkspace?.(cache);
+  }, [workspace, updateRecentWorkspace, selectedEnvironment]);
+
+  const sendRequest = useCallback((key: RequestResourceKey) => {
+    //
+  }, []);
 
   const saveHistory = useCallback(
-    (key: [string, string], response: HttpResponse) => {
+    (key: RequestResourceKey, response: HttpResponse) => {
       setHistories(prev => {
         const clone = [...prev];
         let existing = clone.find(e => {
@@ -106,7 +112,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   );
 
   const getHistories = useCallback(
-    (key: [string, string]) => {
+    (key: RequestResourceKey) => {
       return (
         histories.find(e => e.key[0] === key[0] && e.key[1] === key[1])
           ?.items ?? []
@@ -138,7 +144,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     const common = {
       openedRequest,
       selectEnvironment,
-      selectedEnvironment: environmentName,
+      selectedEnvironment,
       openRequest,
       openWorkspace: setWorkspaceDir,
     };
@@ -156,7 +162,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     status,
     workspace,
     openedRequest,
-    environmentName,
+    selectedEnvironment,
     saveHistory,
     getHistories,
   ]);

@@ -5,16 +5,20 @@ import {
   useMemo,
   useState,
 } from 'react';
-import type { StudioContextValue, StudioStateStatus } from './types';
+import type {
+  StudioContextValue,
+  StudioStateStatus,
+  WorkspaceCache,
+} from './types';
 import { readStudioCache, updateStudioCache } from '@/repositories/studioCache';
-import { AppError, type WorkspaceSummary } from '@/definitions';
+import { AppError } from '@/definitions';
 import { StudioContext } from './context';
-import { haveWorkspaceSummariesChanged } from './haveWorkspaceSummariesChanged';
+import { haveWorkspaceCachesChanged } from './haveWorkspaceCachesChanged';
 
 export const StudioContextProvider = ({ children }: PropsWithChildren<{}>) => {
   const [status, setStatus] = useState<StudioStateStatus>('initializing');
   const [error, setError] = useState<AppError | undefined>();
-  const [workspaces, setWorkspaces] = useState<readonly WorkspaceSummary[]>([]);
+  const [workspaces, setWorkspaces] = useState<readonly WorkspaceCache[]>([]);
 
   // When `status` is `initializing`:
   // Load cache, change `status` to `ready`.
@@ -31,7 +35,7 @@ export const StudioContextProvider = ({ children }: PropsWithChildren<{}>) => {
   }, [status]);
 
   const updateRecentWorkspace = useCallback(
-    (workspace: WorkspaceSummary) => {
+    (workspace: WorkspaceCache) => {
       const updatedWorkspaces = workspaces.filter(
         ({ dir }) => dir !== workspace.dir,
       );
@@ -39,10 +43,10 @@ export const StudioContextProvider = ({ children }: PropsWithChildren<{}>) => {
       updatedWorkspaces.unshift({
         name: workspace.name,
         dir: workspace.dir,
-        environmentName: workspace.environmentName,
+        selectedEnvironment: workspace.selectedEnvironment,
       });
 
-      if (haveWorkspaceSummariesChanged(updatedWorkspaces, workspaces)) {
+      if (haveWorkspaceCachesChanged(updatedWorkspaces, workspaces)) {
         setWorkspaces(updatedWorkspaces);
 
         (async () => {
