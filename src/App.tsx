@@ -1,31 +1,22 @@
-/**
- * Api Studio
- * @format
- */
-
 import React from 'react';
-import {ScrollView, StatusBar, Text, View} from 'react-native';
+import { LogBox } from 'react-native';
+import { StudioLayout } from '@/components/StudioLayout/StudioLayout';
+import { WorkspaceView } from '@/components/WorkspaceView/WorkspaceView';
+import { WorkspaceContextProvider } from '@/states/workspace/WorkspaceContextProvider';
+import { StudioContextProvider } from '@/states/studio';
 
-import {styles} from './App.styles';
+LogBox.ignoreLogs([
+  'Sending `onAnimatedValueUpdate` with no listeners registered.',
+]);
 
-function App(): React.JSX.Element {
-  const backgroundStyle = {
-    backgroundColor: 'white',
-  };
-
+export default function App() {
   return (
-    <View style={backgroundStyle}>
-      <StatusBar
-        barStyle="dark-content"
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView style={backgroundStyle}>
-        <View style={styles.container}>
-          <Text>Api Studio</Text>
-        </View>
-      </ScrollView>
-    </View>
+    <StudioContextProvider>
+      <StudioLayout>
+        <WorkspaceContextProvider>
+          <WorkspaceView />
+        </WorkspaceContextProvider>
+      </StudioLayout>
+    </StudioContextProvider>
   );
 }
-
-export default App;

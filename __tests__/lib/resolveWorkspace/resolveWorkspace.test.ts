@@ -1,0 +1,112 @@
+import { resolveWorkspace } from '@/lib/resolveWorkspace/resolveWorkspace';
+
+describe('resolveWorkspace', () => {
+  test('invalid source', () => {
+    expect(
+      resolveWorkspace({ sources: { config: null, collections: [] } }),
+    ).toBeUndefined();
+  });
+
+  test('empty input', () => {
+    expect(
+      resolveWorkspace({ sources: { config: {}, collections: [] } }),
+    ).toBeUndefined();
+  });
+
+  test('almost with everything', () => {
+    expect(
+      resolveWorkspace({
+        sources: {
+          config: {
+            name: 'workspace',
+            description: 'bar',
+            environments: {
+              '@global': {
+                headers: { name: 'foo' },
+                ':limit': 10,
+              },
+              dev: {
+                ':firstName': 'foo',
+                ':host': 'https://dev.api',
+              },
+            },
+          },
+          collections: [
+            {
+              name: 'My Collection',
+              description: 'Test app',
+              baseUrl: '{{host}}/profile',
+              headers: { ping: '{{firstName}}' },
+              ':level': 8,
+              ':lastName': 'bar',
+              requests: [
+                {
+                  name: 'api-1',
+                  method: 'POST',
+                  url: 'update',
+                  query: { limit: 10 },
+                  body: {
+                    firstName: '{{firstName}}',
+                    lastName: '{{lastName}}',
+                    level: '{{level}}',
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        environmentName: 'dev',
+      }),
+    ).toStrictEqual({
+      name: 'workspace',
+      description: 'bar',
+      environments: [
+        {
+          isGlobal: true,
+          name: '@global',
+          headers: { name: 'foo' },
+          valuesMap: {
+            limit: 10,
+          },
+        },
+        {
+          isGlobal: false,
+          name: 'dev',
+          valuesMap: {
+            firstName: 'foo',
+            host: 'https://dev.api',
+          },
+        },
+      ],
+      collections: [
+        {
+          key: expect.any(String),
+          id: 'my_collection',
+          name: 'My Collection',
+          description: 'Test app',
+          baseUrl: 'https://dev.api/profile',
+          headers: { ping: 'foo' },
+          valuesMap: {
+            level: 8,
+            lastName: 'bar',
+          },
+          requests: [
+            {
+              key: expect.any(Array),
+              id: 'api_1',
+              name: 'api-1',
+              method: 'POST',
+              url: 'https://dev.api/profile/update?limit=10',
+              query: { limit: '10' },
+              body: {
+                firstName: 'foo',
+                lastName: 'bar',
+                level: 8,
+              },
+            },
+          ],
+        },
+      ],
+    });
+  });
+});
