@@ -7,13 +7,10 @@ describe('resolveWorkspace', () => {
     ).toBeUndefined();
   });
 
-  test('empty', () => {
+  test('empty input', () => {
     expect(
       resolveWorkspace({ sources: { config: {}, collections: [] } }),
-    ).toStrictEqual({
-      environments: [],
-      collections: [],
-    });
+    ).toBeUndefined();
   });
 
   test('almost with everything', () => {

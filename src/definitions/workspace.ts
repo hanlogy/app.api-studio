@@ -53,7 +53,7 @@ export interface WorkspaceEnvironment {
 }
 
 export interface WorkspaceSummary {
-  readonly name?: string;
+  readonly name: string;
   readonly dir: string;
   /**
    * Name of the selected environment.

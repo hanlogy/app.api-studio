@@ -5,8 +5,14 @@ describe('resolveConfig', () => {
     expect(resolveConfig({ source: null })).toBeUndefined();
   });
 
-  test('empty input', () => {
-    expect(resolveConfig({ source: {} })).toStrictEqual({ environments: [] });
+  test('name is required', () => {
+    expect(
+      resolveConfig({
+        source: {
+          description: 'bar',
+        },
+      }),
+    ).toBeUndefined();
   });
 
   test('with everything', () => {

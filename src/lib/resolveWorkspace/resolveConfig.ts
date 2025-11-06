@@ -19,9 +19,14 @@ export function resolveConfig({
   }
 
   const { name, description, environments } = source;
+  const resolvedName = pickWhenString(name);
+
+  if (!resolvedName) {
+    return undefined;
+  }
 
   return removeUndefined({
-    name: pickWhenString(name),
+    name: resolvedName,
     description: pickWhenString(description),
     environments: resolveEnvironments({ source: environments }) ?? [],
   });
