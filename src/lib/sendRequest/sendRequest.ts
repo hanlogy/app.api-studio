@@ -1,6 +1,7 @@
 import type { JsonValue, RequestHeaders, RequestMethod } from '@/definitions';
-
-type ResponseContentType = 'json' | 'text';
+import { checkBodyFormat } from './checkBodyFormat';
+import { removeUndefined } from '@/helpers/filterValues';
+import { encodeRequestBody } from './encodeRequestBody';
 
 export async function sendRequest({
   method = 'GET',
@@ -13,29 +14,43 @@ export async function sendRequest({
   headers?: RequestHeaders;
   body?: JsonValue;
 }) {
-  const response = await fetch(url, {
-    method,
-    headers,
-    body: body === undefined ? undefined : JSON.stringify(body),
-  });
+  const response = await fetch(
+    url,
+    removeUndefined({
+      method,
+      headers,
+      body: encodeRequestBody({
+        source: body,
+        format: checkBodyFormat(headers),
+      }),
+    }),
+  );
 
-  const contentTypeRaw = response.headers.get('content-type') || '';
+  let responseBodyFormat = checkBodyFormat(response.headers);
+  let responseBody: JsonValue | ArrayBuffer;
 
-  let responseBody;
-  let contentType: ResponseContentType;
-
-  if (contentTypeRaw.includes('application/json')) {
-    responseBody = (await response.json()) as JsonValue;
-    contentType = 'json';
-  } else {
-    responseBody = (await response.text()) as string;
-    contentType = 'text';
+  switch (responseBodyFormat) {
+    case 'json':
+      try {
+        responseBody = await response.json();
+      } catch {
+        responseBody = await response.text();
+        responseBodyFormat = 'text';
+      }
+      break;
+    case 'html':
+    case 'xml':
+    case 'text':
+      responseBody = await response.text();
+      break;
+    default:
+      responseBody = await response.arrayBuffer();
   }
 
   return {
-    contentType,
-    status: response.status,
+    bodyFormat: responseBodyFormat,
     headers: Object.fromEntries(response.headers.entries()),
+    status: response.status,
     body: responseBody,
   };
 }
