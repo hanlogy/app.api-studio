@@ -24,6 +24,7 @@ export function Button({
       onHoverIn={hasHoveredStyle ? () => setHovered(true) : undefined}
       onHoverOut={hasHoveredStyle ? () => setHovered(false) : undefined}
       style={({ pressed }) => [
+        {cursor: 'pointer'},
         style,
         hovered && hoveredStyle,
         pressed && pressedStyle,
