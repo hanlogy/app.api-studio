@@ -7,6 +7,15 @@ describe('resolveString', () => {
     expect(resolveString({ source: false })).toBeUndefined();
   });
 
+  test('source is a number', () => {
+    expect(resolveString({ source: 0 })).toBe(0);
+    expect(resolveString({ source: 100 })).toBe(100);
+  });
+
+  test('source is an empty string', () => {
+    expect(resolveString({ source: '' })).toBe('');
+  });
+
   test('not match', () => {
     const result = resolveString({
       source: 'hello',

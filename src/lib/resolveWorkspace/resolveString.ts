@@ -30,6 +30,9 @@ export function resolveString({
   valuesMap,
   lookup,
 }: ArgBase & { source: JsonValue }): PrimitiveValue | undefined {
+  if (typeof sourceOriginal === 'number') {
+    return sourceOriginal;
+  }
   // Be careful:
   // Do not return undefined if the source is an empty string.
   if (typeof sourceOriginal !== 'string') {
