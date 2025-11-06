@@ -4,13 +4,13 @@ import { removeUndefined } from '@/helpers/filterValues';
 import { encodeRequestBody } from './encodeRequestBody';
 
 export async function sendRequest({
-  method = 'GET',
-  url = '',
+  method,
+  url,
   headers = {},
   body,
 }: {
-  method?: RequestMethod;
-  url?: string;
+  method: RequestMethod;
+  url: string;
   headers?: RequestHeaders;
   body?: JsonValue;
 }) {

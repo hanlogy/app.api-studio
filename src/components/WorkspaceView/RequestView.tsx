@@ -12,13 +12,13 @@ export function RequestView({}: {}) {
     return <></>;
   }
 
-  const { name, url, method, body, key } = openedRequest;
+  const { name, url = '', method = 'GET', body, key, headers } = openedRequest;
 
   const histories = getHistories(key);
   const history = histories.length > 0 ? histories[0] : undefined;
 
   const onSendRequest = async () => {
-    const response = await sendRequest({ url });
+    const response = await sendRequest({ url, method, headers, body });
     saveHistory(key, response);
   };
 
