@@ -5,6 +5,7 @@ import React from 'react';
 import { RequestView } from './RequestView';
 import { useWorkspaceConext } from '@/states/workspace/context';
 import { OpenWorkspaceHelper } from './OpenWorkspaceHelper';
+import { EnvironmentSelect } from './EnvironmentSelect';
 
 export function WorkspaceView() {
   const { workspace, openedRequest } = useWorkspaceConext();
@@ -20,6 +21,7 @@ export function WorkspaceView() {
       <View style={styles.container}>
         <ScrollView style={styles.leftView}>
           <View style={styles.leftContent}>
+            <EnvironmentSelect />
             <CollectionsList collections={collections} />
           </View>
         </ScrollView>

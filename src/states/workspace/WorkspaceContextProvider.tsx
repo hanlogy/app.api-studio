@@ -98,6 +98,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     const common = {
       openedRequest,
       selectEnvironment,
+      selectedEnvironment: environmentName,
       openRequest,
       openWorkspace: setWorkspaceDir,
     };
@@ -111,7 +112,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     }
 
     throw new Error('This should never happen.');
-  }, [status, workspace, openedRequest]);
+  }, [status, workspace, openedRequest, environmentName]);
 
   return <WorkspaceContext value={value}>{children}</WorkspaceContext>;
 }
