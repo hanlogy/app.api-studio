@@ -8,7 +8,7 @@ import { OpenWorkspaceHelper } from './OpenWorkspaceHelper';
 import { EnvironmentSelect } from './EnvironmentSelect';
 
 export function WorkspaceView() {
-  const { workspace, openedRequest } = useWorkspaceConext();
+  const { workspace } = useWorkspaceConext();
 
   if (!workspace) {
     return <OpenWorkspaceHelper />;
@@ -27,7 +27,7 @@ export function WorkspaceView() {
         </ScrollView>
         <ScrollView style={styles.rightView}>
           <View style={styles.rightContent}>
-            {openedRequest && <RequestView request={openedRequest} />}
+            <RequestView />
           </View>
         </ScrollView>
       </View>

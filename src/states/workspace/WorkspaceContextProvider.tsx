@@ -3,12 +3,19 @@ import {
   type Workspace,
   type WorkspaceResources,
 } from '@/definitions';
-import { useEffect, useMemo, useState, type PropsWithChildren } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type PropsWithChildren,
+} from 'react';
 import type { WorkspaceContextValue, WorkspaceStatus } from './types';
 import { loadWorkspace } from '@/repositories/loadWorkspace';
 import { resolveWorkspace } from '@/lib';
 import { WorkspaceContext } from './context';
 import { useStudioConext } from '../studio';
+import type { HttpResponse } from '@/lib/sendRequest';
 
 export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   const { setError, updateRecentWorkspace } = useStudioConext();
@@ -18,6 +25,9 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   const [openedRequestKey, openRequest] = useState<[string, string]>();
   const [environmentName, selectEnvironment] = useState<string>();
   const [workspace, setWorkspace] = useState<Workspace>();
+  const [histories, setHistories] = useState<
+    { key: [string, string]; items: HttpResponse[] }[]
+  >([]);
 
   //When `dir` changed:
   //Load workspace files, parse, resolve, update cache
@@ -75,6 +85,36 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     updateRecentWorkspace?.(summary);
   }, [workspace, updateRecentWorkspace]);
 
+  const saveHistory = useCallback(
+    (key: [string, string], response: HttpResponse) => {
+      setHistories(prev => {
+        const clone = [...prev];
+        let existing = clone.find(e => {
+          e.key[0] === key[0] && e.key[1] === key[1];
+        });
+
+        if (!existing) {
+          existing = { key, items: [] };
+          clone.push(existing);
+        }
+
+        existing.items = [response, ...existing.items].slice(0, 20);
+        return clone;
+      });
+    },
+    [],
+  );
+
+  const getHistories = useCallback(
+    (key: [string, string]) => {
+      return (
+        histories.find(e => e.key[0] === key[0] && e.key[1] === key[1])
+          ?.items ?? []
+      );
+    },
+    [histories],
+  );
+
   const openedRequest = useMemo(() => {
     const collections = workspace?.collections;
     if (!collections) {
@@ -108,11 +148,18 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     }
 
     if (status === 'ready' && workspace) {
-      return { ...common, status, workspace };
+      return { ...common, status, workspace, getHistories, saveHistory };
     }
 
     throw new Error('This should never happen.');
-  }, [status, workspace, openedRequest, environmentName]);
+  }, [
+    status,
+    workspace,
+    openedRequest,
+    environmentName,
+    saveHistory,
+    getHistories,
+  ]);
 
   return <WorkspaceContext value={value}>{children}</WorkspaceContext>;
 }

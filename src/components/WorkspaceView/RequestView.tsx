@@ -1,13 +1,27 @@
-import type { RequestResource } from '@/definitions';
 import { Text, View } from 'react-native';
 import { styles } from './RequestView.styles';
 import { Button } from '../Button';
+import { sendRequest } from '@/lib/sendRequest';
+import { useWorkspaceConext } from '@/states/workspace';
 
-export function RequestView({
-  request: { name, url, method, body },
-}: {
-  request: RequestResource;
-}) {
+export function RequestView({}: {}) {
+  const { openedRequest, status, getHistories, saveHistory } =
+    useWorkspaceConext();
+
+  if (status === 'waiting' || !openedRequest) {
+    return <></>;
+  }
+
+  const { name, url, method, body, key } = openedRequest;
+
+  const histories = getHistories(key);
+  const history = histories.length > 0 ? histories[0] : undefined;
+
+  const onSendRequest = async () => {
+    const response = await sendRequest({ url });
+    saveHistory(key, response);
+  };
+
   return (
     <View>
       <View style={styles.name}>
@@ -23,6 +37,7 @@ export function RequestView({
           </View>
         </View>
         <Button
+          onPress={onSendRequest}
           style={styles.sendButton}
           hoveredStyle={styles.sendButtonHovered}
           pressedStyle={styles.sendButtonPressed}>
@@ -32,6 +47,16 @@ export function RequestView({
       {body && (
         <View style={styles.body}>
           <Text style={styles.bodyText}>{JSON.stringify(body, null, 4)}</Text>
+        </View>
+      )}
+      {history && (
+        <View style={styles.response}>
+          <View>
+            <Text style={styles.responseHeadersText}>
+              {JSON.stringify(history.headers, null, 4)}
+            </Text>
+            <Text>{JSON.stringify(history.body, null, 4)}</Text>
+          </View>
         </View>
       )}
     </View>
