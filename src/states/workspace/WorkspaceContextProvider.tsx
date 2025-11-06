@@ -11,7 +11,11 @@ import {
   useState,
   type PropsWithChildren,
 } from 'react';
-import type { WorkspaceContextValue, WorkspaceStatus } from './types';
+import type {
+  OpenWorkspaceArguments,
+  WorkspaceContextValue,
+  WorkspaceStatus,
+} from './types';
 import { loadWorkspace } from '@/repositories/loadWorkspace';
 import { resolveWorkspace } from '@/lib';
 import { WorkspaceContext } from './context';
@@ -21,7 +25,7 @@ import type { HttpResponse } from '@/lib/sendRequest';
 export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   const { setError, updateRecentWorkspace } = useStudioConext();
   const [status, setStatus] = useState<WorkspaceStatus>('waiting');
-  const [dir, setWorkspaceDir] = useState<string>();
+  const [dir, setDir] = useState<string>();
   const [sources, setSources] = useState<WorkspaceResources>();
   const [openedRequestKey, openRequest] = useState<RequestResourceKey>();
   const [selectedEnvironment, selectEnvironment] = useState<string>();
@@ -38,7 +42,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     }
 
     loadWorkspace({ dir, onData: setSources, onError: setError });
-  }, [dir, setWorkspaceDir, setError]);
+  }, [dir, setDir, setError]);
 
   // when sources or selectedEnvironment changed.
   useEffect(() => {
@@ -121,6 +125,13 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     [histories],
   );
 
+  const openWorkspace = useCallback((args: OpenWorkspaceArguments) => {
+    setDir(args.dir);
+    if (args.environment) {
+      selectEnvironment(args.environment);
+    }
+  }, []);
+
   const openedRequest = useMemo(() => {
     const collections = workspace?.collections;
     if (!collections) {
@@ -146,7 +157,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
       selectEnvironment,
       selectedEnvironment,
       openRequest,
-      openWorkspace: setWorkspaceDir,
+      openWorkspace,
     };
 
     if (status === 'waiting') {
@@ -165,6 +176,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     selectedEnvironment,
     saveHistory,
     getHistories,
+    openWorkspace,
   ]);
 
   return <WorkspaceContext value={value}>{children}</WorkspaceContext>;

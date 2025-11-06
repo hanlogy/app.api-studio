@@ -21,7 +21,11 @@ export function OpenWorkspaceHelper() {
           hoveredStyle={openButtonStyles.hovered}
           pressedStyle={openButtonStyles.pressed}
           onPress={async () => {
-            openWorkspace(await pickFolder());
+            const dir = await pickFolder();
+            const selectedEnvironment = workspaces?.find(
+              e => e.dir === dir,
+            )?.selectedEnvironment;
+            openWorkspace({ dir, environment: selectedEnvironment });
           }}>
           <Text>Open Workspace...</Text>
         </Clickable>
@@ -30,11 +34,13 @@ export function OpenWorkspaceHelper() {
         {workspaces && workspaces.length > 0 && (
           <>
             <Text style={styles.openRecentTitle}>Open Recent...</Text>
-            {workspaces.map(({ name, dir }) => {
+            {workspaces.map(({ name, dir, selectedEnvironment }) => {
               return (
                 <Clickable
                   key={dir}
-                  onPress={() => openWorkspace(dir)}
+                  onPress={() =>
+                    openWorkspace({ dir, environment: selectedEnvironment })
+                  }
                   style={tileStyles.default}
                   hoveredStyle={tileStyles.hovered}
                   pressedStyle={tileStyles.pressed}>
