@@ -27,8 +27,9 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   const [status, setStatus] = useState<WorkspaceStatus>('waiting');
   const [dir, setDir] = useState<string>();
   const [sources, setSources] = useState<WorkspaceResources>();
-  const [openedRequestKey, openRequest] = useState<RequestResourceKey>();
-  const [selectedEnvironment, selectEnvironment] = useState<string>();
+  const [openedRequestKey, setOpenedRequestKey] =
+    useState<RequestResourceKey>();
+  const [selectedEnvironment, setSelectedEnvironment] = useState<string>();
   const [workspace, setWorkspace] = useState<Workspace>();
   const [histories, setHistories] = useState<
     { key: RequestResourceKey; items: HttpResponse[] }[]
@@ -128,7 +129,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   const openWorkspace = useCallback((args: OpenWorkspaceArguments) => {
     setDir(args.dir);
     if (args.environment) {
-      selectEnvironment(args.environment);
+      setSelectedEnvironment(args.environment);
     }
   }, []);
 
@@ -154,9 +155,9 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   const value = useMemo<WorkspaceContextValue>(() => {
     const common = {
       openedRequest,
-      selectEnvironment,
+      selectEnvironment: setSelectedEnvironment,
       selectedEnvironment,
-      openRequest,
+      openRequest: setOpenedRequestKey,
       openWorkspace,
     };
 
