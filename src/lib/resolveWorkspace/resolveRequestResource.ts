@@ -9,17 +9,20 @@ import { isPlainObject } from '@/helpers/checkTypes';
 import { resolveValuesMap } from './resolveValuesMap';
 import { resolveJsonValue } from './resolveJsonValue';
 import { pickWhenString, removeUndefined } from '@/helpers/filterValues';
-import { resolveStringRecord, resolveUrl } from './simpleResolvers';
+import { resolveStringRecord } from './simpleResolvers';
 import { resolveResourceKeys } from './resolveResourceKeys';
+import { resolveUrl } from './resolveUrl';
 
 export function resolveRequestResource({
   source,
   collectionKey,
+  baseUrl,
   accumulateIds,
   valuesMap: externalValuesMap = {},
 }: {
   source: JsonValue;
   collectionKey: string;
+  baseUrl?: string;
   accumulateIds: string[];
   valuesMap?: ValuesMap;
 }): RequestResource | undefined {
@@ -47,13 +50,15 @@ export function resolveRequestResource({
     return undefined;
   }
 
+  const resolvedQuery = resolveStringRecord({ source: query, valuesMap });
+
   return removeUndefined({
     ...keys,
     description: pickWhenString(description),
-    url: resolveUrl({ source: url, valuesMap }),
+    url: resolveUrl({ source: url, valuesMap, baseUrl, query: resolvedQuery }),
     method: resolveMethod({ source: method }),
     headers: resolveStringRecord({ source: headers, valuesMap }),
-    query: resolveStringRecord({ source: query, valuesMap }),
+    query: resolvedQuery,
     body: resolveJsonValue({ source: body, valuesMap }),
     valuesMap: localValuesMap,
   });

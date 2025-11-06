@@ -60,7 +60,7 @@ describe('resolveCollectionResource', () => {
           id: 'request_1',
           name: 'request-1',
           method: 'POST',
-          url: 'api',
+          url: 'https://api.dev/api?limit=10',
           query: { limit: '10' },
           body: {
             firstName: 'foo-1',

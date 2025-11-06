@@ -96,7 +96,7 @@ describe('resolveWorkspace', () => {
               id: 'api_1',
               name: 'api-1',
               method: 'POST',
-              url: 'update',
+              url: 'https://dev.api/profile/update?limit=10',
               query: { limit: '10' },
               body: {
                 firstName: 'foo',

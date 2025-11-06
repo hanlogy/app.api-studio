@@ -8,8 +8,9 @@ import { isPlainObject } from '@/helpers/checkTypes';
 import { resolveValuesMap } from './resolveValuesMap';
 import { pickWhenString, removeUndefined } from '@/helpers/filterValues';
 import { resolveRequestResource } from './resolveRequestResource';
-import { resolveStringRecord, resolveUrl } from './simpleResolvers';
+import { resolveStringRecord } from './simpleResolvers';
 import { resolveResourceKeys } from './resolveResourceKeys';
+import { resolveUrl } from './resolveUrl';
 
 export function resolveCollectionResource({
   source,
@@ -50,13 +51,16 @@ export function resolveCollectionResource({
     return undefined;
   }
 
+  const resolvedBaseUrl = resolveUrl({ source: baseUrl, valuesMap });
+
   return removeUndefined({
     ...keys,
     description: pickWhenString(description),
-    baseUrl: resolveUrl({ source: baseUrl, valuesMap }),
+    baseUrl: resolvedBaseUrl,
     headers: resolveStringRecord({ source: headers, valuesMap }),
     valuesMap: localValuesMap,
     requests: resolveRequests({
+      baseUrl: resolvedBaseUrl,
       source: requests,
       valuesMap,
       collectionKey: keys.key,
@@ -65,10 +69,12 @@ export function resolveCollectionResource({
 }
 
 function resolveRequests({
+  baseUrl,
   source,
   collectionKey,
   valuesMap,
 }: {
+  baseUrl?: string;
   source: JsonValue;
   collectionKey: string;
   valuesMap: ValuesMap;
@@ -86,6 +92,7 @@ function resolveRequests({
         valuesMap,
         collectionKey,
         accumulateIds,
+        baseUrl,
       }),
     )
     .filter(e => e !== undefined);
