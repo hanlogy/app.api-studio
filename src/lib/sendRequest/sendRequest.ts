@@ -8,12 +8,7 @@ export async function sendRequest({
   url,
   headers = {},
   body,
-}: {
-  method: RequestMethod;
-  url: string;
-  headers?: RequestHeaders;
-  body?: JsonValue;
-}) {
+}: HttpRequest) {
   const requestTime = Date.now();
   const response = await fetch(
     url,
@@ -58,4 +53,10 @@ export async function sendRequest({
   };
 }
 
+export type HttpRequest = {
+  method: RequestMethod;
+  url: string;
+  headers?: RequestHeaders;
+  body?: JsonValue;
+};
 export type HttpResponse = Awaited<ReturnType<typeof sendRequest>>;

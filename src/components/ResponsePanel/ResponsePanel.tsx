@@ -16,9 +16,9 @@ export function ResponsePanel() {
     <View style={styles.container}>
       <View>
         <Text style={styles.responseHeadersText}>
-          {JSON.stringify(history.headers, null, 4)}
+          {JSON.stringify(history.response.headers, null, 4)}
         </Text>
-        <Text>{JSON.stringify(history.body, null, 4)}</Text>
+        <Text>{JSON.stringify(history.response.body, null, 4)}</Text>
       </View>
     </View>
   );

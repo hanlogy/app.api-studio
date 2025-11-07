@@ -1,4 +1,4 @@
-import { mergeHeaders } from '@/components/RequestBar/mergeHeaders';
+import { mergeRequestHeaders } from '@/states/workspace/mergeRequestHeaders';
 
 const globalEnv = {
   headers: { a: 'a1', b: 'b1' },
@@ -9,7 +9,7 @@ const namedEnv = {
   isGlobal: false,
 };
 
-describe('mergeHeaders', () => {
+describe('mergeRequestHeaders', () => {
   test('for the environment headers', () => {
     const result = {
       a: 'a2',
@@ -17,25 +17,25 @@ describe('mergeHeaders', () => {
       c: 'c2',
     };
 
-    expect(mergeHeaders({ environments: [globalEnv, namedEnv] })).toStrictEqual(
-      result,
-    );
+    expect(
+      mergeRequestHeaders({ environments: [globalEnv, namedEnv] }),
+    ).toStrictEqual(result);
 
-    expect(mergeHeaders({ environments: [namedEnv, globalEnv] })).toStrictEqual(
-      result,
-    );
+    expect(
+      mergeRequestHeaders({ environments: [namedEnv, globalEnv] }),
+    ).toStrictEqual(result);
   });
 
   test('collection override env ', () => {
     expect(
-      mergeHeaders({
+      mergeRequestHeaders({
         environments: [globalEnv],
         collection: { headers: { a: 'a3' } },
       }),
     ).toStrictEqual({ a: 'a3', b: 'b1' });
 
     expect(
-      mergeHeaders({
+      mergeRequestHeaders({
         collection: { headers: { a: 'a3' } },
       }),
     ).toStrictEqual({ a: 'a3' });
@@ -43,7 +43,7 @@ describe('mergeHeaders', () => {
 
   test('local override all', () => {
     expect(
-      mergeHeaders({
+      mergeRequestHeaders({
         environments: [globalEnv],
         collection: { headers: { a: 'a3' } },
         headers: { a: 'a4' },

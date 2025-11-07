@@ -4,7 +4,7 @@ import type {
   WorkspaceEnvironment,
 } from '@/definitions';
 
-export function mergeHeaders({
+export function mergeRequestHeaders({
   environments = [],
   collection = {},
   headers: localHeaders = {},

@@ -14,6 +14,7 @@ import {
 } from 'react';
 import type {
   OpenWorkspaceArguments,
+  RequestHistoryItem,
   WorkspaceContextValue,
   WorkspaceStatus,
 } from './types';
@@ -21,8 +22,14 @@ import { loadWorkspace } from '@/repositories/loadWorkspace';
 import { resolveWorkspace } from '@/lib';
 import { WorkspaceContext } from './context';
 import { useStudioContext } from '../studio';
-import type { HttpResponse } from '@/lib/sendRequest';
+import {
+  sendRequest as sendHttpRequest,
+  type HttpResponse,
+} from '@/lib/sendRequest';
 import { findByRequestKey } from '@/helpers/findByRequestKey';
+import { selectCurrentRequest } from './selectors';
+import { mergeRequestHeaders } from './mergeRequestHeaders';
+import type { HttpRequest } from '@/lib/sendRequest/sendRequest';
 
 export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   const { setError, updateRecentWorkspace } = useStudioContext();
@@ -39,7 +46,10 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   const [selectedEnvironment, setSelectedEnvironment] = useState<string>();
   const [workspace, setWorkspace] = useState<Workspace>();
   const [histories, setHistories] = useState<
-    { key: RequestResourceKey; items: HttpResponse[] }[]
+    {
+      key: RequestResourceKey;
+      items: RequestHistoryItem[];
+    }[]
   >([]);
 
   //When `dir` changed:
@@ -100,7 +110,10 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   }, [workspace, updateRecentWorkspace, selectedEnvironment]);
 
   const saveHistory = useCallback(
-    (key: RequestResourceKey, response: HttpResponse) => {
+    (
+      key: RequestResourceKey,
+      { request, response }: { request: HttpRequest; response: HttpResponse },
+    ) => {
       setHistories(prev => {
         const clone = [...prev];
         let existing = findByRequestKey(clone, key);
@@ -110,12 +123,46 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
           clone.push(existing);
         }
 
-        existing.items = [response, ...existing.items].slice(0, 20);
+        existing.items = [{ response, request }, ...existing.items].slice(
+          0,
+          20,
+        );
         return clone;
       });
     },
     [],
   );
+
+  const sendRequest = useCallback(async () => {
+    const currentRequest = selectCurrentRequest({
+      currentResource,
+      workspace,
+      selectedEnvironment,
+    });
+    if (!currentRequest) {
+      return;
+    }
+
+    const {
+      url = '',
+      method = 'GET',
+      body,
+      headers,
+      environments,
+      collection,
+      key,
+    } = currentRequest;
+
+    const requestParams = {
+      url,
+      method,
+      body,
+      headers: mergeRequestHeaders({ environments, collection, headers }),
+    };
+    const response = await sendHttpRequest(requestParams);
+
+    saveHistory(key, { request: requestParams, response });
+  }, [currentResource, workspace, selectedEnvironment, saveHistory]);
 
   const openWorkspace = useCallback((args: OpenWorkspaceArguments) => {
     setDir(args.dir);
@@ -144,7 +191,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     }
 
     if (status === 'ready' && workspace) {
-      return { ...common, status, workspace, saveHistory };
+      return { ...common, status, workspace, sendRequest };
     }
 
     throw new Error('This should never happen.');
@@ -153,7 +200,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     workspace,
     currentResource,
     selectedEnvironment,
-    saveHistory,
+    sendRequest,
     histories,
     openWorkspace,
     openResource,

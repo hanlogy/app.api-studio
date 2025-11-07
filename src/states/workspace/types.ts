@@ -5,8 +5,14 @@ import type {
   WorkspaceResourceKey,
 } from '@/definitions';
 import type { HttpResponse } from '@/lib/sendRequest';
+import type { HttpRequest } from '@/lib/sendRequest/sendRequest';
 
 export type WorkspaceStatus = 'waiting' | 'ready';
+
+export interface RequestHistoryItem {
+ readonly request: HttpRequest;
+ readonly response: HttpResponse;
+}
 
 type WorkspaceContextValueBase = {
   readonly workspace?: Workspace;
@@ -15,12 +21,9 @@ type WorkspaceContextValueBase = {
   readonly currentResource?: WorkspaceResourceKey;
   readonly histories: readonly {
     key: RequestResourceKey;
-    items: readonly HttpResponse[];
+    items: readonly RequestHistoryItem[];
   }[];
-  readonly saveHistory?: (
-    key: RequestResourceKey,
-    response: HttpResponse,
-  ) => void;
+  readonly sendRequest?: () => Promise<void>;
   readonly openWorkspace: (args: { dir: string; environment?: string }) => void;
   readonly openResource?: (key: WorkspaceResourceKey) => void;
   readonly selectEnvironment?: (name?: string) => void;
@@ -39,6 +42,6 @@ export type WorkspaceContextValue =
     } & Required<
         Pick<
           WorkspaceContextValueBase,
-          'workspace' | 'openResource' | 'selectEnvironment' | 'saveHistory'
+          'workspace' | 'openResource' | 'selectEnvironment' | 'sendRequest'
         >
       >);
