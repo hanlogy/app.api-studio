@@ -1,15 +1,15 @@
 import { findRequestFromWorkspace } from '@/helpers/findRequestFromWorkspace';
 import type { WorkspaceContextValue } from './types';
 
-export function selectOpenedRequest(value: WorkspaceContextValue) {
-  const { openedRequestKey, workspace, selectedEnvironment } = value;
+export function selectCurrentRequest(value: WorkspaceContextValue) {
+  const { currentRequest, workspace, selectedEnvironment } = value;
 
-  if (!workspace || !openedRequestKey) {
+  if (!workspace || !currentRequest) {
     return undefined;
   }
 
   return findRequestFromWorkspace(workspace, {
-    key: openedRequestKey,
+    key: currentRequest,
     environmentName: selectedEnvironment,
   });
 }

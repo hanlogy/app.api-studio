@@ -7,7 +7,7 @@ type WorkspaceContextValueBase = {
   readonly workspace?: Workspace;
   readonly error?: AppError;
   readonly selectedEnvironment?: string;
-  readonly openedRequestKey?: RequestResourceKey;
+  readonly currentRequest?: RequestResourceKey;
   readonly saveHistory?: (
     key: RequestResourceKey,
     response: HttpResponse,

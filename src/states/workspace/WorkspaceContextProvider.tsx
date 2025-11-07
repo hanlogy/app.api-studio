@@ -28,8 +28,12 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   const [status, setStatus] = useState<WorkspaceStatus>('waiting');
   const [dir, setDir] = useState<string>();
   const [sources, setSources] = useState<WorkspaceResources>();
-  const [openedRequestKey, setOpenedRequestKey] =
+  const [pinnedRequests, setPinnedRequests] = useState<RequestResourceKey[]>(
+    [],
+  );
+  const [previewingRequest, setPreviewingRequest] =
     useState<RequestResourceKey>();
+  const [currentRequest, setCurrentRequest] = useState<RequestResourceKey>();
   const [selectedEnvironment, setSelectedEnvironment] = useState<string>();
   const [workspace, setWorkspace] = useState<Workspace>();
   const [histories, setHistories] = useState<
@@ -125,12 +129,17 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     }
   }, []);
 
+  const openRequest = useCallback((key: RequestResourceKey) => {
+    setCurrentRequest(key);
+    setPreviewingRequest(key);
+  }, []);
+
   const value = useMemo<WorkspaceContextValue>(() => {
     const common = {
       selectEnvironment: setSelectedEnvironment,
       selectedEnvironment,
-      openedRequestKey,
-      openRequest: setOpenedRequestKey,
+      currentRequest,
+      openRequest,
       openWorkspace,
     };
 
@@ -146,11 +155,12 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   }, [
     status,
     workspace,
-    openedRequestKey,
+    currentRequest,
     selectedEnvironment,
     saveHistory,
     getHistories,
     openWorkspace,
+    openRequest,
   ]);
 
   return <WorkspaceContext value={value}>{children}</WorkspaceContext>;
