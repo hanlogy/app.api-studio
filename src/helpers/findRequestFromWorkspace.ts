@@ -1,4 +1,8 @@
-import type { RequestResourceKey, Workspace } from '@/definitions';
+import type {
+  RequestResourceKey,
+  RequestResourceWithExtra,
+  Workspace,
+} from '@/definitions';
 import { removeUndefined } from '@/helpers/filterValues';
 
 export function findRequestFromWorkspace(
@@ -7,7 +11,7 @@ export function findRequestFromWorkspace(
     key,
     environmentName,
   }: { key?: RequestResourceKey; environmentName?: string } = {},
-) {
+): RequestResourceWithExtra | undefined {
   if (!key) {
     return undefined;
   }

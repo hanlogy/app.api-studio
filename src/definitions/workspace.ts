@@ -36,6 +36,17 @@ export interface RequestResource {
   readonly body?: JsonValue;
 }
 
+export type RequestResourceWithExtra = RequestResource & {
+  readonly collection: Pick<
+    CollectionResource,
+    'name' | 'baseUrl' | 'headers' | 'valuesMap'
+  >;
+  readonly environments: Pick<
+    WorkspaceEnvironment,
+    'isGlobal' | 'headers' | 'name' | 'valuesMap'
+  >[];
+};
+
 export interface CollectionResource {
   readonly key: string;
   // Must unique globally in current **workspace**.

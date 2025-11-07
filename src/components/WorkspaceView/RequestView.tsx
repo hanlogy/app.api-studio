@@ -1,55 +1,30 @@
 import { Text, View } from 'react-native';
 import { styles } from './RequestView.styles';
-import { Clickable } from '../clickables';
-import { sendRequest } from '@/lib/sendRequest';
 import { selectCurrentRequest, useWorkspaceContext } from '@/states/workspace';
 import { selectCurrentHistories } from '@/states/workspace/selectors';
+import { RequestBar } from '../RequestBar';
+import { RequestBuilder } from '../RequestBuilder';
 
 export function RequestView({}: {}) {
-  const { status, saveHistory, ...restvalue } = useWorkspaceContext();
+  const { status, ...restvalue } = useWorkspaceContext();
   const request = selectCurrentRequest(restvalue);
 
   if (status === 'waiting' || !request) {
     return <></>;
   }
 
-  const { name, url = '', method = 'GET', body, key, headers } = request;
+  const { name } = request;
 
   const histories = selectCurrentHistories(restvalue);
   const history = histories.length > 0 ? histories[0] : undefined;
-
-  const onSendRequest = async () => {
-    const response = await sendRequest({ url, method, headers, body });
-    saveHistory(key, response);
-  };
 
   return (
     <View>
       <View style={styles.name}>
         <Text>{name}</Text>
       </View>
-      <View style={styles.requestBar}>
-        <View style={styles.methodAndUrl}>
-          <View style={styles.method}>
-            <Text style={styles.methodText}>{method ?? 'GET'}</Text>
-          </View>
-          <View>
-            <Text style={styles.urlText}>{url}</Text>
-          </View>
-        </View>
-        <Clickable
-          onPress={onSendRequest}
-          style={styles.sendButton}
-          hoveredStyle={styles.sendButtonHovered}
-          pressedStyle={styles.sendButtonPressed}>
-          <Text style={styles.sendButtonText}>Send</Text>
-        </Clickable>
-      </View>
-      {body && (
-        <View style={styles.body}>
-          <Text style={styles.bodyText}>{JSON.stringify(body, null, 4)}</Text>
-        </View>
-      )}
+      <RequestBar />
+      <RequestBuilder />
       {history && (
         <View style={styles.response}>
           <View>
