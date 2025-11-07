@@ -4,7 +4,7 @@ export const styles = StyleSheet.create({
   container: {
     display: 'flex',
     flexDirection: 'row',
-    marginBottom: 16,
+    backgroundColor: '#FFF',
   },
 
   methodAndUrl: {
@@ -32,7 +32,7 @@ export const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
 
-  sendButton: {
+  actionButton: {
     flexShrink: 0,
     marginLeft: 8,
     height: 36,
@@ -40,20 +40,36 @@ export const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#089',
     borderRadius: 6,
   },
+  requestButton: {
+    backgroundColor: '#089',
+  },
 
-  sendButtonHovered: {
+  requestButtonHovered: {
     backgroundColor: '#037483ff',
   },
 
-  sendButtonPressed: {
+  requestButtonPressed: {
     backgroundColor: '#025d69ff',
   },
-
-  sendButtonText: {
+  requestButtonText: {
     color: '#FFF',
   },
 
+  cancelButton: {
+    backgroundColor: '#AAA',
+  },
+
+  cancelButtonHovered: {
+    backgroundColor: '#CCC',
+  },
+
+  cancelButtonPressed: {
+    backgroundColor: '#ddd',
+  },
+
+  cancelButtonText: {
+    color: '#333',
+  },
 });

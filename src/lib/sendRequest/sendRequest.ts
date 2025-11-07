@@ -9,6 +9,8 @@ export async function sendRequest({
   headers = {},
   body,
 }: HttpRequest) {
+  // TODO: add abort support
+  // const abort = new AbortController();
   const requestTime = Date.now();
   const response = await fetch(
     url,

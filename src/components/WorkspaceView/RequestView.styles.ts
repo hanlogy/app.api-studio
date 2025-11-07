@@ -1,21 +1,38 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-  name: {
-    marginBottom: 10,
+  container: {
+    flex: 1,
   },
 
-  body: {
-    borderWidth: 1,
-    padding: 8,
-    borderRadius: 6,
-    borderColor: '#ccc',
+  requestPanel: {
+    flex: 1,
   },
 
-  bodyText: {
-    fontFamily: 'Menlo',
-    fontSize: 12,
-    lineHeight: 20,
+  responsePanel: {
+    borderTopColor: '#EEE',
+    borderTopWidth: 1,
+    flex: 1,
+  },
+
+  sectionTitle: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+
+  sectionTitleText: {
     color: '#666',
+  },
+
+  requestBar: {
+    paddingHorizontal: 16,
+  },
+
+  requestBuilder: {
+    paddingHorizontal: 16,
+  },
+
+  responseHistory: {
+    padding: 16,
   },
 });

@@ -25,10 +25,12 @@ export const styles = StyleSheet.create({
   leftBarContent: {
     paddingHorizontal: 16,
   },
+
   mainContent: {
     flex: 1,
     backgroundColor: '#FFF',
-    padding: 16,
+    borderLeftColor: '#EEE',
+    borderLeftWidth: 1,
   },
   overlay: {
     position: 'absolute',

@@ -3,7 +3,7 @@ import { styles } from './RequestView.styles';
 import { selectCurrentRequest, useWorkspaceContext } from '@/states/workspace';
 import { RequestBar } from '../RequestBar';
 import { RequestBuilder } from '../RequestBuilder';
-import { ResponsePanel } from '../ResponsePanel';
+import { ResponseHistory } from '../ResponseHistory';
 
 export function RequestView({}: {}) {
   const { status, ...restvalue } = useWorkspaceContext();
@@ -16,13 +16,26 @@ export function RequestView({}: {}) {
   const { name } = request;
 
   return (
-    <View>
-      <View style={styles.name}>
-        <Text>{name}</Text>
+    <View style={styles.container}>
+      <View style={styles.requestPanel}>
+        <View style={styles.sectionTitle}>
+          <Text style={styles.sectionTitleText}>{name}</Text>
+        </View>
+        <View style={styles.requestBar}>
+          <RequestBar />
+        </View>
+        <View style={styles.requestBuilder}>
+          <RequestBuilder />
+        </View>
       </View>
-      <RequestBar />
-      <RequestBuilder />
-      <ResponsePanel />
+      <View style={styles.responsePanel}>
+        <View style={styles.sectionTitle}>
+          <Text style={styles.sectionTitleText}>Response</Text>
+        </View>
+        <View style={styles.responseHistory}>
+          <ResponseHistory />
+        </View>
+      </View>
     </View>
   );
 }
