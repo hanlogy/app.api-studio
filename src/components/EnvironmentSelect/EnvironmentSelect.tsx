@@ -32,7 +32,7 @@ export function EnvironmentSelect() {
       </Clickable>
       {dropdownShown && (
         <View style={styles.dropdown}>
-          {environments
+          {[{ isGlobal: false, name: undefined }, ...environments]
             .filter(({ isGlobal }) => !isGlobal)
             .map(({ name }) => {
               return (
@@ -41,11 +41,11 @@ export function EnvironmentSelect() {
                     setDropdownShown(false);
                     selectEnvironment?.(name);
                   }}
-                  key={name}
+                  key={name ?? Date.now()}
                   style={styles.dropdownItem}
                   hoveredStyle={styles.dropdownItemHovered}
                   pressedStyle={styles.dropdownItemPressed}>
-                  <Text>{name}</Text>
+                  <Text>{name ?? '-'}</Text>
                 </Clickable>
               );
             })}

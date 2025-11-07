@@ -56,12 +56,12 @@ function CollectionItem({
 }
 
 function RequestItem({ request }: { request: RequestResource }) {
-  const { openRequest } = useWorkspaceContext();
+  const { openResource } = useWorkspaceContext();
   const { name = 'unnamed' } = request;
 
   return (
     <Clickable
-      onPress={() => openRequest?.(request.key)}
+      onPress={() => openResource?.(request.key)}
       style={requestItemStyles.button}
       hoveredStyle={requestItemStyles.buttonHovered}
       pressedStyle={requestItemStyles.buttonPressed}>

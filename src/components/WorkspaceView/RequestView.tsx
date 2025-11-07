@@ -3,11 +3,11 @@ import { styles } from './RequestView.styles';
 import { Clickable } from '../clickables';
 import { sendRequest } from '@/lib/sendRequest';
 import { selectCurrentRequest, useWorkspaceContext } from '@/states/workspace';
+import { selectCurrentHistories } from '@/states/workspace/selectors';
 
 export function RequestView({}: {}) {
-  const workspaceContextValue = useWorkspaceContext();
-  const request = selectCurrentRequest(workspaceContextValue);
-  const { status, getHistories, saveHistory } = workspaceContextValue;
+  const { status, saveHistory, ...restvalue } = useWorkspaceContext();
+  const request = selectCurrentRequest(restvalue);
 
   if (status === 'waiting' || !request) {
     return <></>;
@@ -15,7 +15,7 @@ export function RequestView({}: {}) {
 
   const { name, url = '', method = 'GET', body, key, headers } = request;
 
-  const histories = getHistories(key);
+  const histories = selectCurrentHistories(restvalue);
   const history = histories.length > 0 ? histories[0] : undefined;
 
   const onSendRequest = async () => {

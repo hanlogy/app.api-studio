@@ -2,6 +2,7 @@ import {
   AppError,
   type RequestResourceKey,
   type Workspace,
+  type WorkspaceResourceKey,
   type WorkspaceResources,
 } from '@/definitions';
 import {
@@ -28,12 +29,13 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   const [status, setStatus] = useState<WorkspaceStatus>('waiting');
   const [dir, setDir] = useState<string>();
   const [sources, setSources] = useState<WorkspaceResources>();
-  const [pinnedRequests, setPinnedRequests] = useState<RequestResourceKey[]>(
-    [],
-  );
-  const [previewingRequest, setPreviewingRequest] =
-    useState<RequestResourceKey>();
-  const [currentRequest, setCurrentRequest] = useState<RequestResourceKey>();
+  const [pinnedResources, setPinnedResources] = useState<
+    WorkspaceResourceKey[]
+  >([]);
+  const [previewingResource, setPreviewingResource] =
+    useState<WorkspaceResourceKey>();
+  const [currentResource, setCurrentResource] =
+    useState<WorkspaceResourceKey>();
   const [selectedEnvironment, setSelectedEnvironment] = useState<string>();
   const [workspace, setWorkspace] = useState<Workspace>();
   const [histories, setHistories] = useState<
@@ -115,13 +117,6 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     [],
   );
 
-  const getHistories = useCallback(
-    (key: RequestResourceKey) => {
-      return findByRequestKey(histories, key)?.items ?? [];
-    },
-    [histories],
-  );
-
   const openWorkspace = useCallback((args: OpenWorkspaceArguments) => {
     setDir(args.dir);
     if (args.environment) {
@@ -129,17 +124,18 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     }
   }, []);
 
-  const openRequest = useCallback((key: RequestResourceKey) => {
-    setCurrentRequest(key);
-    setPreviewingRequest(key);
+  const openResource = useCallback((key: WorkspaceResourceKey) => {
+    setCurrentResource(key);
+    setPreviewingResource(key);
   }, []);
 
   const value = useMemo<WorkspaceContextValue>(() => {
     const common = {
-      selectEnvironment: setSelectedEnvironment,
       selectedEnvironment,
-      currentRequest,
-      openRequest,
+      currentResource,
+      histories,
+      selectEnvironment: setSelectedEnvironment,
+      openResource,
       openWorkspace,
     };
 
@@ -148,19 +144,19 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     }
 
     if (status === 'ready' && workspace) {
-      return { ...common, status, workspace, getHistories, saveHistory };
+      return { ...common, status, workspace, saveHistory };
     }
 
     throw new Error('This should never happen.');
   }, [
     status,
     workspace,
-    currentRequest,
+    currentResource,
     selectedEnvironment,
     saveHistory,
-    getHistories,
+    histories,
     openWorkspace,
-    openRequest,
+    openResource,
   ]);
 
   return <WorkspaceContext value={value}>{children}</WorkspaceContext>;

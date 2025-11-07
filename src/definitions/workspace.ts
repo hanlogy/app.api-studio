@@ -17,6 +17,7 @@ export interface WorkspaceResources {
 }
 
 export type RequestResourceKey = [key: string, collectionKey: string];
+export type WorkspaceResourceKey = string | RequestResourceKey;
 
 // NOTE: The url, headers, and body should be the only resolved result, but not
 // the assembled one, we assemble it at the UI rendering step
