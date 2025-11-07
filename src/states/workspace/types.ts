@@ -1,18 +1,13 @@
-import type {
-  AppError,
-  RequestResource,
-  RequestResourceKey,
-  Workspace,
-} from '@/definitions';
+import type { AppError, RequestResourceKey, Workspace } from '@/definitions';
 import type { HttpResponse } from '@/lib/sendRequest';
 
 export type WorkspaceStatus = 'waiting' | 'ready';
 
 type WorkspaceContextValueBase = {
-  readonly openedRequest?: RequestResource;
   readonly workspace?: Workspace;
   readonly error?: AppError;
   readonly selectedEnvironment?: string;
+  readonly openedRequestKey?: RequestResourceKey;
   readonly saveHistory?: (
     key: RequestResourceKey,
     response: HttpResponse,

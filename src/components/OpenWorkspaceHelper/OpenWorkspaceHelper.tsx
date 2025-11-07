@@ -1,8 +1,8 @@
 import { Text, View } from 'react-native';
 import { pickFolder } from '@/helpers/pickFolder';
 import { Clickable } from '../clickables';
-import { useWorkspaceConext } from '@/states/workspace/context';
-import { useStudioConext } from '@/states/studio';
+import { useWorkspaceContext } from '@/states/workspace/context';
+import { useStudioContext } from '@/states/studio';
 import {
   styles,
   tileStyles,
@@ -10,8 +10,8 @@ import {
 } from './OpenWorkspaceHelper.styles';
 
 export function OpenWorkspaceHelper() {
-  const { workspaces } = useStudioConext();
-  const { openWorkspace } = useWorkspaceConext();
+  const { workspaces } = useStudioContext();
+  const { openWorkspace } = useWorkspaceContext();
 
   return (
     <View style={styles.container}>

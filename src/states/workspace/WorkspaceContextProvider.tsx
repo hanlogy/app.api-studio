@@ -19,12 +19,12 @@ import type {
 import { loadWorkspace } from '@/repositories/loadWorkspace';
 import { resolveWorkspace } from '@/lib';
 import { WorkspaceContext } from './context';
-import { useStudioConext } from '../studio';
+import { useStudioContext } from '../studio';
 import type { HttpResponse } from '@/lib/sendRequest';
-import { findByRequestKey } from './findByRequestKey';
+import { findByRequestKey } from '@/helpers/findByRequestKey';
 
 export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
-  const { setError, updateRecentWorkspace } = useStudioConext();
+  const { setError, updateRecentWorkspace } = useStudioContext();
   const [status, setStatus] = useState<WorkspaceStatus>('waiting');
   const [dir, setDir] = useState<string>();
   const [sources, setSources] = useState<WorkspaceResources>();
@@ -93,10 +93,6 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     updateRecentWorkspace?.(cache);
   }, [workspace, updateRecentWorkspace, selectedEnvironment]);
 
-  const sendRequest = useCallback((key: RequestResourceKey) => {
-    //
-  }, []);
-
   const saveHistory = useCallback(
     (key: RequestResourceKey, response: HttpResponse) => {
       setHistories(prev => {
@@ -129,25 +125,11 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     }
   }, []);
 
-  const openedRequest = useMemo(() => {
-    const collections = workspace?.collections;
-    if (!collections) {
-      return undefined;
-    }
-    for (const collection of collections) {
-      const request = findByRequestKey(collection.requests, openedRequestKey);
-      if (request) {
-        return request;
-      }
-    }
-    return undefined;
-  }, [openedRequestKey, workspace?.collections]);
-
   const value = useMemo<WorkspaceContextValue>(() => {
     const common = {
-      openedRequest,
       selectEnvironment: setSelectedEnvironment,
       selectedEnvironment,
+      openedRequestKey,
       openRequest: setOpenedRequestKey,
       openWorkspace,
     };
@@ -164,7 +146,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   }, [
     status,
     workspace,
-    openedRequest,
+    openedRequestKey,
     selectedEnvironment,
     saveHistory,
     getHistories,

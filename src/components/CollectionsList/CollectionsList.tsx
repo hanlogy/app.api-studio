@@ -7,7 +7,7 @@ import {
   requestItemStyles,
 } from './CollectionsList.styles';
 import { useState } from 'react';
-import { useWorkspaceConext } from '@/states/workspace';
+import { useWorkspaceContext } from '@/states/workspace';
 
 export function CollectionsList({
   collections,
@@ -56,7 +56,7 @@ function CollectionItem({
 }
 
 function RequestItem({ request }: { request: RequestResource }) {
-  const { openRequest } = useWorkspaceConext();
+  const { openRequest } = useWorkspaceContext();
   const { name = 'unnamed' } = request;
 
   return (

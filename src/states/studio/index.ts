@@ -1,2 +1,2 @@
 export { StudioContextProvider } from './StudioContextProvider';
-export { useStudioConext } from './context';
+export { useStudioContext } from './context';

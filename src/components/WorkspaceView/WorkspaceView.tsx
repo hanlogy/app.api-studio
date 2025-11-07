@@ -2,13 +2,13 @@ import { ScrollView, View } from 'react-native';
 import { styles } from './WorkspaceView.styles';
 import React from 'react';
 import { RequestView } from './RequestView';
-import { useWorkspaceConext } from '@/states/workspace';
+import { useWorkspaceContext } from '@/states/workspace';
 import { OpenWorkspaceHelper } from '../OpenWorkspaceHelper';
 import { EnvironmentSelect } from '../EnvironmentSelect';
 import { CollectionsList } from '../CollectionsList';
 
 export function WorkspaceView() {
-  const { workspace } = useWorkspaceConext();
+  const { workspace } = useWorkspaceContext();
 
   if (!workspace) {
     return <OpenWorkspaceHelper />;

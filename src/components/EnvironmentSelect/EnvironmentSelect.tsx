@@ -1,4 +1,4 @@
-import { useWorkspaceConext } from '@/states/workspace';
+import { useWorkspaceContext } from '@/states/workspace';
 import { Text, View } from 'react-native';
 import { styles } from './EnvironmentSelect.styles';
 import { ChevronDown } from '../icons/icons';
@@ -7,7 +7,7 @@ import { useState } from 'react';
 
 export function EnvironmentSelect() {
   const { selectedEnvironment, selectEnvironment, workspace } =
-    useWorkspaceConext();
+    useWorkspaceContext();
   const [dropdownShown, setDropdownShown] = useState(false);
 
   if (!workspace) {
