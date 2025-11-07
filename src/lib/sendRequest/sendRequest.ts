@@ -14,6 +14,7 @@ export async function sendRequest({
   headers?: RequestHeaders;
   body?: JsonValue;
 }) {
+  const requestTime = Date.now();
   const response = await fetch(
     url,
     removeUndefined({
@@ -52,6 +53,8 @@ export async function sendRequest({
     headers: Object.fromEntries(response.headers.entries()),
     status: response.status,
     body: responseBody,
+    requestTime,
+    responseTime: Date.now(),
   };
 }
 
