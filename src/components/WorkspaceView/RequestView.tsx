@@ -2,15 +2,12 @@ import { Text, View } from 'react-native';
 import { styles } from './RequestView.styles';
 import { Clickable } from '../clickables';
 import { sendRequest } from '@/lib/sendRequest';
-import {
-  useOpenedRequestSelector,
-  useWorkspaceContext,
-} from '@/states/workspace';
+import { selectOpenedRequest, useWorkspaceContext } from '@/states/workspace';
 
 export function RequestView({}: {}) {
-  const { status, getHistories, saveHistory } = useWorkspaceContext();
-
-  const openedRequest = useOpenedRequestSelector();
+  const workspaceContextValue = useWorkspaceContext();
+  const openedRequest = selectOpenedRequest(workspaceContextValue);
+  const { status, getHistories, saveHistory } = workspaceContextValue;
 
   if (status === 'waiting' || !openedRequest) {
     return <></>;

@@ -1,19 +1,15 @@
-import { useMemo } from 'react';
-import { useWorkspaceContext } from './context';
 import { findRequestFromWorkspace } from '@/helpers/findRequestFromWorkspace';
+import type { WorkspaceContextValue } from './types';
 
-export function useOpenedRequestSelector() {
-  const { openedRequestKey, workspace, selectedEnvironment } =
-    useWorkspaceContext();
+export function selectOpenedRequest(value: WorkspaceContextValue) {
+  const { openedRequestKey, workspace, selectedEnvironment } = value;
 
-  return useMemo(() => {
-    if (!workspace || !openedRequestKey) {
-      return undefined;
-    }
+  if (!workspace || !openedRequestKey) {
+    return undefined;
+  }
 
-    return findRequestFromWorkspace(workspace, {
-      key: openedRequestKey,
-      environmentName: selectedEnvironment,
-    });
-  }, [openedRequestKey, workspace, selectedEnvironment]);
+  return findRequestFromWorkspace(workspace, {
+    key: openedRequestKey,
+    environmentName: selectedEnvironment,
+  });
 }
