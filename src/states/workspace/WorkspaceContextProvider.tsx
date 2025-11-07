@@ -21,6 +21,7 @@ import { resolveWorkspace } from '@/lib';
 import { WorkspaceContext } from './context';
 import { useStudioConext } from '../studio';
 import type { HttpResponse } from '@/lib/sendRequest';
+import { findByRequestKey } from './findByRequestKey';
 
 export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   const { setError, updateRecentWorkspace } = useStudioConext();
@@ -100,9 +101,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     (key: RequestResourceKey, response: HttpResponse) => {
       setHistories(prev => {
         const clone = [...prev];
-        let existing = clone.find(e => {
-          e.key[0] === key[0] && e.key[1] === key[1];
-        });
+        let existing = findByRequestKey(clone, key);
 
         if (!existing) {
           existing = { key, items: [] };
@@ -118,10 +117,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
 
   const getHistories = useCallback(
     (key: RequestResourceKey) => {
-      return (
-        histories.find(e => e.key[0] === key[0] && e.key[1] === key[1])
-          ?.items ?? []
-      );
+      return findByRequestKey(histories, key)?.items ?? [];
     },
     [histories],
   );
@@ -139,14 +135,9 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
       return undefined;
     }
     for (const collection of collections) {
-      for (const request of collection.requests) {
-        if (
-          openedRequestKey &&
-          request.key[0] === openedRequestKey[0] &&
-          request.key[1] === openedRequestKey[1]
-        ) {
-          return request;
-        }
+      const request = findByRequestKey(collection.requests, openedRequestKey);
+      if (request) {
+        return request;
       }
     }
     return undefined;
