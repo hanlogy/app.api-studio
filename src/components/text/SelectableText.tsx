@@ -5,9 +5,18 @@ import type { PropsWithTextStyle } from '@/definitions';
 export function SelectableText({
   style,
   children,
-}: PropsWithChildren<PropsWithTextStyle>) {
+  numberOfLines,
+}: PropsWithChildren<
+  PropsWithTextStyle<{
+    numberOfLines?: number;
+  }>
+>) {
   return (
-    <Text enableFocusRing={false} selectable style={style}>
+    <Text
+      numberOfLines={numberOfLines}
+      enableFocusRing={false}
+      selectable
+      style={style}>
       {children}
     </Text>
   );

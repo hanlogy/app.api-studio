@@ -1,7 +1,7 @@
 import { useWorkspaceContext } from '@/states/workspace';
 import { Text, View } from 'react-native';
 import { styles } from './EnvironmentSelect.styles';
-import { ChevronDown } from '../icons/icons';
+import { ChevronDown, ChevronUp } from '../icons/icons';
 import { Clickable } from '../clickables';
 import { useState } from 'react';
 
@@ -28,7 +28,7 @@ export function EnvironmentSelect() {
         <Text style={styles.selectedLabel}>
           {selectedEnvironment ?? 'No Environment'}
         </Text>
-        <ChevronDown />
+        {dropdownShown ? <ChevronUp /> : <ChevronDown />}
       </Clickable>
       {dropdownShown && (
         <View style={styles.dropdown}>

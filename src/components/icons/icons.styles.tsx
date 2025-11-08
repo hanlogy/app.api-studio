@@ -8,4 +8,10 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+
+  fontello: {
+    fontFamily: 'fontello',
+    color: '#666',
+    fontSize: 16,
+  },
 });

@@ -1,4 +1,4 @@
-import { Text, View } from 'react-native';
+import { Text, View } from 'react-native-macos';
 import { styles } from './RequestBar.styles';
 import { Clickable } from '../clickables';
 import { selectCurrentRequest, useWorkspaceContext } from '@/states/workspace';
@@ -36,7 +36,7 @@ export function RequestBar({ style }: PropsWithViewStyle) {
         <View style={styles.method}>
           <MethodText method={method} />
         </View>
-        <View>
+        <View style={styles.url}>
           <SelectableText style={styles.urlText}>{url}</SelectableText>
         </View>
       </View>

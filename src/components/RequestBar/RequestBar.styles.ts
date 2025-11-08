@@ -9,17 +9,22 @@ export const styles = StyleSheet.create({
   methodAndUrl: {
     display: 'flex',
     flexDirection: 'row',
-    height: 42,
+    minHeight: 42,
     borderRadius: 6,
     borderWidth: 1,
     borderColor: '#999',
     paddingHorizontal: 8,
+    paddingVertical: 6,
     alignItems: 'center',
     flex: 1,
   },
 
   method: {
     marginRight: 8,
+  },
+
+  url: {
+    flex: 1,
   },
 
   methodText: {
