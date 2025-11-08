@@ -1,3 +1,5 @@
+import type { ViewStyle } from 'react-native';
+
 export type PrimitiveValue = string | number | boolean | null;
 
 export type PrimitiveRecord<T extends PrimitiveValue = PrimitiveValue> = Record<
@@ -23,3 +25,7 @@ export type VariableDefinitions = Record<VariableDefinitionKey, PrimitiveValue>;
 
 //
 export type ValuesMap = PrimitiveRecord;
+
+export type PropsWithViewStyle<P = unknown> = P & {
+  style?: ViewStyle;
+};

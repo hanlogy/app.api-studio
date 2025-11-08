@@ -1,9 +1,11 @@
 import { selectCurrentRequest, useWorkspaceContext } from '@/states/workspace';
-import { Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { styles } from './RequestBuilder.styles';
 import { Clickable } from '../clickables';
 import { useState } from 'react';
 import { mergeRequestHeaders } from '@/states/workspace/mergeRequestHeaders';
+import { JsonViewer } from '../JsonViewer/JsonViewer';
+import type { PropsWithViewStyle } from '@/definitions';
 
 const tabNames = ['params', 'headers', 'body', 'variable'] as const;
 type TabName = (typeof tabNames)[number];
@@ -15,7 +17,7 @@ const tabs = [
   // { label: 'Variable', name: 'variable' },
 ] as const;
 
-export function RequestBuilder() {
+export function RequestBuilder({ style }: PropsWithViewStyle) {
   const { status, ...restvalue } = useWorkspaceContext();
   const request = selectCurrentRequest(restvalue);
   const [selectedTab, setSelectedTab] = useState<TabName>('body');
@@ -25,7 +27,7 @@ export function RequestBuilder() {
   const { body, ...requestRest } = request;
 
   return (
-    <>
+    <View style={[style, styles.container]}>
       <View style={styles.tabs}>
         {tabs.map(({ label, name }) => {
           const isSelected = selectedTab === name;
@@ -50,25 +52,29 @@ export function RequestBuilder() {
           );
         })}
       </View>
-      {selectedTab === 'body' && body && (
-        <View style={styles.bodyContainer}>
-          <Text style={styles.bodyText}>{JSON.stringify(body, null, 4)}</Text>
-        </View>
-      )}
+      <ScrollView style={styles.content}>
+        {selectedTab === 'body' && body && (
+          <View style={styles.bodyContainer}>
+            <JsonViewer value={body} />
+          </View>
+        )}
 
-      {selectedTab === 'headers' &&
-        Object.entries(mergeRequestHeaders(requestRest)).map(([key, value]) => {
-          return (
-            <View key={key} style={styles.headerItem}>
-              <View style={styles.headerItemKey}>
-                <Text style={styles.headerItemKeyText}>{key}</Text>
-              </View>
-              <View style={styles.headerItemValue}>
-                <Text style={styles.headerItemValueText}>{value}</Text>
-              </View>
-            </View>
-          );
-        })}
-    </>
+        {selectedTab === 'headers' &&
+          Object.entries(mergeRequestHeaders(requestRest)).map(
+            ([key, value]) => {
+              return (
+                <View key={key} style={styles.headerItem}>
+                  <View style={styles.headerItemKey}>
+                    <Text style={styles.headerItemKeyText}>{key}</Text>
+                  </View>
+                  <View style={styles.headerItemValue}>
+                    <Text style={styles.headerItemValueText}>{value}</Text>
+                  </View>
+                </View>
+              );
+            },
+          )}
+      </ScrollView>
+    </View>
   );
 }

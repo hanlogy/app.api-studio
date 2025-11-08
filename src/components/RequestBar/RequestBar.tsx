@@ -3,8 +3,9 @@ import { styles } from './RequestBar.styles';
 import { Clickable } from '../clickables';
 import { selectCurrentRequest, useWorkspaceContext } from '@/states/workspace';
 import { useState } from 'react';
+import type { PropsWithViewStyle } from '@/definitions';
 
-export function RequestBar() {
+export function RequestBar({ style }: PropsWithViewStyle) {
   const { status, sendRequest, ...restvalue } = useWorkspaceContext();
   const request = selectCurrentRequest(restvalue);
   const [isWaitingResponse, setIsWaitingResponse] = useState(false);
@@ -28,7 +29,7 @@ export function RequestBar() {
   const handleCancel = async () => {};
 
   return (
-    <View style={styles.container}>
+    <View style={[style, styles.container]}>
       <View style={styles.methodAndUrl}>
         <View style={styles.method}>
           <Text style={styles.methodText}>{method ?? 'GET'}</Text>

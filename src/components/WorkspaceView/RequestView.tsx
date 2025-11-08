@@ -21,20 +21,14 @@ export function RequestView({}: {}) {
         <View style={styles.sectionTitle}>
           <Text style={styles.sectionTitleText}>{name}</Text>
         </View>
-        <View style={styles.requestBar}>
-          <RequestBar />
-        </View>
-        <View style={styles.requestBuilder}>
-          <RequestBuilder />
-        </View>
+        <RequestBar style={styles.requestBar} />
+        <RequestBuilder style={styles.requestBuilder} />
       </View>
       <View style={styles.responsePanel}>
         <View style={styles.sectionTitle}>
           <Text style={styles.sectionTitleText}>Response</Text>
         </View>
-        <View style={styles.responseHistory}>
-          <ResponseHistory />
-        </View>
+        <ResponseHistory style={styles.responseHistory} />
       </View>
     </View>
   );

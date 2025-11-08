@@ -1,12 +1,21 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    display: 'flex',
+  },
+
   tabs: {
     paddingTop: 8,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 8,
+  },
+
+  content: {
+    flex: 1,
   },
 
   tabButton: {
@@ -29,7 +38,7 @@ export const styles = StyleSheet.create({
   },
 
   bodyContainer: {
-    //
+    paddingBottom: 16,
   },
 
   bodyText: {
@@ -37,7 +46,6 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 20,
     color: '#666',
-    boxShadow: 'none',
   },
 
   headerItem: {
