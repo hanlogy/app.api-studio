@@ -9,22 +9,31 @@ export const styles = StyleSheet.create({
   methodAndUrl: {
     display: 'flex',
     flexDirection: 'row',
-    borderWidth: 1,
-    height: 36,
+    height: 42,
     borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#999',
     paddingHorizontal: 8,
     alignItems: 'center',
     flex: 1,
   },
 
   method: {
-    marginRight: 6,
+    marginRight: 8,
   },
 
   methodText: {
     color: '#089',
     fontWeight: '600',
   },
+
+  methodGetText: { color: '#00742b' },
+  methodPostText: { color: '#a36f07' },
+  methodPutText: { color: '#0049af' },
+  methodPatchText: { color: '#572e8c' },
+  methodDeleteText: { color: '#831911' },
+  methodHeadText: { color: '#00742b' },
+  methodOptionsText: { color: '#9d175f' },
 
   urlText: {
     color: '#666',
@@ -34,8 +43,8 @@ export const styles = StyleSheet.create({
   actionButton: {
     flexShrink: 0,
     marginLeft: 8,
-    height: 36,
-    width: 80,
+    height: 42,
+    width: 120,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',

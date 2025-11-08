@@ -10,20 +10,19 @@ export const styles = StyleSheet.create({
     backgroundColor: '#FFF',
   },
 
+  requestName: {
+    paddingHorizontal: 16,
+  },
+
+  requestNameText: {
+    color: '#666',
+    lineHeight: 36,
+  },
+
   responsePanel: {
     borderTopColor: '#EEE',
     borderTopWidth: 1,
     flex: 1,
-    backgroundColor: '#FFF',
-  },
-
-  sectionTitle: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-
-  sectionTitleText: {
-    color: '#666',
   },
 
   requestBar: {
@@ -32,9 +31,5 @@ export const styles = StyleSheet.create({
 
   requestBuilder: {
     paddingHorizontal: 16,
-  },
-
-  responseHistory: {
-    padding: 16,
   },
 });

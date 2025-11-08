@@ -2,11 +2,15 @@ import type { JsonValue, PropsWithViewStyle } from '@/definitions';
 import { Text, View } from 'react-native-macos';
 import { styles } from './JsonViewer.styles';
 import { SelectableText } from '../text/SelectableText';
+import { isJsonValue } from '@/helpers/checkTypes';
 
 export function JsonViewer({
   value,
   style,
-}: PropsWithViewStyle<{ value: JsonValue }>) {
+}: PropsWithViewStyle<{ value: unknown }>) {
+  if (!isJsonValue(value)) {
+    return <></>;
+  }
   return (
     <View style={[style, styles.contaienr]}>
       <View style={styles.lines}>

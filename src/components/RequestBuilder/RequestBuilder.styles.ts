@@ -6,6 +6,8 @@ export const styles = StyleSheet.create({
     display: 'flex',
   },
 
+  tabView: {},
+
   tabContent: {
     paddingBottom: 16,
   },

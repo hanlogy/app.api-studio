@@ -29,7 +29,6 @@ export const styles = StyleSheet.create({
   },
 
   itemKey: {
-    minWidth: 120,
     width: '25%',
   },
 

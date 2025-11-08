@@ -10,21 +10,24 @@ export const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    height: 56,
   },
 
   tabButton: {
     height: 32,
+    display: 'flex',
+    justifyContent: 'center',
     marginRight: 16,
+    backgroundColor: '#fff',
+    borderBottomWidth: 2,
+    borderBottomColor: 'transparent',
   },
 
   tabButtonSelected: {
     borderBottomColor: '#089',
-    borderBottomWidth: 1,
   },
 
   tabButtonText: {
-    lineHeight: 32,
     color: '#999',
   },
 

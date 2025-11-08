@@ -5,6 +5,7 @@ import { selectCurrentRequest, useWorkspaceContext } from '@/states/workspace';
 import { useState } from 'react';
 import type { PropsWithViewStyle } from '@/definitions';
 import { SelectableText } from '../text/SelectableText';
+import { MethodText } from '../text';
 
 export function RequestBar({ style }: PropsWithViewStyle) {
   const { status, sendRequest, ...restvalue } = useWorkspaceContext();
@@ -33,7 +34,7 @@ export function RequestBar({ style }: PropsWithViewStyle) {
     <View style={[style, styles.container]}>
       <View style={styles.methodAndUrl}>
         <View style={styles.method}>
-          <Text style={styles.methodText}>{method ?? 'GET'}</Text>
+          <MethodText method={method} />
         </View>
         <View>
           <SelectableText style={styles.urlText}>{url}</SelectableText>

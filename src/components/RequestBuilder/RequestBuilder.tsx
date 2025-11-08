@@ -27,6 +27,7 @@ export function RequestBuilder({ style }: PropsWithViewStyle) {
     <View style={[style, styles.container]}>
       <TabView
         tabs={tabs}
+        style={styles.tabView}
         renderContent={name => {
           switch (name) {
             case 'body': {

@@ -1,9 +1,8 @@
 import type { PropsWithViewStyle } from '@/definitions';
 import { useState, type ReactNode } from 'react';
-import { Text, View } from 'react-native-macos';
+import { ScrollView, Text, View } from 'react-native-macos';
 import { styles } from './TabView.styles';
 import { Clickable } from '../clickables';
-import { ScrollView } from 'react-native';
 
 export interface Tab<Name extends string = string> {
   readonly name: Name;
