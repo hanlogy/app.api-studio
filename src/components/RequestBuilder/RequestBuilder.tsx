@@ -5,6 +5,7 @@ import type { PropsWithViewStyle } from '@/definitions';
 import { TabView } from '../TabView';
 import { JsonViewer } from '../JsonViewer';
 import { mergeRequestHeaders } from '@/helpers/mergeRequestHeaders';
+import { KeyValueViewer } from '../KeyValueViewer';
 
 const tabs = [
   { label: 'Body', name: 'body' },
@@ -36,26 +37,15 @@ export function RequestBuilder({ style }: PropsWithViewStyle) {
                   </Text>
                 );
               }
-              return (
-                <View style={styles.bodyContainer}>
-                  <JsonViewer value={body} />
-                </View>
-              );
+              return <JsonViewer style={styles.tabContent} value={body} />;
             }
+
             case 'headers': {
-              return Object.entries(mergeRequestHeaders(requestRest)).map(
-                ([key, value]) => {
-                  return (
-                    <View key={key} style={styles.headerItem}>
-                      <View style={styles.headerItemKey}>
-                        <Text style={styles.headerItemKeyText}>{key}</Text>
-                      </View>
-                      <View style={styles.headerItemValue}>
-                        <Text style={styles.headerItemValueText}>{value}</Text>
-                      </View>
-                    </View>
-                  );
-                },
+              return (
+                <KeyValueViewer
+                  style={styles.tabContent}
+                  data={mergeRequestHeaders(requestRest)}
+                />
               );
             }
           }

@@ -1,4 +1,5 @@
 import type { TextStyle, ViewStyle } from 'react-native';
+import type { StyleProp } from 'react-native-macos';
 
 export type PrimitiveValue = string | number | boolean | null;
 
@@ -27,9 +28,9 @@ export type VariableDefinitions = Record<VariableDefinitionKey, PrimitiveValue>;
 export type ValuesMap = PrimitiveRecord;
 
 export type PropsWithViewStyle<P = unknown> = P & {
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 };
 
 export type PropsWithTextStyle<P = unknown> = P & {
-  style?: TextStyle;
+  style?: StyleProp<TextStyle>;
 };

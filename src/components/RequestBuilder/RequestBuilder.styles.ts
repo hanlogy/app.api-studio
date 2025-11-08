@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
     display: 'flex',
   },
 
-  bodyContainer: {
+  tabContent: {
     paddingBottom: 16,
   },
 
@@ -14,34 +14,5 @@ export const styles = StyleSheet.create({
     marginTop: 8,
     color: '#ccc',
     fontStyle: 'italic',
-  },
-
-  headerItem: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 32,
-  },
-
-  headerItemKey: {
-    minWidth: 120,
-  },
-
-  headerItemKeyText: {
-    color: '#666',
-    fontFamily: 'Menlo',
-    fontSize: 12,
-    lineHeight: 20,
-  },
-
-  headerItemValue: {
-    minWidth: 120,
-  },
-
-  headerItemValueText: {
-    color: '#666',
-    fontFamily: 'Menlo',
-    fontSize: 12,
-    lineHeight: 20,
   },
 });

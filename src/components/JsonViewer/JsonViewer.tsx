@@ -1,11 +1,14 @@
-import type { JsonValue } from '@/definitions';
+import type { JsonValue, PropsWithViewStyle } from '@/definitions';
 import { Text, View } from 'react-native-macos';
 import { styles } from './JsonViewer.styles';
 import { SelectableText } from '../text/SelectableText';
 
-export function JsonViewer({ value }: { value: JsonValue }) {
+export function JsonViewer({
+  value,
+  style,
+}: PropsWithViewStyle<{ value: JsonValue }>) {
   return (
-    <View style={styles.contaienr}>
+    <View style={[style, styles.contaienr]}>
       <View style={styles.lines}>
         <Text>1</Text>
       </View>
