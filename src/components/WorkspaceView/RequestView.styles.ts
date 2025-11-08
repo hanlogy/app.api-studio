@@ -7,12 +7,14 @@ export const styles = StyleSheet.create({
 
   requestPanel: {
     flex: 1,
+    backgroundColor: '#FFF',
   },
 
   responsePanel: {
     borderTopColor: '#EEE',
     borderTopWidth: 1,
     flex: 1,
+    backgroundColor: '#FFF',
   },
 
   sectionTitle: {

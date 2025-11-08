@@ -52,7 +52,10 @@ export function RequestBuilder({ style }: PropsWithViewStyle) {
           );
         })}
       </View>
-      <ScrollView style={styles.content}>
+      <ScrollView
+        horizontal={false}
+        showsHorizontalScrollIndicator={false}
+        style={styles.content}>
         {selectedTab === 'body' && body && (
           <View style={styles.bodyContainer}>
             <JsonViewer value={body} />

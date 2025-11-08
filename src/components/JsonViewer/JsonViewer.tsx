@@ -1,13 +1,19 @@
 import type { JsonValue } from '@/definitions';
 import { Text, View } from 'react-native-macos';
 import { styles } from './JsonViewer.styles';
+import { SelectableText } from '../text/SelectableText';
 
 export function JsonViewer({ value }: { value: JsonValue }) {
   return (
-    <View>
-      <Text enableFocusRing={false} selectable style={styles.jsonText}>
-        {renderJsonValue(value)}
-      </Text>
+    <View style={styles.contaienr}>
+      <View style={styles.lines}>
+        <Text>1</Text>
+      </View>
+      <View style={styles.content}>
+        <SelectableText style={styles.jsonText}>
+          {renderJsonValue(value)}
+        </SelectableText>
+      </View>
     </View>
   );
 }

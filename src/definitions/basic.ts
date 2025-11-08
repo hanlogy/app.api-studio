@@ -1,4 +1,4 @@
-import type { ViewStyle } from 'react-native';
+import type { TextStyle, ViewStyle } from 'react-native';
 
 export type PrimitiveValue = string | number | boolean | null;
 
@@ -28,4 +28,8 @@ export type ValuesMap = PrimitiveRecord;
 
 export type PropsWithViewStyle<P = unknown> = P & {
   style?: ViewStyle;
+};
+
+export type PropsWithTextStyle<P = unknown> = P & {
+  style?: TextStyle;
 };

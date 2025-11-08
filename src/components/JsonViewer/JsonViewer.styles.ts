@@ -1,6 +1,16 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
+  contaienr: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  lines: {
+    display: 'none',
+  },
+  content: {
+    flex: 1,
+  },
   jsonText: {
     lineHeight: 20,
   },
