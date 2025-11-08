@@ -3,7 +3,7 @@ import { checkBodyFormat } from './checkBodyFormat';
 import { removeUndefined } from '@/helpers/filterValues';
 import { encodeRequestBody } from './encodeRequestBody';
 
-export async function sendRequest({
+export async function sendHttpRequest({
   method,
   url,
   headers = {},
@@ -61,4 +61,4 @@ export type HttpRequest = {
   headers?: RequestHeaders;
   body?: JsonValue;
 };
-export type HttpResponse = Awaited<ReturnType<typeof sendRequest>>;
+export type HttpResponse = Awaited<ReturnType<typeof sendHttpRequest>>;

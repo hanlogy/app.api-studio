@@ -1,4 +1,4 @@
-import { checkBodyFormat } from '@/lib/sendRequest/checkBodyFormat';
+import { checkBodyFormat } from '@/lib/sendHttpRequest/checkBodyFormat';
 
 describe('checkBodyFormat', () => {
   describe('input is a Headers object', () => {

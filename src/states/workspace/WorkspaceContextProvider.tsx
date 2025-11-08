@@ -22,13 +22,10 @@ import { loadWorkspace } from '@/repositories/loadWorkspace';
 import { resolveWorkspace } from '@/lib';
 import { WorkspaceContext } from './context';
 import { useStudioContext } from '../studio';
-import {
-  sendRequest as sendHttpRequest,
-  type HttpResponse,
-} from '@/lib/sendRequest';
+import { sendHttpRequest, type HttpResponse } from '@/lib/sendHttpRequest';
 import { findByRequestKey } from '@/helpers/findByRequestKey';
 import { selectCurrentRequest } from './selectors';
-import type { HttpRequest } from '@/lib/sendRequest/sendRequest';
+import type { HttpRequest } from '@/lib/sendHttpRequest/sendHttpRequest';
 import { mergeRequestHeaders } from '@/helpers/mergeRequestHeaders';
 
 export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
@@ -139,6 +136,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
       workspace,
       selectedEnvironment,
     });
+
     if (!currentRequest) {
       return;
     }

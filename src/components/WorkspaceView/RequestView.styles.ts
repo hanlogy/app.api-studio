@@ -19,17 +19,17 @@ export const styles = StyleSheet.create({
     lineHeight: 36,
   },
 
-  responsePanel: {
-    borderTopColor: '#EEE',
-    borderTopWidth: 1,
-    flex: 1,
-  },
-
   requestBar: {
     paddingHorizontal: 16,
   },
 
   requestBuilder: {
     paddingHorizontal: 16,
+  },
+
+  responsePanel: {
+    borderTopColor: '#EEE',
+    borderTopWidth: 1,
+    flex: 1,
   },
 });

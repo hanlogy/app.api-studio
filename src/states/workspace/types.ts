@@ -4,8 +4,8 @@ import type {
   Workspace,
   WorkspaceResourceKey,
 } from '@/definitions';
-import type { HttpResponse } from '@/lib/sendRequest';
-import type { HttpRequest } from '@/lib/sendRequest/sendRequest';
+import type { HttpResponse } from '@/lib/sendHttpRequest';
+import type { HttpRequest } from '@/lib/sendHttpRequest/sendHttpRequest';
 
 export type WorkspaceStatus = 'waiting' | 'ready';
 

@@ -1,6 +1,6 @@
 {
   "name": "ApiStudio",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "macos": "react-native run-macos --no-packager",
