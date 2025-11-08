@@ -6,46 +6,14 @@ export const styles = StyleSheet.create({
     display: 'flex',
   },
 
-  tabs: {
-    paddingTop: 8,
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-
-  content: {
-    flex: 1,
-  },
-
-  tabButton: {
-    height: 32,
-    marginRight: 16,
-  },
-
-  tabButtonSelected: {
-    borderBottomColor: '#089',
-    borderBottomWidth: 1,
-  },
-
-  tabButtonText: {
-    lineHeight: 32,
-    color: '#999',
-  },
-
-  tabButtonTextSelected: {
-    color: '#333',
-  },
-
   bodyContainer: {
     paddingBottom: 16,
   },
 
-  bodyText: {
-    fontFamily: 'Menlo',
-    fontSize: 12,
-    lineHeight: 20,
-    color: '#666',
+  bodyNoneText: {
+    marginTop: 8,
+    color: '#ccc',
+    fontStyle: 'italic',
   },
 
   headerItem: {

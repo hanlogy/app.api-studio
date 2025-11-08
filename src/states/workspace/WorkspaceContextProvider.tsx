@@ -28,8 +28,8 @@ import {
 } from '@/lib/sendRequest';
 import { findByRequestKey } from '@/helpers/findByRequestKey';
 import { selectCurrentRequest } from './selectors';
-import { mergeRequestHeaders } from './mergeRequestHeaders';
 import type { HttpRequest } from '@/lib/sendRequest/sendRequest';
+import { mergeRequestHeaders } from '@/helpers/mergeRequestHeaders';
 
 export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   const { setError, updateRecentWorkspace } = useStudioContext();

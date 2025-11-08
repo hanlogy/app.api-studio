@@ -1,4 +1,4 @@
-import { mergeRequestHeaders } from '@/states/workspace/mergeRequestHeaders';
+import { mergeRequestHeaders } from '@/helpers/mergeRequestHeaders';
 
 const globalEnv = {
   headers: { a: 'a1', b: 'b1' },
