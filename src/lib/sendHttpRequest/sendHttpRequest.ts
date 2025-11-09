@@ -24,7 +24,7 @@ export async function sendHttpRequest({
     }),
   );
 
-  let responseBodyFormat = checkBodyFormat(response.headers);
+  const responseBodyFormat = checkBodyFormat(response.headers);
   let responseBody: JsonValue | ArrayBuffer;
 
   switch (responseBodyFormat) {
@@ -33,7 +33,6 @@ export async function sendHttpRequest({
         responseBody = await response.json();
       } catch {
         responseBody = await response.text();
-        responseBodyFormat = 'text';
       }
       break;
     case 'html':
@@ -45,8 +44,9 @@ export async function sendHttpRequest({
       responseBody = await response.arrayBuffer();
   }
 
+  // NOTE: We do not save the `responseBodyFormat` in the response, becuse user
+  // might mutate it in the middleware.
   return {
-    bodyFormat: responseBodyFormat,
     headers: Object.fromEntries(response.headers.entries()),
     status: response.status,
     body: responseBody,

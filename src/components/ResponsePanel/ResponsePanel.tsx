@@ -7,6 +7,7 @@ import { HttpStatusText } from '../text';
 import { TabView } from '../TabView';
 import { JsonViewer } from '../JsonViewer';
 import { KeyValueViewer } from '../KeyValueViewer';
+import { checkBodyFormat } from '@/lib/sendHttpRequest/checkBodyFormat';
 
 const tabs = [
   { label: 'Body', name: 'body' },
@@ -25,13 +26,13 @@ export function ResponsePanel({ style }: PropsWithViewStyle) {
   const {
     headers,
     body,
-    bodyFormat,
     status: httpStatus,
     requestTime,
     responseTime,
   } = history.response;
 
   const duration = responseTime - requestTime;
+  const bodyFormat = checkBodyFormat(headers);
 
   return (
     <View style={[style, styles.container]}>
@@ -55,12 +56,15 @@ export function ResponsePanel({ style }: PropsWithViewStyle) {
               if (!body) {
                 return (
                   <Text style={styles.bodyNoneText}>
-                    This request does not have a body
+                    This response does not have a body
                   </Text>
                 );
               }
               if (bodyFormat === 'text' || bodyFormat === 'json') {
                 return <JsonViewer style={styles.tabContent} value={body} />;
+              }
+              if (bodyFormat === 'html') {
+                return <Text>{String(body)}</Text>;
               }
               return <Text>Unsupported body format</Text>;
             }
