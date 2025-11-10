@@ -29,19 +29,19 @@ const workspace: Pick<RuntimeWorkspace, 'collections' | 'environments'> = {
 };
 
 describe('updateRuntimeWorkspace', () => {
-  test('empty', () => {
+  test('update a target does not exist', () => {
     const input = {
       environments: [],
       collections: [],
     };
 
-    const result = updateRuntimeWorkspace(input, 'requestVariable', {
-      key: ['api_1', 'collection_1'],
-      name: 'name',
-      value: 'name-updated',
-    });
-
-    expect(result).toStrictEqual(input);
+    expect(() => {
+      updateRuntimeWorkspace(input, 'requestVariable', {
+        key: ['api_1', 'collection_1'],
+        name: 'name',
+        value: 'name-updated',
+      });
+    }).toThrow(expect.objectContaining({ code: 'requestVariableNotExist' }));
   });
 
   test('update requestVariable', () => {

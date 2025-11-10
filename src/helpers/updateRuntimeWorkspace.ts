@@ -1,10 +1,11 @@
 import { produce } from 'immer';
 
-import type {
-  PrimitiveValue,
-  RequestResourceKey,
-  RuntimeWorkspace,
-  ValuesMap,
+import {
+  AppError,
+  type PrimitiveValue,
+  type RequestResourceKey,
+  type RuntimeWorkspace,
+  type ValuesMap,
 } from '@/definitions';
 import { isPlainObject, isPrimitive } from '@/helpers/checkTypes';
 
@@ -71,13 +72,18 @@ export function updateRuntimeWorkspace(
                   name,
                   value,
                 );
-                break;
+                return;
               }
             }
           }
         }
+        throw new AppError({
+          code: 'requestVariableNotExist',
+          message: `The request variable "${name}" does not exist`,
+        });
       });
     }
+
     case 'collectionVariable': {
       if (typeof key !== 'string') {
         return workspace;
@@ -91,11 +97,17 @@ export function updateRuntimeWorkspace(
               name,
               value,
             );
-            break;
+            return;
           }
         }
+
+        throw new AppError({
+          code: 'collectionVariableNotExist',
+          message: `The collection variable "${name}" does not exist`,
+        });
       });
     }
+
     case 'environmentVariable': {
       if (typeof key !== 'string') {
         return workspace;
@@ -109,9 +121,14 @@ export function updateRuntimeWorkspace(
               name,
               value,
             );
-            break;
+            return;
           }
         }
+
+        throw new AppError({
+          code: 'environmentVariableNotExist',
+          message: `The environment variable "${name}" does not exist`,
+        });
       });
     }
   }
