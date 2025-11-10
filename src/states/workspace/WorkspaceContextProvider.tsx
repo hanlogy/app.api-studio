@@ -1,6 +1,7 @@
 import {
   AppError,
   type RequestResourceKey,
+  type RuntimeWorkspace,
   type Workspace,
   type WorkspaceResourceKey,
   type WorkspaceResources,
@@ -35,6 +36,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   const [status, setStatus] = useState<WorkspaceStatus>('waiting');
   const [dir, setDir] = useState<string>();
   const [sources, setSources] = useState<WorkspaceResources>();
+  const [runtimeWorkspace, setRuntimeWorkspace] = useState<RuntimeWorkspace>();
   const [pinnedResources, setPinnedResources] = useState<
     WorkspaceResourceKey[]
   >([]);
@@ -84,6 +86,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     const resolved = resolveWorkspace({
       sources,
       environmentName: selectedEnvironment,
+      runtimeWorkspace,
     });
 
     if (!resolved) {
@@ -98,7 +101,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
 
     setError();
     setWorkspace({ ...resolved, dir });
-  }, [sources, selectedEnvironment, dir, setError]);
+  }, [sources, selectedEnvironment, dir, setError, runtimeWorkspace]);
 
   useEffect(() => {
     if (!workspace) {

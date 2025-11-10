@@ -61,10 +61,10 @@ export function updateRuntimeWorkspace(
         return workspace;
       }
 
-      return produce(workspace, ({ collections }) => {
+      return produce(workspace, ({ collections = [] }) => {
         for (const collection of collections) {
           if (collection.key === key[1]) {
-            for (const request of collection.requests) {
+            for (const request of collection.requests ?? []) {
               if (request.key[0] === key[0]) {
                 request.valuesMap = updateValueMap(
                   request.valuesMap,
@@ -83,7 +83,7 @@ export function updateRuntimeWorkspace(
         return workspace;
       }
 
-      return produce(workspace, ({ collections }) => {
+      return produce(workspace, ({ collections = [] }) => {
         for (const collection of collections) {
           if (collection.key === key) {
             collection.valuesMap = updateValueMap(
@@ -101,7 +101,7 @@ export function updateRuntimeWorkspace(
         return workspace;
       }
 
-      return produce(workspace, ({ environments }) => {
+      return produce(workspace, ({ environments = [] }) => {
         for (const environment of environments) {
           if (environment.name === key) {
             environment.valuesMap = updateValueMap(
