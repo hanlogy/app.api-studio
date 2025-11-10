@@ -9,6 +9,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type PropsWithChildren,
 } from 'react';
@@ -27,6 +28,7 @@ import { findByRequestKey } from '@/helpers/findByRequestKey';
 import { selectCurrentRequest } from './selectors';
 import type { HttpRequest } from '@/lib/sendHttpRequest/sendHttpRequest';
 import { mergeRequestHeaders } from '@/helpers/mergeRequestHeaders';
+import { loadScripts, type ScriptFunctions } from '@/repositories/loadScripts';
 
 export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   const { setError, updateRecentWorkspace } = useStudioContext();
@@ -48,6 +50,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
       items: RequestHistoryItem[];
     }[]
   >([]);
+  const scriptFunctionsRef = useRef<ScriptFunctions>({});
 
   //When `dir` changed:
   //Load workspace files, parse, resolve, update cache
@@ -57,6 +60,19 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     }
 
     loadWorkspace({ dir, onData: setSources, onError: setError });
+    loadScripts({
+      workspaceDir: dir,
+      onSuccess: functions => {
+        if ('requestMiddleware' in functions) {
+          scriptFunctionsRef.current.requestMiddleware =
+            functions.requestMiddleware;
+        }
+        if ('mockServerMiddleware' in functions) {
+          scriptFunctionsRef.current.mockServerMiddleware =
+            functions.mockServerMiddleware;
+        }
+      },
+    });
   }, [dir, setDir, setError]);
 
   // when sources or selectedEnvironment changed.
