@@ -3,24 +3,24 @@ import { produce } from 'immer';
 import type {
   PrimitiveValue,
   RequestResourceKey,
+  RuntimeWorkspace,
   ValuesMap,
-  Workspace,
 } from '@/definitions';
 import { isPlainObject, isPrimitive } from '@/helpers/checkTypes';
 
-type UpdateWorkspaceTarget =
+type UpdateTarget =
   | 'requestVariable'
   | 'collectionVariable'
   | 'environmentVariable';
 
-type PartialWorkspace = Pick<Workspace, 'collections' | 'environments'>;
+type PartialWorkspace = Pick<RuntimeWorkspace, 'collections' | 'environments'>;
 interface UpdateWorkspaceOptions {
   key: string | RequestResourceKey;
   name: string;
   value: PrimitiveValue;
 }
 
-export function updateWorkspace(
+export function updateRuntimeWorkspace(
   workspace: PartialWorkspace,
   target: 'requestVariable',
   options: {
@@ -28,9 +28,9 @@ export function updateWorkspace(
     name: string;
     value: PrimitiveValue;
   },
-): void;
+): RuntimeWorkspace;
 
-export function updateWorkspace(
+export function updateRuntimeWorkspace(
   workspace: PartialWorkspace,
   target: 'collectionVariable',
   options: {
@@ -38,9 +38,9 @@ export function updateWorkspace(
     name: string;
     value: PrimitiveValue;
   },
-): void;
+): RuntimeWorkspace;
 
-export function updateWorkspace(
+export function updateRuntimeWorkspace(
   workspace: PartialWorkspace,
   target: 'environmentVariable',
   options: {
@@ -48,11 +48,11 @@ export function updateWorkspace(
     name: string;
     value: PrimitiveValue;
   },
-): void;
+): RuntimeWorkspace;
 
-export function updateWorkspace(
-  workspace: Pick<Workspace, 'collections' | 'environments'>,
-  target: UpdateWorkspaceTarget,
+export function updateRuntimeWorkspace(
+  workspace: Pick<RuntimeWorkspace, 'collections' | 'environments'>,
+  target: UpdateTarget,
   { key, name, value }: UpdateWorkspaceOptions,
 ) {
   switch (target) {
@@ -71,6 +71,7 @@ export function updateWorkspace(
                   name,
                   value,
                 );
+                break;
               }
             }
           }
@@ -90,6 +91,7 @@ export function updateWorkspace(
               name,
               value,
             );
+            break;
           }
         }
       });
@@ -107,6 +109,7 @@ export function updateWorkspace(
               name,
               value,
             );
+            break;
           }
         }
       });

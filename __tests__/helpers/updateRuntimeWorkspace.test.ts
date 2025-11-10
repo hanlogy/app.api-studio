@@ -1,11 +1,10 @@
-import type { Workspace } from '@/definitions';
-import { updateWorkspace } from '@/helpers/updateWorkspace';
+import type { RuntimeWorkspace } from '@/definitions';
+import { updateRuntimeWorkspace } from '@/helpers/updateRuntimeWorkspace';
 
-const workspace: Pick<Workspace, 'collections' | 'environments'> = {
+const workspace: Pick<RuntimeWorkspace, 'collections' | 'environments'> = {
   environments: [
     {
       name: '@global',
-      isGlobal: true,
       valuesMap: {
         token: '123',
       },
@@ -13,17 +12,13 @@ const workspace: Pick<Workspace, 'collections' | 'environments'> = {
   ],
   collections: [
     {
-      name: 'collection_1',
       key: 'collection_1',
-      id: 'collection_1',
       valuesMap: {
         isTrue: true,
       },
       requests: [
         {
-          name: 'api_1',
           key: ['api_1', 'collection_1'],
-          id: 'api_1',
           valuesMap: {
             limit: 10,
           },
@@ -33,14 +28,14 @@ const workspace: Pick<Workspace, 'collections' | 'environments'> = {
   ],
 };
 
-describe('updateWorkspace', () => {
+describe('updateRuntimeWorkspace', () => {
   test('empty', () => {
     const input = {
       environments: [],
       collections: [],
     };
 
-    const result = updateWorkspace(input, 'requestVariable', {
+    const result = updateRuntimeWorkspace(input, 'requestVariable', {
       key: ['api_1', 'collection_1'],
       name: 'name',
       value: 'name-updated',
@@ -50,7 +45,7 @@ describe('updateWorkspace', () => {
   });
 
   test('update requestVariable', () => {
-    const result = updateWorkspace(workspace, 'requestVariable', {
+    const result = updateRuntimeWorkspace(workspace, 'requestVariable', {
       key: ['api_1', 'collection_1'],
       name: 'limit',
       value: 20,
@@ -60,17 +55,13 @@ describe('updateWorkspace', () => {
       environments: expect.any(Array),
       collections: [
         {
-          name: 'collection_1',
           key: 'collection_1',
-          id: 'collection_1',
           valuesMap: {
             isTrue: true,
           },
           requests: [
             {
-              name: 'api_1',
               key: ['api_1', 'collection_1'],
-              id: 'api_1',
               valuesMap: {
                 limit: 10,
               },
@@ -84,7 +75,6 @@ describe('updateWorkspace', () => {
       environments: [
         {
           name: '@global',
-          isGlobal: true,
           valuesMap: {
             token: '123',
           },
@@ -92,17 +82,13 @@ describe('updateWorkspace', () => {
       ],
       collections: [
         {
-          name: 'collection_1',
           key: 'collection_1',
-          id: 'collection_1',
           valuesMap: {
             isTrue: true,
           },
           requests: [
             {
-              name: 'api_1',
               key: ['api_1', 'collection_1'],
-              id: 'api_1',
               valuesMap: {
                 limit: 20,
               },
@@ -114,7 +100,7 @@ describe('updateWorkspace', () => {
   });
 
   test('update collectionVariable', () => {
-    const result = updateWorkspace(workspace, 'collectionVariable', {
+    const result = updateRuntimeWorkspace(workspace, 'collectionVariable', {
       key: 'collection_1',
       name: 'isTrue',
       value: false,
@@ -124,9 +110,7 @@ describe('updateWorkspace', () => {
       environments: expect.any(Array),
       collections: [
         {
-          name: 'collection_1',
           key: 'collection_1',
-          id: 'collection_1',
           valuesMap: {
             isTrue: true,
           },
@@ -139,9 +123,7 @@ describe('updateWorkspace', () => {
       environments: expect.any(Array),
       collections: [
         {
-          name: 'collection_1',
           key: 'collection_1',
-          id: 'collection_1',
           valuesMap: {
             isTrue: false,
           },
@@ -152,7 +134,7 @@ describe('updateWorkspace', () => {
   });
 
   test('update environmentVariable', () => {
-    const result = updateWorkspace(workspace, 'environmentVariable', {
+    const result = updateRuntimeWorkspace(workspace, 'environmentVariable', {
       key: '@global',
       name: 'token',
       value: '456',
@@ -162,7 +144,6 @@ describe('updateWorkspace', () => {
       environments: [
         {
           name: '@global',
-          isGlobal: true,
           valuesMap: {
             token: '123',
           },
@@ -175,7 +156,6 @@ describe('updateWorkspace', () => {
       environments: [
         {
           name: '@global',
-          isGlobal: true,
           valuesMap: {
             token: '456',
           },
