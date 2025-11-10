@@ -13,11 +13,11 @@ export function resolveWorkspace({
   sources: { config: configSource, collections: collectionsSources },
   environmentName,
 }: {
-  sources: {
+  readonly sources: {
     readonly config: JsonValue;
     readonly collections: readonly JsonValue[];
   };
-  environmentName?: string;
+  readonly environmentName?: string;
 }): Omit<Workspace, 'dir' | 'environmentName'> | undefined {
   const resolvedConfig = resolveConfig({ source: configSource });
 

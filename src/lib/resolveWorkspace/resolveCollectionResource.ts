@@ -14,12 +14,12 @@ import { resolveUrl } from './resolveUrl';
 
 export function resolveCollectionResource({
   source,
-  valuesMap: externalValuesMap = {},
+  valuesMap: environmentValuesMap = {},
   accumulateIds,
 }: {
-  source: JsonValue;
+  readonly source: JsonValue;
   accumulateIds: string[];
-  valuesMap?: ValuesMap;
+  readonly valuesMap?: ValuesMap;
 }): CollectionResource | undefined {
   if (!isPlainObject(source)) {
     return undefined;
@@ -37,10 +37,10 @@ export function resolveCollectionResource({
 
   const localValuesMap = resolveValuesMap({
     source: rest,
-    valuesMap: externalValuesMap,
+    valuesMap: environmentValuesMap,
   });
 
-  const valuesMap = { ...externalValuesMap, ...(localValuesMap ?? {}) };
+  const valuesMap = { ...environmentValuesMap, ...(localValuesMap ?? {}) };
   const keys = resolveResourceKeys('collection', {
     name,
     id,
