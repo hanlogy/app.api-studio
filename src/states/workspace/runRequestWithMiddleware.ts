@@ -14,6 +14,7 @@ import {
 } from '@/lib/sendHttpRequest';
 import { removeUndefined } from '@/helpers/filterValues';
 import { selectCurrentRequest } from './selectors';
+import { isSameResourceKey } from '@/helpers/isSameResourceKey';
 
 interface RunRequestWithMiddlewareOptions {
   readonly middleware?: Function;
@@ -73,6 +74,7 @@ export async function runRequestWithMiddleware({
       response = await middleware(requestKey, requestParams, {
         log: console.log,
         send: sendRequest,
+        isKey: isSameResourceKey,
         setRequestVariable: (
           key: RequestResourceKey,
           name: string,
