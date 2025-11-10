@@ -9,51 +9,41 @@ import {
 } from '@/definitions';
 import { isPlainObject, isPrimitive } from '@/helpers/checkTypes';
 
-type UpdateTarget =
+export type UpdateRuntimeWorkspaceTarget =
   | 'requestVariable'
   | 'collectionVariable'
   | 'environmentVariable';
 
 type PartialWorkspace = Pick<RuntimeWorkspace, 'collections' | 'environments'>;
 interface UpdateWorkspaceOptions {
-  key: string | RequestResourceKey;
-  name: string;
-  value: PrimitiveValue;
+  readonly key: string | RequestResourceKey;
+  readonly name: string;
+  readonly value: PrimitiveValue;
 }
 
 export function updateRuntimeWorkspace(
   workspace: PartialWorkspace,
   target: 'requestVariable',
   options: {
-    key: RequestResourceKey;
-    name: string;
-    value: PrimitiveValue;
+    readonly key: RequestResourceKey;
+    readonly name: string;
+    readonly value: PrimitiveValue;
   },
 ): RuntimeWorkspace;
 
 export function updateRuntimeWorkspace(
   workspace: PartialWorkspace,
-  target: 'collectionVariable',
+  target: 'collectionVariable' | 'environmentVariable',
   options: {
-    key: string;
-    name: string;
-    value: PrimitiveValue;
-  },
-): RuntimeWorkspace;
-
-export function updateRuntimeWorkspace(
-  workspace: PartialWorkspace,
-  target: 'environmentVariable',
-  options: {
-    key: string;
-    name: string;
-    value: PrimitiveValue;
+    readonly key: string;
+    readonly name: string;
+    readonly value: PrimitiveValue;
   },
 ): RuntimeWorkspace;
 
 export function updateRuntimeWorkspace(
   workspace: Pick<RuntimeWorkspace, 'collections' | 'environments'>,
-  target: UpdateTarget,
+  target: UpdateRuntimeWorkspaceTarget,
   { key, name, value }: UpdateWorkspaceOptions,
 ) {
   switch (target) {
