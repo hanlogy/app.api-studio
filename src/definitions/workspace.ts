@@ -2,6 +2,7 @@ import type {
   JsonRecord,
   JsonValue,
   PrimitiveRecord,
+  PrimitiveValue,
   ValuesMap,
 } from './basic';
 import { requestMethods } from './constants';
@@ -74,7 +75,6 @@ export interface Workspace {
   readonly collections: readonly CollectionResource[];
 }
 
-/*
 export type RuntimeVariable =
   | {
       readonly type: 'environment' | 'collection';
@@ -88,9 +88,6 @@ export type RuntimeVariable =
       readonly name: string;
       readonly value: PrimitiveValue;
     };
-
-export type RuntimeVariables = readonly RuntimeVariable[];
-*/
 
 export interface RuntimeWorkspaceEnvironment {
   readonly name: string;

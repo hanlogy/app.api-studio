@@ -8,12 +8,11 @@ import {
 } from '@/definitions';
 import { isPrimitive } from '@/helpers/checkTypes';
 
-export function upsertRuntimeVariable(
-  workspace: Pick<RuntimeWorkspace, 'collections' | 'environments'>,
-  { type, key, name, value }: RuntimeVariable,
-) {
+export function upsertRuntimeVariable<
+  T extends Pick<RuntimeWorkspace, 'collections' | 'environments'>,
+>(workspace: T, { type, key, name, value }: RuntimeVariable): T {
   if (!name || !isPrimitive(value)) {
-    return;
+    return workspace;
   }
 
   switch (type) {
