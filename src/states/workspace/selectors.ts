@@ -5,28 +5,28 @@ import { findByRequestKey } from '@/helpers/findByRequestKey';
 export function selectCurrentRequest(
   value: Pick<
     WorkspaceContextValue,
-    'currentResource' | 'workspace' | 'selectedEnvironment'
+    'currentResourceKey' | 'workspace' | 'selectedEnvironment'
   >,
 ) {
-  const { currentResource, workspace, selectedEnvironment } = value;
+  const { currentResourceKey, workspace, selectedEnvironment } = value;
 
-  if (!workspace || !currentResource || !Array.isArray(currentResource)) {
+  if (!workspace || !currentResourceKey || !Array.isArray(currentResourceKey)) {
     return undefined;
   }
 
   return findRequestFromWorkspace(workspace, {
-    key: currentResource,
+    key: currentResourceKey,
     environmentName: selectedEnvironment,
   });
 }
 
 export function selectCurrentHistories(
-  value: Pick<WorkspaceContextValue, 'currentResource' | 'histories'>,
+  value: Pick<WorkspaceContextValue, 'currentResourceKey' | 'histories'>,
 ) {
-  const { currentResource, histories } = value;
-  if (!currentResource || !Array.isArray(currentResource)) {
+  const { currentResourceKey, histories } = value;
+  if (!currentResourceKey || !Array.isArray(currentResourceKey)) {
     return [];
   }
 
-  return findByRequestKey(histories, currentResource)?.items ?? [];
+  return findByRequestKey(histories, currentResourceKey)?.items ?? [];
 }

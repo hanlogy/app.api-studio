@@ -46,7 +46,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   >([]);
   const [previewingResource, setPreviewingResource] =
     useState<WorkspaceResourceKey>();
-  const [currentResource, setCurrentResource] =
+  const [currentResourceKey, setCurrentResourceKey] =
     useState<WorkspaceResourceKey>();
   const [selectedEnvironment, setSelectedEnvironment] = useState<string>();
   const [workspace, setWorkspace] = useState<Workspace>();
@@ -154,13 +154,13 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   );
 
   const sendRequest = useCallback(async () => {
-    if (!dir || !Array.isArray(currentResource) || !workspace) {
+    if (!dir || !Array.isArray(currentResourceKey) || !workspace) {
       return;
     }
 
     const result = await runRequestWithMiddleware({
       middleware: scriptFunctionsRef.current.requestMiddleware,
-      requestKey: currentResource,
+      requestKey: currentResourceKey,
       selectedEnvironment,
       workspace,
       setRuntimeVariable: (variable: RuntimeVariable) => {
@@ -181,8 +181,8 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
 
     const { request, response } = result;
 
-    saveHistory(currentResource, { request, response });
-  }, [dir, currentResource, workspace, selectedEnvironment, saveHistory]);
+    saveHistory(currentResourceKey, { request, response });
+  }, [dir, currentResourceKey, workspace, selectedEnvironment, saveHistory]);
 
   const openWorkspace = useCallback((args: OpenWorkspaceArguments) => {
     setDir(args.dir);
@@ -192,14 +192,14 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   }, []);
 
   const openResource = useCallback((key: WorkspaceResourceKey) => {
-    setCurrentResource(key);
+    setCurrentResourceKey(key);
     setPreviewingResource(key);
   }, []);
 
   const value = useMemo<WorkspaceContextValue>(() => {
     const common = {
       selectedEnvironment,
-      currentResource,
+      currentResourceKey,
       histories,
       selectEnvironment: setSelectedEnvironment,
       openResource,
@@ -218,7 +218,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   }, [
     status,
     workspace,
-    currentResource,
+    currentResourceKey,
     selectedEnvironment,
     sendRequest,
     histories,

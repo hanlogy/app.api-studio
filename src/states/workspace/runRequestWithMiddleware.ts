@@ -38,7 +38,7 @@ export async function runRequestWithMiddleware({
   | undefined
 > {
   const requestResource = selectCurrentRequest({
-    currentResource: requestKey,
+    currentResourceKey: requestKey,
     workspace,
     selectedEnvironment,
   });
