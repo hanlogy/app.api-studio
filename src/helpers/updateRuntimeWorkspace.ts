@@ -1,7 +1,6 @@
 import { produce } from 'immer';
 
 import {
-  AppError,
   type PrimitiveValue,
   type RequestResourceKey,
   type RuntimeWorkspace,
@@ -67,10 +66,6 @@ export function updateRuntimeWorkspace(
             }
           }
         }
-        throw new AppError({
-          code: 'requestVariableNotExist',
-          message: `The request variable "${name}" does not exist`,
-        });
       });
     }
 
@@ -90,11 +85,6 @@ export function updateRuntimeWorkspace(
             return;
           }
         }
-
-        throw new AppError({
-          code: 'collectionVariableNotExist',
-          message: `The collection variable "${name}" does not exist`,
-        });
       });
     }
 
@@ -114,11 +104,6 @@ export function updateRuntimeWorkspace(
             return;
           }
         }
-
-        throw new AppError({
-          code: 'environmentVariableNotExist',
-          message: `The environment variable "${name}" does not exist`,
-        });
       });
     }
   }
