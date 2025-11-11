@@ -6,18 +6,27 @@ function Icon({ children }: PropsWithChildren) {
   return <View style={styles.container}>{children}</View>;
 }
 
-export function ChevronRight() {
+function FontIcon({ code }: { code: string }) {
   return (
     <Icon>
-      <Text>+</Text>
+      <Text style={styles.fontello}>{code}</Text>
     </Icon>
   );
 }
 
+export function ChevronRight() {
+  return <FontIcon code={'\ue800'} />;
+}
+
+export function ChevronUp() {
+  return <FontIcon code={'\ue801'} />;
+}
+
+
+export function ChevronLeft() {
+  return <FontIcon code={'\ue802'} />;
+}
+
 export function ChevronDown() {
-  return (
-    <Icon>
-      <Text>-</Text>
-    </Icon>
-  );
+  return <FontIcon code={'\ue803'} />;
 }

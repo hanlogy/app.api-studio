@@ -1,10 +1,10 @@
-import { useStudioConext } from '@/states/studio';
+import { useStudioContext } from '@/states/studio';
 import { type PropsWithChildren } from 'react';
 import { Text, View } from 'react-native';
 import { styles } from './StudioLayout.styles';
 
 export const StudioLayout = ({ children }: PropsWithChildren) => {
-  const { status, error } = useStudioConext();
+  const { status, error } = useStudioContext();
   if (status === 'initializing') {
     return (
       <View>

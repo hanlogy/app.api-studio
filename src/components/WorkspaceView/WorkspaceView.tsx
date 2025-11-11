@@ -1,14 +1,14 @@
 import { ScrollView, View } from 'react-native';
 import { styles } from './WorkspaceView.styles';
-import { CollectionsList } from './CollectionsList';
 import React from 'react';
 import { RequestView } from './RequestView';
-import { useWorkspaceConext } from '@/states/workspace/context';
-import { OpenWorkspaceHelper } from './OpenWorkspaceHelper';
-import { EnvironmentSelect } from './EnvironmentSelect';
+import { useWorkspaceContext } from '@/states/workspace';
+import { OpenWorkspaceHelper } from '../OpenWorkspaceHelper';
+import { EnvironmentSelect } from '../EnvironmentSelect';
+import { CollectionsList } from '../CollectionsList';
 
 export function WorkspaceView() {
-  const { workspace } = useWorkspaceConext();
+  const { workspace } = useWorkspaceContext();
 
   if (!workspace) {
     return <OpenWorkspaceHelper />;
@@ -17,20 +17,19 @@ export function WorkspaceView() {
   const { collections } = workspace;
 
   return (
-    <>
-      <View style={styles.container}>
-        <ScrollView style={styles.leftView}>
-          <View style={styles.leftContent}>
-            <EnvironmentSelect />
-            <CollectionsList collections={collections} />
-          </View>
-        </ScrollView>
-        <ScrollView style={styles.rightView}>
-          <View style={styles.rightContent}>
-            <RequestView />
-          </View>
+    <View style={styles.container}>
+      <View style={styles.leftBar}>
+        <View style={styles.leftBarTop}>
+          <EnvironmentSelect />
+        </View>
+
+        <ScrollView contentContainerStyle={styles.leftBarContent}>
+          <CollectionsList collections={collections} />
         </ScrollView>
       </View>
-    </>
+      <View style={styles.mainContent}>
+        <RequestView />
+      </View>
+    </View>
   );
 }

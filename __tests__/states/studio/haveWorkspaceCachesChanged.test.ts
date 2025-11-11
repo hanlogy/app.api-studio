@@ -1,13 +1,13 @@
-import { haveWorkspaceSummariesChanged } from '@/states/studio/haveWorkspaceSummariesChanged';
+import { haveWorkspaceCachesChanged } from '@/states/studio/haveWorkspaceCachesChanged';
 
-describe('haveWorkspaceSummariesChanged', () => {
+describe('haveWorkspaceCachesChanged', () => {
   it('false if both empty', () => {
-    expect(haveWorkspaceSummariesChanged([], [])).toBe(false);
+    expect(haveWorkspaceCachesChanged([], [])).toBe(false);
   });
 
   it('true if not same length', () => {
     expect(
-      haveWorkspaceSummariesChanged(
+      haveWorkspaceCachesChanged(
         [
           {
             name: 'foo',
@@ -21,7 +21,7 @@ describe('haveWorkspaceSummariesChanged', () => {
 
   it('true if not same order', () => {
     expect(
-      haveWorkspaceSummariesChanged(
+      haveWorkspaceCachesChanged(
         [
           {
             name: 'fooA',
@@ -48,7 +48,7 @@ describe('haveWorkspaceSummariesChanged', () => {
 
   it('false if exact the same', () => {
     expect(
-      haveWorkspaceSummariesChanged(
+      haveWorkspaceCachesChanged(
         [
           {
             name: 'fooA',

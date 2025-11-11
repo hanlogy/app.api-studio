@@ -6,22 +6,31 @@ export const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
   },
-  leftView: {
+  leftBar: {
     width: 300,
     flexShrink: 0,
     flexGrow: 0,
     backgroundColor: '#F6F6F6',
+    paddingBottom: 8,
   },
-  leftContent: {
-    padding: 16,
+
+  leftBarTop: {
+    paddingLeft: 16,
+    paddingTop: 16,
+    paddingRight: 16,
+    paddingBottom: 8,
+    zIndex: 10,
   },
-  rightContent: {
-    padding: 16,
+
+  leftBarContent: {
+    paddingHorizontal: 16,
   },
-  rightView: {
+
+  mainContent: {
     flex: 1,
     backgroundColor: '#FFF',
-    padding: 16,
+    borderLeftColor: '#EEE',
+    borderLeftWidth: 1,
   },
   overlay: {
     position: 'absolute',

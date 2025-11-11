@@ -1,17 +1,26 @@
-import { AppError, type WorkspaceSummary } from '@/definitions';
+import { AppError } from '@/definitions';
 
 export type StudioStateStatus = 'initializing' | 'ready';
+
+export interface WorkspaceCache {
+  readonly name: string;
+  readonly dir: string;
+  /**
+   * Name of the selected environment.
+   */
+  readonly selectedEnvironment?: string;
+}
 
 export interface StudioStateCache {
   /**
    * Recently opened workspaces
    */
-  readonly workspaces?: readonly WorkspaceSummary[];
+  readonly workspaces?: readonly WorkspaceCache[];
 }
 
 interface StudioContextValueBase {
-  readonly workspaces?: readonly WorkspaceSummary[];
-  readonly updateRecentWorkspace?: (workspace: WorkspaceSummary) => void;
+  readonly workspaces?: readonly WorkspaceCache[];
+  readonly updateRecentWorkspace?: (workspace: WorkspaceCache) => void;
   readonly setError: (error?: AppError) => void;
   readonly error?: AppError;
 }

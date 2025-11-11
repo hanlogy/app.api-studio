@@ -1,33 +1,62 @@
 import {
   AppError,
+  type RequestResourceKey,
+  type RuntimeVariable,
+  type RuntimeWorkspace,
   type Workspace,
+  type WorkspaceResourceKey,
   type WorkspaceResources,
 } from '@/definitions';
 import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type PropsWithChildren,
 } from 'react';
-import type { WorkspaceContextValue, WorkspaceStatus } from './types';
+import type {
+  OpenWorkspaceArguments,
+  RequestHistoryItem,
+  WorkspaceContextValue,
+  WorkspaceStatus,
+} from './types';
 import { loadWorkspace } from '@/repositories/loadWorkspace';
 import { resolveWorkspace } from '@/lib';
 import { WorkspaceContext } from './context';
-import { useStudioConext } from '../studio';
-import type { HttpResponse } from '@/lib/sendRequest';
+import { useStudioContext } from '../studio';
+import { type HttpResponse } from '@/lib/sendHttpRequest';
+import { findByRequestKey } from '@/helpers/findByRequestKey';
+import type { HttpRequest } from '@/lib/sendHttpRequest/sendHttpRequest';
+import { runRequestWithMiddleware } from './runRequestWithMiddleware';
+import { loadScripts, type ScriptFunctions } from '@/repositories/loadScripts';
+import { hasVariable } from './hasVariable';
+import { upsertRuntimeVariable } from '@/helpers/upsertRuntimeVariable';
 
 export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
-  const { setError, updateRecentWorkspace } = useStudioConext();
+  const { setError, updateRecentWorkspace } = useStudioContext();
   const [status, setStatus] = useState<WorkspaceStatus>('waiting');
-  const [dir, setWorkspaceDir] = useState<string>();
+  const [dir, setDir] = useState<string>();
   const [sources, setSources] = useState<WorkspaceResources>();
-  const [openedRequestKey, openRequest] = useState<[string, string]>();
-  const [environmentName, selectEnvironment] = useState<string>();
+  const [runtimeWorkspace, setRuntimeWorkspace] = useState<RuntimeWorkspace>(
+    {},
+  );
+  const [pinnedResources, setPinnedResources] = useState<
+    WorkspaceResourceKey[]
+  >([]);
+  const [previewingResource, setPreviewingResource] =
+    useState<WorkspaceResourceKey>();
+  const [currentResourceKey, setCurrentResourceKey] =
+    useState<WorkspaceResourceKey>();
+  const [selectedEnvironment, setSelectedEnvironment] = useState<string>();
   const [workspace, setWorkspace] = useState<Workspace>();
   const [histories, setHistories] = useState<
-    { key: [string, string]; items: HttpResponse[] }[]
+    {
+      key: RequestResourceKey;
+      items: RequestHistoryItem[];
+    }[]
   >([]);
+  const scriptFunctionsRef = useRef<ScriptFunctions>({});
 
   //When `dir` changed:
   //Load workspace files, parse, resolve, update cache
@@ -37,9 +66,22 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     }
 
     loadWorkspace({ dir, onData: setSources, onError: setError });
-  }, [dir, setWorkspaceDir, setError]);
+    loadScripts({
+      workspaceDir: dir,
+      onSuccess: functions => {
+        if ('requestMiddleware' in functions) {
+          scriptFunctionsRef.current.requestMiddleware =
+            functions.requestMiddleware;
+        }
+        if ('mockServerMiddleware' in functions) {
+          scriptFunctionsRef.current.mockServerMiddleware =
+            functions.mockServerMiddleware;
+        }
+      },
+    });
+  }, [dir, setDir, setError]);
 
-  // when sources or environmentName changed.
+  // when sources or selectedEnvironment changed.
   useEffect(() => {
     if (!dir || !sources) {
       return;
@@ -47,7 +89,8 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
 
     const resolved = resolveWorkspace({
       sources,
-      environmentName,
+      environmentName: selectedEnvironment,
+      runtimeWorkspace,
     });
 
     if (!resolved) {
@@ -62,7 +105,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
 
     setError();
     setWorkspace({ ...resolved, dir });
-  }, [sources, environmentName, dir, setError]);
+  }, [sources, selectedEnvironment, dir, setError, runtimeWorkspace]);
 
   useEffect(() => {
     if (!workspace) {
@@ -78,69 +121,89 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
       return;
     }
 
-    const summary = {
+    const cache = {
+      selectedEnvironment,
       name: workspace.name,
       dir: workspace.dir,
     };
-    updateRecentWorkspace?.(summary);
-  }, [workspace, updateRecentWorkspace]);
+    updateRecentWorkspace?.(cache);
+  }, [workspace, updateRecentWorkspace, selectedEnvironment]);
 
   const saveHistory = useCallback(
-    (key: [string, string], response: HttpResponse) => {
+    (
+      key: RequestResourceKey,
+      { request, response }: { request: HttpRequest; response: HttpResponse },
+    ) => {
       setHistories(prev => {
         const clone = [...prev];
-        let existing = clone.find(e => {
-          e.key[0] === key[0] && e.key[1] === key[1];
-        });
+        let existing = findByRequestKey(clone, key);
 
         if (!existing) {
           existing = { key, items: [] };
           clone.push(existing);
         }
 
-        existing.items = [response, ...existing.items].slice(0, 20);
+        existing.items = [{ response, request }, ...existing.items].slice(
+          0,
+          20,
+        );
         return clone;
       });
     },
     [],
   );
 
-  const getHistories = useCallback(
-    (key: [string, string]) => {
-      return (
-        histories.find(e => e.key[0] === key[0] && e.key[1] === key[1])
-          ?.items ?? []
-      );
-    },
-    [histories],
-  );
+  const sendRequest = useCallback(async () => {
+    if (!dir || !Array.isArray(currentResourceKey) || !workspace) {
+      return;
+    }
 
-  const openedRequest = useMemo(() => {
-    const collections = workspace?.collections;
-    if (!collections) {
-      return undefined;
-    }
-    for (const collection of collections) {
-      for (const request of collection.requests) {
-        if (
-          openedRequestKey &&
-          request.key[0] === openedRequestKey[0] &&
-          request.key[1] === openedRequestKey[1]
-        ) {
-          return request;
+    const result = await runRequestWithMiddleware({
+      middleware: scriptFunctionsRef.current.requestMiddleware,
+      requestKey: currentResourceKey,
+      selectedEnvironment,
+      workspace,
+      setRuntimeVariable: (variable: RuntimeVariable) => {
+        if (!hasVariable(workspace, variable)) {
+          // TODO: Show an error.
+          return;
         }
-      }
+
+        setRuntimeWorkspace(prev => {
+          return upsertRuntimeVariable(prev, variable);
+        });
+      },
+    });
+
+    if (!result) {
+      return;
     }
-    return undefined;
-  }, [openedRequestKey, workspace?.collections]);
+
+    const { request, response } = result;
+
+    saveHistory(currentResourceKey, { request, response });
+  }, [dir, currentResourceKey, workspace, selectedEnvironment, saveHistory]);
+
+  const openWorkspace = useCallback((args: OpenWorkspaceArguments) => {
+    setDir(args.dir);
+    if (args.environment) {
+      setSelectedEnvironment(args.environment);
+    }
+  }, []);
+
+  const openResource = useCallback((key: WorkspaceResourceKey) => {
+    setCurrentResourceKey(key);
+    setPreviewingResource(key);
+  }, []);
 
   const value = useMemo<WorkspaceContextValue>(() => {
     const common = {
-      openedRequest,
-      selectEnvironment,
-      selectedEnvironment: environmentName,
-      openRequest,
-      openWorkspace: setWorkspaceDir,
+      selectedEnvironment,
+      currentResourceKey,
+      histories,
+      selectEnvironment: setSelectedEnvironment,
+      openResource,
+      openWorkspace,
     };
 
     if (status === 'waiting') {
@@ -148,17 +211,19 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     }
 
     if (status === 'ready' && workspace) {
-      return { ...common, status, workspace, getHistories, saveHistory };
+      return { ...common, status, workspace, sendRequest };
     }
 
     throw new Error('This should never happen.');
   }, [
     status,
     workspace,
-    openedRequest,
-    environmentName,
-    saveHistory,
-    getHistories,
+    currentResourceKey,
+    selectedEnvironment,
+    sendRequest,
+    histories,
+    openWorkspace,
+    openResource,
   ]);
 
   return <WorkspaceContext value={value}>{children}</WorkspaceContext>;

@@ -1,0 +1,62 @@
+import { Text, View } from 'react-native-macos';
+import { styles } from './RequestBar.styles';
+import { Clickable } from '../clickables';
+import { selectCurrentRequest, useWorkspaceContext } from '@/states/workspace';
+import { useState } from 'react';
+import type { PropsWithViewStyle } from '@/definitions';
+import { SelectableText } from '../text/SelectableText';
+import { MethodText } from '../text';
+
+export function RequestBar({ style }: PropsWithViewStyle) {
+  const { status, sendRequest, ...restvalue } = useWorkspaceContext();
+  const request = selectCurrentRequest(restvalue);
+  const [isWaitingResponse, setIsWaitingResponse] = useState(false);
+  if (status === 'waiting' || !request) {
+    return <></>;
+  }
+
+  const { url = '', method = 'GET' } = request;
+
+  const handleRequest = async () => {
+    if (isWaitingResponse) {
+      // TODO:
+      return;
+    }
+
+    setIsWaitingResponse(true);
+    await sendRequest();
+    setIsWaitingResponse(false);
+  };
+
+  const handleCancel = async () => {};
+
+  return (
+    <View style={[style, styles.container]}>
+      <View style={styles.methodAndUrl}>
+        <View style={styles.method}>
+          <MethodText method={method} />
+        </View>
+        <View style={styles.url}>
+          <SelectableText style={styles.urlText}>{url}</SelectableText>
+        </View>
+      </View>
+      {isWaitingResponse ? (
+        <Clickable
+          onPress={handleCancel}
+          style={[styles.actionButton, styles.cancelButton]}
+          hoveredStyle={styles.cancelButtonHovered}
+          pressedStyle={styles.cancelButtonPressed}>
+          <Text style={styles.cancelButtonText}>Cancel</Text>
+        </Clickable>
+      ) : (
+        <Clickable
+          onPress={handleRequest}
+          style={[styles.actionButton, styles.requestButton]}
+          hoveredStyle={styles.requestButtonHovered}
+          pressedStyle={styles.requestButtonPressed}>
+          <Text style={styles.requestButtonText}>Send</Text>
+        </Clickable>
+      )}
+    </View>
+  );
+}

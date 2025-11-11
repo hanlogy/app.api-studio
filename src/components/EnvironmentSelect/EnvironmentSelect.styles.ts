@@ -4,7 +4,6 @@ export const styles = StyleSheet.create({
   container: {
     position: 'relative',
     zIndex: 10,
-    marginBottom: 8,
   },
 
   handle: {

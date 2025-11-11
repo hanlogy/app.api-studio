@@ -1,7 +1,7 @@
 import { type JsonRecord, STUDIO_CACHE_FILE } from '@/definitions';
 import { readJsonRecord, writeJsonRecord } from '@/helpers/fileIO';
 import { isPlainObject } from '@/helpers/checkTypes';
-import { StudioStateCache } from '@/states/studio/types';
+import { type StudioStateCache } from '@/states/studio/types';
 import { pickWhenString, removeUndefined } from '@/helpers/filterValues';
 
 var data: StudioStateCache = {};
@@ -43,12 +43,12 @@ function parseStudioCache(cache: JsonRecord | null): StudioStateCache | null {
 
           const name = pickWhenString(item.name);
           const dir = pickWhenString(item.dir);
-          const environmentName = pickWhenString(item.environmentName);
+          const selectedEnvironment = pickWhenString(item.selectedEnvironment);
           if (!name || !dir) {
             return undefined;
           }
 
-          return removeUndefined({ name, dir, environmentName });
+          return removeUndefined({ name, dir, selectedEnvironment });
         })
         .filter(e => e !== undefined)
     : undefined;

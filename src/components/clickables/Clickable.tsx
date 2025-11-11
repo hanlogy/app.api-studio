@@ -6,14 +6,16 @@ type Props = PropsWithChildren<
     style?: StyleProp<ViewStyle>;
     pressedStyle?: StyleProp<ViewStyle>;
     hoveredStyle?: StyleProp<ViewStyle>;
+    disabled?: boolean;
   }
 >;
 
-export function Button({
+export function Clickable({
   children,
   style,
   pressedStyle,
   hoveredStyle,
+  disabled = false,
   ...restProps
 }: Props) {
   const [hovered, setHovered] = useState(false);
@@ -21,10 +23,15 @@ export function Button({
 
   return (
     <Pressable
-      onHoverIn={hasHoveredStyle ? () => setHovered(true) : undefined}
-      onHoverOut={hasHoveredStyle ? () => setHovered(false) : undefined}
+      disabled={disabled}
+      onHoverIn={
+        hasHoveredStyle && !disabled ? () => setHovered(true) : undefined
+      }
+      onHoverOut={
+        hasHoveredStyle && !disabled ? () => setHovered(false) : undefined
+      }
       style={({ pressed }) => [
-        {cursor: 'pointer'},
+        { cursor: 'pointer' },
         style,
         hovered && hoveredStyle,
         pressed && pressedStyle,

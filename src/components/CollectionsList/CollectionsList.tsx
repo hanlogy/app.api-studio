@@ -1,13 +1,13 @@
 import type { RequestResource, CollectionResource } from '@/definitions';
 import { Text, View } from 'react-native';
-import { Button } from '../Button';
+import { Clickable } from '../clickables';
 import { ChevronDown, ChevronRight } from '../icons/icons';
 import {
   collectionItemStyles,
   requestItemStyles,
 } from './CollectionsList.styles';
 import { useState } from 'react';
-import { useWorkspaceConext } from '@/states/workspace';
+import { useWorkspaceContext } from '@/states/workspace';
 
 export function CollectionsList({
   collections,
@@ -32,7 +32,7 @@ function CollectionItem({
 
   return (
     <View>
-      <Button
+      <Clickable
         onPress={() => setIsExpanded(prev => !prev)}
         style={collectionItemStyles.button}
         hoveredStyle={collectionItemStyles.buttonHovered}
@@ -40,7 +40,7 @@ function CollectionItem({
         {isExpanded ? <ChevronDown /> : <ChevronRight />}
 
         <Text>{name}</Text>
-      </Button>
+      </Clickable>
 
       {isExpanded && (
         <View style={collectionItemStyles.requestsList}>
@@ -56,12 +56,12 @@ function CollectionItem({
 }
 
 function RequestItem({ request }: { request: RequestResource }) {
-  const { openRequest } = useWorkspaceConext();
+  const { openResource } = useWorkspaceContext();
   const { name = 'unnamed' } = request;
 
   return (
-    <Button
-      onPress={() => openRequest?.(request.key)}
+    <Clickable
+      onPress={() => openResource?.(request.key)}
       style={requestItemStyles.button}
       hoveredStyle={requestItemStyles.buttonHovered}
       pressedStyle={requestItemStyles.buttonPressed}>
@@ -71,6 +71,6 @@ function RequestItem({ request }: { request: RequestResource }) {
         style={requestItemStyles.text}>
         {name}
       </Text>
-    </Button>
+    </Clickable>
   );
 }

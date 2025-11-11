@@ -1,47 +1,52 @@
 import { Text, View } from 'react-native';
-
 import { pickFolder } from '@/helpers/pickFolder';
+import { Clickable } from '../clickables';
+import { useWorkspaceContext } from '@/states/workspace/context';
+import { useStudioContext } from '@/states/studio';
 import {
   styles,
   tileStyles,
   openButtonStyles,
 } from './OpenWorkspaceHelper.styles';
-import { Button } from '../Button';
-import { useWorkspaceConext } from '@/states/workspace/context';
-import { useStudioConext } from '@/states/studio';
 
 export function OpenWorkspaceHelper() {
-  const { workspaces } = useStudioConext();
-  const { openWorkspace } = useWorkspaceConext();
+  const { workspaces } = useStudioContext();
+  const { openWorkspace } = useWorkspaceContext();
 
   return (
     <View style={styles.container}>
       <View style={styles.left}>
-        <Button
+        <Clickable
           style={openButtonStyles.default}
           hoveredStyle={openButtonStyles.hovered}
           pressedStyle={openButtonStyles.pressed}
           onPress={async () => {
-            openWorkspace(await pickFolder());
+            const dir = await pickFolder();
+            const selectedEnvironment = workspaces?.find(
+              e => e.dir === dir,
+            )?.selectedEnvironment;
+            openWorkspace({ dir, environment: selectedEnvironment });
           }}>
           <Text>Open Workspace...</Text>
-        </Button>
+        </Clickable>
       </View>
       <View style={styles.right}>
         {workspaces && workspaces.length > 0 && (
           <>
             <Text style={styles.openRecentTitle}>Open Recent...</Text>
-            {workspaces.map(({ name, dir }) => {
+            {workspaces.map(({ name, dir, selectedEnvironment }) => {
               return (
-                <Button
+                <Clickable
                   key={dir}
-                  onPress={() => openWorkspace(dir)}
+                  onPress={() =>
+                    openWorkspace({ dir, environment: selectedEnvironment })
+                  }
                   style={tileStyles.default}
                   hoveredStyle={tileStyles.hovered}
                   pressedStyle={tileStyles.pressed}>
                   <Text style={tileStyles.name}>{name ?? 'unnamed'}</Text>
                   <Text style={tileStyles.dir}>{dir}</Text>
-                </Button>
+                </Clickable>
               );
             })}
           </>

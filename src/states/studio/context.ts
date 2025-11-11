@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { createContext } from 'react';
 import { type StudioContextValue } from './types';
 
-export const useStudioConext = () => {
+export const useStudioContext = () => {
   return useContext<StudioContextValue | null>(StudioContext)!;
 };
 

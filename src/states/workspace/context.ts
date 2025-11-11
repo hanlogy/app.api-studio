@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { createContext } from 'react';
 import { type WorkspaceContextValue } from './types';
 
-export const useWorkspaceConext = () => {
+export const useWorkspaceContext = () => {
   return useContext<WorkspaceContextValue | null>(WorkspaceContext)!;
 };
 

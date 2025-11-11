@@ -1,22 +1,37 @@
-import type { AppError, RequestResource, Workspace } from '@/definitions';
-import type { HttpResponse } from '@/lib/sendRequest';
+import type {
+  AppError,
+  RequestResourceKey,
+  Workspace,
+  WorkspaceResourceKey,
+} from '@/definitions';
+import type { HttpResponse } from '@/lib/sendHttpRequest';
+import type { HttpRequest } from '@/lib/sendHttpRequest/sendHttpRequest';
 
 export type WorkspaceStatus = 'waiting' | 'ready';
 
+export interface RequestHistoryItem {
+  readonly request: HttpRequest;
+  readonly response: HttpResponse;
+}
+
 type WorkspaceContextValueBase = {
-  readonly openedRequest?: RequestResource;
   readonly workspace?: Workspace;
   readonly error?: AppError;
   readonly selectedEnvironment?: string;
-  readonly saveHistory?: (
-    key: [string, string],
-    response: HttpResponse,
-  ) => void;
-  readonly getHistories?: (key: [string, string]) => HttpResponse[];
-  readonly openWorkspace: (dir: string) => void;
-  readonly openRequest?: (key: [string, string]) => void;
+  readonly currentResourceKey?: WorkspaceResourceKey;
+  readonly histories: readonly {
+    key: RequestResourceKey;
+    items: readonly RequestHistoryItem[];
+  }[];
+  readonly sendRequest?: () => Promise<void>;
+  readonly openWorkspace: (args: { dir: string; environment?: string }) => void;
+  readonly openResource?: (key: WorkspaceResourceKey) => void;
   readonly selectEnvironment?: (name?: string) => void;
 };
+
+export type OpenWorkspaceArguments = Parameters<
+  WorkspaceContextValueBase['openWorkspace']
+>[0];
 
 export type WorkspaceContextValue =
   | (WorkspaceContextValueBase & {
@@ -27,10 +42,6 @@ export type WorkspaceContextValue =
     } & Required<
         Pick<
           WorkspaceContextValueBase,
-          | 'workspace'
-          | 'openRequest'
-          | 'selectEnvironment'
-          | 'saveHistory'
-          | 'getHistories'
+          'workspace' | 'openResource' | 'selectEnvironment' | 'sendRequest'
         >
       >);
