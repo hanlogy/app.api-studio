@@ -10,15 +10,15 @@ import type { HttpRequest } from '@/lib/sendHttpRequest/sendHttpRequest';
 export type WorkspaceStatus = 'waiting' | 'ready';
 
 export interface RequestHistoryItem {
- readonly request: HttpRequest;
- readonly response: HttpResponse;
+  readonly request: HttpRequest;
+  readonly response: HttpResponse;
 }
 
 type WorkspaceContextValueBase = {
   readonly workspace?: Workspace;
   readonly error?: AppError;
   readonly selectedEnvironment?: string;
-  readonly currentResource?: WorkspaceResourceKey;
+  readonly currentResourceKey?: WorkspaceResourceKey;
   readonly histories: readonly {
     key: RequestResourceKey;
     items: readonly RequestHistoryItem[];

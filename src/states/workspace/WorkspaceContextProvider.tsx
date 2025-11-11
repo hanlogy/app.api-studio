@@ -1,6 +1,8 @@
 import {
   AppError,
   type RequestResourceKey,
+  type RuntimeVariable,
+  type RuntimeWorkspace,
   type Workspace,
   type WorkspaceResourceKey,
   type WorkspaceResources,
@@ -9,6 +11,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type PropsWithChildren,
 } from 'react';
@@ -22,23 +25,28 @@ import { loadWorkspace } from '@/repositories/loadWorkspace';
 import { resolveWorkspace } from '@/lib';
 import { WorkspaceContext } from './context';
 import { useStudioContext } from '../studio';
-import { sendHttpRequest, type HttpResponse } from '@/lib/sendHttpRequest';
+import { type HttpResponse } from '@/lib/sendHttpRequest';
 import { findByRequestKey } from '@/helpers/findByRequestKey';
-import { selectCurrentRequest } from './selectors';
 import type { HttpRequest } from '@/lib/sendHttpRequest/sendHttpRequest';
-import { mergeRequestHeaders } from '@/helpers/mergeRequestHeaders';
+import { runRequestWithMiddleware } from './runRequestWithMiddleware';
+import { loadScripts, type ScriptFunctions } from '@/repositories/loadScripts';
+import { hasVariable } from './hasVariable';
+import { upsertRuntimeVariable } from '@/helpers/upsertRuntimeVariable';
 
 export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   const { setError, updateRecentWorkspace } = useStudioContext();
   const [status, setStatus] = useState<WorkspaceStatus>('waiting');
   const [dir, setDir] = useState<string>();
   const [sources, setSources] = useState<WorkspaceResources>();
+  const [runtimeWorkspace, setRuntimeWorkspace] = useState<RuntimeWorkspace>(
+    {},
+  );
   const [pinnedResources, setPinnedResources] = useState<
     WorkspaceResourceKey[]
   >([]);
   const [previewingResource, setPreviewingResource] =
     useState<WorkspaceResourceKey>();
-  const [currentResource, setCurrentResource] =
+  const [currentResourceKey, setCurrentResourceKey] =
     useState<WorkspaceResourceKey>();
   const [selectedEnvironment, setSelectedEnvironment] = useState<string>();
   const [workspace, setWorkspace] = useState<Workspace>();
@@ -48,6 +56,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
       items: RequestHistoryItem[];
     }[]
   >([]);
+  const scriptFunctionsRef = useRef<ScriptFunctions>({});
 
   //When `dir` changed:
   //Load workspace files, parse, resolve, update cache
@@ -57,6 +66,19 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     }
 
     loadWorkspace({ dir, onData: setSources, onError: setError });
+    loadScripts({
+      workspaceDir: dir,
+      onSuccess: functions => {
+        if ('requestMiddleware' in functions) {
+          scriptFunctionsRef.current.requestMiddleware =
+            functions.requestMiddleware;
+        }
+        if ('mockServerMiddleware' in functions) {
+          scriptFunctionsRef.current.mockServerMiddleware =
+            functions.mockServerMiddleware;
+        }
+      },
+    });
   }, [dir, setDir, setError]);
 
   // when sources or selectedEnvironment changed.
@@ -68,6 +90,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     const resolved = resolveWorkspace({
       sources,
       environmentName: selectedEnvironment,
+      runtimeWorkspace,
     });
 
     if (!resolved) {
@@ -82,7 +105,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
 
     setError();
     setWorkspace({ ...resolved, dir });
-  }, [sources, selectedEnvironment, dir, setError]);
+  }, [sources, selectedEnvironment, dir, setError, runtimeWorkspace]);
 
   useEffect(() => {
     if (!workspace) {
@@ -131,36 +154,35 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   );
 
   const sendRequest = useCallback(async () => {
-    const currentRequest = selectCurrentRequest({
-      currentResource,
-      workspace,
-      selectedEnvironment,
-    });
-
-    if (!currentRequest) {
+    if (!dir || !Array.isArray(currentResourceKey) || !workspace) {
       return;
     }
 
-    const {
-      url = '',
-      method = 'GET',
-      body,
-      headers,
-      environments,
-      collection,
-      key,
-    } = currentRequest;
+    const result = await runRequestWithMiddleware({
+      middleware: scriptFunctionsRef.current.requestMiddleware,
+      requestKey: currentResourceKey,
+      selectedEnvironment,
+      workspace,
+      setRuntimeVariable: (variable: RuntimeVariable) => {
+        if (!hasVariable(workspace, variable)) {
+          // TODO: Show an error.
+          return;
+        }
 
-    const requestParams = {
-      url,
-      method,
-      body,
-      headers: mergeRequestHeaders({ environments, collection, headers }),
-    };
-    const response = await sendHttpRequest(requestParams);
+        setRuntimeWorkspace(prev => {
+          return upsertRuntimeVariable(prev, variable);
+        });
+      },
+    });
 
-    saveHistory(key, { request: requestParams, response });
-  }, [currentResource, workspace, selectedEnvironment, saveHistory]);
+    if (!result) {
+      return;
+    }
+
+    const { request, response } = result;
+
+    saveHistory(currentResourceKey, { request, response });
+  }, [dir, currentResourceKey, workspace, selectedEnvironment, saveHistory]);
 
   const openWorkspace = useCallback((args: OpenWorkspaceArguments) => {
     setDir(args.dir);
@@ -170,14 +192,14 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   }, []);
 
   const openResource = useCallback((key: WorkspaceResourceKey) => {
-    setCurrentResource(key);
+    setCurrentResourceKey(key);
     setPreviewingResource(key);
   }, []);
 
   const value = useMemo<WorkspaceContextValue>(() => {
     const common = {
       selectedEnvironment,
-      currentResource,
+      currentResourceKey,
       histories,
       selectEnvironment: setSelectedEnvironment,
       openResource,
@@ -196,7 +218,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
   }, [
     status,
     workspace,
-    currentResource,
+    currentResourceKey,
     selectedEnvironment,
     sendRequest,
     histories,

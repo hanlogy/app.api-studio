@@ -2,6 +2,7 @@ import type {
   JsonRecord,
   JsonValue,
   PrimitiveRecord,
+  PrimitiveValue,
   ValuesMap,
 } from './basic';
 import { requestMethods } from './constants';
@@ -72,4 +73,39 @@ export interface Workspace {
   readonly description?: string;
   readonly environments: readonly WorkspaceEnvironment[];
   readonly collections: readonly CollectionResource[];
+}
+
+export type RuntimeVariable =
+  | {
+      readonly type: 'environment' | 'collection';
+      readonly key: string;
+      readonly name: string;
+      readonly value: PrimitiveValue;
+    }
+  | {
+      readonly type: 'request';
+      readonly key: RequestResourceKey;
+      readonly name: string;
+      readonly value: PrimitiveValue;
+    };
+
+export interface RuntimeWorkspaceEnvironment {
+  readonly name: string;
+  readonly valuesMap?: ValuesMap;
+}
+
+export interface RuntimeRequestResource {
+  readonly key: RequestResourceKey;
+  readonly valuesMap?: ValuesMap;
+}
+
+export interface RuntimeCollectionResource {
+  readonly key: string;
+  readonly valuesMap?: ValuesMap;
+  readonly requests?: readonly RuntimeRequestResource[];
+}
+
+export interface RuntimeWorkspace {
+  readonly environments?: readonly RuntimeWorkspaceEnvironment[];
+  readonly collections?: readonly RuntimeCollectionResource[];
 }
