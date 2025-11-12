@@ -1,65 +1,71 @@
+import type { Theme } from '@/states/theme/definitions';
 import { StyleSheet } from 'react-native';
 
-export const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    display: 'flex',
-    flexDirection: 'row',
-    maxWidth: 800,
-  },
-  left: {
-    flex: 1,
-    paddingRight: 32,
-  },
-  right: {
-    flex: 1,
-  },
+export function createStyles({ isLight }: Theme) {
+  return {
+    styles: StyleSheet.create({
+      container: {
+        padding: 20,
+        display: 'flex',
+        flexDirection: 'row',
+        maxWidth: 800,
+      },
+      left: {
+        flex: 1,
+        paddingRight: 32,
+      },
+      right: {
+        flex: 1,
+      },
 
-  openRecentTitle: {
-    marginBottom: 12,
-    color: '#666',
-  },
-});
+      openRecentTitle: {
+        marginBottom: 12,
+        color: '#666',
+      },
+    }),
 
-export const openButtonStyles = StyleSheet.create({
-  default: {
-    backgroundColor: '#f6f6f6',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 16,
-  },
+    openButtonStyles: StyleSheet.create({
+      default: {
+        backgroundColor: isLight ? '#f6f6f6' : '#666',
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        borderRadius: 16,
+      },
 
-  pressed: {
-    backgroundColor: '#DDD',
-  },
-  hovered: {
-    backgroundColor: '#EEEE',
-  },
-});
+      hovered: {
+        backgroundColor: isLight ? '#EEEE' : '#555',
+      },
 
-export const tileStyles = StyleSheet.create({
-  default: {
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: '#f6f6f6',
-  },
+      pressed: {
+        backgroundColor: isLight ? '#DDD' : '#333',
+      },
+    }),
 
-  pressed: {
-    backgroundColor: '#DDD',
-  },
+    tileStyles: StyleSheet.create({
+      default: {
+        borderRadius: 8,
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        backgroundColor: '#f6f6f6',
+      },
 
-  hovered: {
-    backgroundColor: '#eee',
-  },
+      pressed: {
+        backgroundColor: '#DDD',
+      },
 
-  name: {
-    color: '#333',
-    fontWeight: '500',
-    marginBottom: 4,
-  },
+      hovered: {
+        backgroundColor: '#eee',
+      },
 
-  dir: {
-    color: '#666',
-  },
-});
+      name: {
+        color: '#333',
+        fontWeight: '500',
+        marginBottom: 4,
+      },
+
+      dir: {
+        color: '#666',
+      },
+    }),
+  };
+}

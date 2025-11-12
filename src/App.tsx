@@ -4,6 +4,7 @@ import { StudioLayout } from '@/components/StudioLayout/StudioLayout';
 import { WorkspaceView } from '@/components/WorkspaceView/WorkspaceView';
 import { WorkspaceContextProvider } from '@/states/workspace/WorkspaceContextProvider';
 import { StudioContextProvider } from '@/states/studio';
+import { ThemeContextProvider } from './states/theme/ThemeContextProvider';
 
 LogBox.ignoreLogs([
   'Sending `onAnimatedValueUpdate` with no listeners registered.',
@@ -11,12 +12,14 @@ LogBox.ignoreLogs([
 
 export default function App() {
   return (
-    <StudioContextProvider>
-      <StudioLayout>
-        <WorkspaceContextProvider>
-          <WorkspaceView />
-        </WorkspaceContextProvider>
-      </StudioLayout>
-    </StudioContextProvider>
+    <ThemeContextProvider>
+      <StudioContextProvider>
+        <StudioLayout>
+          <WorkspaceContextProvider>
+            <WorkspaceView />
+          </WorkspaceContextProvider>
+        </StudioLayout>
+      </StudioContextProvider>
+    </ThemeContextProvider>
   );
 }

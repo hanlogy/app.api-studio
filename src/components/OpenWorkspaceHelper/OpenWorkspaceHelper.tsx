@@ -3,15 +3,14 @@ import { pickFolder } from '@/helpers/pickFolder';
 import { Clickable } from '../clickables';
 import { useWorkspaceContext } from '@/states/workspace/context';
 import { useStudioContext } from '@/states/studio';
-import {
-  styles,
-  tileStyles,
-  openButtonStyles,
-} from './OpenWorkspaceHelper.styles';
+import { createStyles } from './OpenWorkspaceHelper.styles';
+import { useThemeContext } from '@/states/theme';
 
 export function OpenWorkspaceHelper() {
   const { workspaces } = useStudioContext();
   const { openWorkspace } = useWorkspaceContext();
+  const { theme } = useThemeContext();
+  const { styles, openButtonStyles, tileStyles } = createStyles(theme);
 
   return (
     <View style={styles.container}>

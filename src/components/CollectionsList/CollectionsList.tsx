@@ -2,12 +2,10 @@ import type { RequestResource, CollectionResource } from '@/definitions';
 import { Text, View } from 'react-native';
 import { Clickable } from '../clickables';
 import { ChevronDown, ChevronRight } from '../icons/icons';
-import {
-  collectionItemStyles,
-  requestItemStyles,
-} from './CollectionsList.styles';
+import { createStyles } from './CollectionsList.styles';
 import { useState } from 'react';
 import { useWorkspaceContext } from '@/states/workspace';
+import { useThemeContext } from '@/states/theme';
 
 export function CollectionsList({
   collections,
@@ -29,6 +27,9 @@ function CollectionItem({
   collection: CollectionResource;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { theme } = useThemeContext();
+
+  const { collectionItemStyles } = createStyles(theme);
 
   return (
     <View>
@@ -58,6 +59,9 @@ function CollectionItem({
 function RequestItem({ request }: { request: RequestResource }) {
   const { openResource } = useWorkspaceContext();
   const { name = 'unnamed' } = request;
+  const { theme } = useThemeContext();
+
+  const { requestItemStyles } = createStyles(theme);
 
   return (
     <Clickable

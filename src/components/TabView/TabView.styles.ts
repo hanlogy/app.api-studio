@@ -1,41 +1,45 @@
+import type { Theme } from '@/states/theme/definitions';
 import { StyleSheet } from 'react-native';
 
-export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    display: 'flex',
-  },
+export function createStyles({ colors }: Theme) {
+  return {
+    styles: StyleSheet.create({
+      container: {
+        flex: 1,
+        display: 'flex',
+      },
 
-  tabBar: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 56,
-  },
+      tabBar: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: 56,
+      },
 
-  tabButton: {
-    height: 32,
-    display: 'flex',
-    justifyContent: 'center',
-    marginRight: 16,
-    backgroundColor: '#fff',
-    borderBottomWidth: 2,
-    borderBottomColor: 'transparent',
-  },
+      tabButton: {
+        height: 32,
+        display: 'flex',
+        justifyContent: 'center',
+        marginRight: 16,
+        borderBottomWidth: 2,
+        borderBottomColor: 'transparent',
+      },
 
-  tabButtonSelected: {
-    borderBottomColor: '#089',
-  },
+      tabButtonSelected: {
+        borderBottomColor: colors.primary,
+      },
 
-  tabButtonText: {
-    color: '#999',
-  },
+      tabButtonText: {
+        color: '#999',
+      },
 
-  tabButtonTextSelected: {
-    color: '#333',
-  },
+      tabButtonTextSelected: {
+        color: colors.onBackground,
+      },
 
-  content: {
-    flex: 1,
-  },
-});
+      content: {
+        flex: 1,
+      },
+    }),
+  };
+}

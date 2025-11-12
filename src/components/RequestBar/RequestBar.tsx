@@ -1,16 +1,18 @@
 import { ActivityIndicator, Text, View } from 'react-native-macos';
-import { styles } from './RequestBar.styles';
+import { createStyles } from './RequestBar.styles';
 import { Clickable } from '../clickables';
 import { selectCurrentRequest, useWorkspaceContext } from '@/states/workspace';
 import { useState } from 'react';
 import type { PropsWithViewStyle } from '@/definitions';
 import { SelectableText } from '../text/SelectableText';
 import { MethodText } from '../text';
+import { useThemeContext } from '@/states/theme';
 
 export function RequestBar({ style }: PropsWithViewStyle) {
   const { status, sendRequest, ...restvalue } = useWorkspaceContext();
   const request = selectCurrentRequest(restvalue);
   const [isWaitingResponse, setIsWaitingResponse] = useState(false);
+  const { theme } = useThemeContext();
   if (status === 'waiting' || !request) {
     return <></>;
   }
@@ -31,6 +33,8 @@ export function RequestBar({ style }: PropsWithViewStyle) {
   const handleCancel = async () => {
     setIsWaitingResponse(false);
   };
+
+  const { styles } = createStyles(theme);
 
   return (
     <View style={[style, styles.container]}>
