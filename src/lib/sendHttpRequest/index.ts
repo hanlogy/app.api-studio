@@ -1,5 +1,2 @@
-export {
-  sendHttpRequest,
-  type HttpResponse,
-  type HttpRequest,
-} from './sendHttpRequest';
+export { sendHttpRequest } from './sendHttpRequest';
+export { type HttpResponse, type HttpRequest } from './types';

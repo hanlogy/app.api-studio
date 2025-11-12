@@ -71,6 +71,8 @@ export const styles = StyleSheet.create({
   },
 
   cancelButton: {
+    display: 'flex',
+    flexDirection: 'row',
     backgroundColor: '#AAA',
   },
 
@@ -84,5 +86,6 @@ export const styles = StyleSheet.create({
 
   cancelButtonText: {
     color: '#333',
+    marginLeft: 5,
   },
 });

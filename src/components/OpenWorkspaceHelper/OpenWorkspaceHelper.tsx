@@ -31,7 +31,8 @@ export function OpenWorkspaceHelper() {
         </Clickable>
       </View>
       <View style={styles.right}>
-        {workspaces && workspaces.length > 0 && (
+        {/* Enable this feature later */}
+        {workspaces && workspaces.length > 10000 && (
           <>
             <Text style={styles.openRecentTitle}>Open Recent...</Text>
             {workspaces.map(({ name, dir, selectedEnvironment }) => {

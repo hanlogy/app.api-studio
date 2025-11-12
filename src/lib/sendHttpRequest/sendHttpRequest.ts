@@ -1,14 +1,15 @@
-import type { JsonValue, RequestHeaders, RequestMethod } from '@/definitions';
+import type { JsonValue } from '@/definitions';
 import { checkBodyFormat } from './checkBodyFormat';
 import { removeUndefined } from '@/helpers/filterValues';
 import { encodeRequestBody } from './encodeRequestBody';
+import type { HttpRequest, HttpResponse } from './types';
 
 export async function sendHttpRequest({
   method,
   url,
   headers = {},
   body,
-}: HttpRequest) {
+}: HttpRequest): Promise<HttpResponse> {
   // TODO: add abort support
   // const abort = new AbortController();
   const requestTime = Date.now();
@@ -54,11 +55,3 @@ export async function sendHttpRequest({
     responseTime: Date.now(),
   };
 }
-
-export type HttpRequest = {
-  method: RequestMethod;
-  url: string;
-  headers?: RequestHeaders;
-  body?: JsonValue;
-};
-export type HttpResponse = Awaited<ReturnType<typeof sendHttpRequest>>;

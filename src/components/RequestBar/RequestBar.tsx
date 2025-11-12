@@ -1,4 +1,4 @@
-import { Text, View } from 'react-native-macos';
+import { ActivityIndicator, Text, View } from 'react-native-macos';
 import { styles } from './RequestBar.styles';
 import { Clickable } from '../clickables';
 import { selectCurrentRequest, useWorkspaceContext } from '@/states/workspace';
@@ -28,7 +28,9 @@ export function RequestBar({ style }: PropsWithViewStyle) {
     setIsWaitingResponse(false);
   };
 
-  const handleCancel = async () => {};
+  const handleCancel = async () => {
+    setIsWaitingResponse(false);
+  };
 
   return (
     <View style={[style, styles.container]}>
@@ -46,6 +48,7 @@ export function RequestBar({ style }: PropsWithViewStyle) {
           style={[styles.actionButton, styles.cancelButton]}
           hoveredStyle={styles.cancelButtonHovered}
           pressedStyle={styles.cancelButtonPressed}>
+          <ActivityIndicator size="small" color="#000" />
           <Text style={styles.cancelButtonText}>Cancel</Text>
         </Clickable>
       ) : (

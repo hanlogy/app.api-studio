@@ -15,6 +15,7 @@ import {
 import { removeUndefined } from '@/helpers/filterValues';
 import { selectCurrentRequest } from './selectors';
 import { isSameResourceKey } from '@/helpers/isSameResourceKey';
+import { isHttpResponse } from '@/lib/sendHttpRequest/isHttpResponse';
 
 interface RunRequestWithMiddlewareOptions {
   readonly middleware?: Function;
@@ -24,6 +25,11 @@ interface RunRequestWithMiddlewareOptions {
   readonly setRuntimeVariable: (variable: RuntimeVariable) => void;
 }
 
+export type RunRequestWithMiddlewareResult = {
+  readonly request: HttpRequest;
+  readonly response: HttpResponse;
+};
+
 export async function runRequestWithMiddleware({
   middleware,
   requestKey,
@@ -31,11 +37,7 @@ export async function runRequestWithMiddleware({
   workspace,
   setRuntimeVariable,
 }: RunRequestWithMiddlewareOptions): Promise<
-  | {
-      readonly request: HttpRequest;
-      readonly response: HttpResponse;
-    }
-  | undefined
+  RunRequestWithMiddlewareResult | undefined
 > {
   const requestResource = selectCurrentRequest({
     currentResourceKey: requestKey,
@@ -71,7 +73,7 @@ export async function runRequestWithMiddleware({
 
   if (middleware) {
     try {
-      response = await middleware(requestKey, requestParams, {
+      const middlewareResponse = await middleware(requestKey, requestParams, {
         log: console.log,
         send: sendRequest,
         isKey: isSameResourceKey,
@@ -110,9 +112,20 @@ export async function runRequestWithMiddleware({
           });
         },
       });
-    } catch {
+      if (!isHttpResponse(middlewareResponse)) {
+        throw new AppError({
+          code: 'invalidResponse',
+          message: 'Invalid response from middleware',
+        });
+      }
+      response = middlewareResponse;
+    } catch (e) {
+      if (e instanceof AppError) {
+        throw e;
+      }
+
       throw new AppError({
-        code: 'middlewareError',
+        code: 'runMiddlewareFailed',
         message: 'Failed to run request middleware',
       });
     }
