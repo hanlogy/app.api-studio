@@ -6,6 +6,7 @@ import { createStyles } from './CollectionsList.styles';
 import { useState } from 'react';
 import { useWorkspaceContext } from '@/states/workspace';
 import { useThemeContext } from '@/states/theme';
+import { MethodText } from '../text';
 
 export function CollectionsList({
   collections,
@@ -69,6 +70,13 @@ function RequestItem({ request }: { request: RequestResource }) {
       style={requestItemStyles.button}
       hoveredStyle={requestItemStyles.buttonHovered}
       pressedStyle={requestItemStyles.buttonPressed}>
+      <View style={requestItemStyles.method}>
+        <MethodText
+          isCompact
+          style={requestItemStyles.methodText}
+          method={request.method ?? 'GET'}
+        />
+      </View>
       <Text
         numberOfLines={1}
         ellipsizeMode="tail"
