@@ -1,35 +1,40 @@
+import type { Theme } from '@/states/theme/definitions';
 import { StyleSheet } from 'react-native';
 
-export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+export function createStyles({ isLight, colors }: Theme) {
+  return {
+    styles: StyleSheet.create({
+      container: {
+        flex: 1,
+      },
 
-  requestPanel: {
-    flex: 1,
-    backgroundColor: '#FFF',
-  },
+      requestPanel: {
+        flex: 1,
+        backgroundColor: colors.background,
+      },
 
-  requestName: {
-    paddingHorizontal: 16,
-  },
+      requestName: {
+        paddingHorizontal: 16,
+      },
 
-  requestNameText: {
-    color: '#666',
-    lineHeight: 36,
-  },
+      requestNameText: {
+        color: isLight ? '#666' : '#DDD',
+        lineHeight: 36,
+      },
 
-  requestBar: {
-    paddingHorizontal: 16,
-  },
+      requestBar: {
+        paddingHorizontal: 16,
+      },
 
-  requestBuilder: {
-    paddingHorizontal: 16,
-  },
+      requestBuilder: {
+        paddingHorizontal: 16,
+      },
 
-  responsePanel: {
-    borderTopColor: '#EEE',
-    borderTopWidth: 1,
-    flex: 1,
-  },
-});
+      responsePanel: {
+        borderTopColor: isLight ? '#EEE' : '#333',
+        borderTopWidth: 1,
+        flex: 1,
+      },
+    }),
+  };
+}

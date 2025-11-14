@@ -1,13 +1,15 @@
 import { Text, View } from 'react-native';
-import { styles } from './RequestView.styles';
+import { createStyles } from './RequestView.styles';
 import { selectCurrentRequest, useWorkspaceContext } from '@/states/workspace';
 import { RequestBar } from '../RequestBar';
 import { RequestBuilder } from '../RequestBuilder';
 import { ResponsePanel } from '../ResponsePanel';
+import { useThemeContext } from '@/states/theme';
 
 export function RequestView({}: {}) {
   const { status, ...restvalue } = useWorkspaceContext();
   const request = selectCurrentRequest(restvalue);
+  const { theme } = useThemeContext();
 
   if (status === 'waiting' || !request) {
     return <></>;
@@ -18,6 +20,7 @@ export function RequestView({}: {}) {
     collection: { name: collectionName },
   } = request;
 
+  const { styles } = createStyles(theme);
   return (
     <View style={styles.container}>
       <View style={styles.requestPanel}>

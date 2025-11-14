@@ -25,10 +25,12 @@ import { loadWorkspace } from '@/repositories/loadWorkspace';
 import { resolveWorkspace } from '@/lib';
 import { WorkspaceContext } from './context';
 import { useStudioContext } from '../studio';
-import { type HttpResponse } from '@/lib/sendHttpRequest';
+import { type HttpRequest, type HttpResponse } from '@/lib/sendHttpRequest';
 import { findByRequestKey } from '@/helpers/findByRequestKey';
-import type { HttpRequest } from '@/lib/sendHttpRequest/sendHttpRequest';
-import { runRequestWithMiddleware } from './runRequestWithMiddleware';
+import {
+  runRequestWithMiddleware,
+  type RunRequestWithMiddlewareResult,
+} from './runRequestWithMiddleware';
 import { loadScripts, type ScriptFunctions } from '@/repositories/loadScripts';
 import { hasVariable } from './hasVariable';
 import { upsertRuntimeVariable } from '@/helpers/upsertRuntimeVariable';
@@ -158,22 +160,34 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
       return;
     }
 
-    const result = await runRequestWithMiddleware({
-      middleware: scriptFunctionsRef.current.requestMiddleware,
-      requestKey: currentResourceKey,
-      selectedEnvironment,
-      workspace,
-      setRuntimeVariable: (variable: RuntimeVariable) => {
-        if (!hasVariable(workspace, variable)) {
-          // TODO: Show an error.
-          return;
-        }
+    let result: RunRequestWithMiddlewareResult | undefined;
 
-        setRuntimeWorkspace(prev => {
-          return upsertRuntimeVariable(prev, variable);
-        });
-      },
-    });
+    try {
+      result = await runRequestWithMiddleware({
+        middleware: scriptFunctionsRef.current.requestMiddleware,
+        requestKey: currentResourceKey,
+        selectedEnvironment,
+        workspace,
+        setRuntimeVariable: (variable: RuntimeVariable) => {
+          if (!hasVariable(workspace, variable)) {
+            // TODO: Show an error.
+            return;
+          }
+
+          setRuntimeWorkspace(prev => {
+            return upsertRuntimeVariable(prev, variable);
+          });
+        },
+      });
+    } catch (e) {
+      if (e instanceof AppError) {
+        setError(e);
+      } else {
+        setError(
+          new AppError({ code: 'unknown', message: 'Unknown error happened' }),
+        );
+      }
+    }
 
     if (!result) {
       return;
@@ -181,8 +195,16 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
 
     const { request, response } = result;
 
+    setError(undefined);
     saveHistory(currentResourceKey, { request, response });
-  }, [dir, currentResourceKey, workspace, selectedEnvironment, saveHistory]);
+  }, [
+    dir,
+    currentResourceKey,
+    workspace,
+    selectedEnvironment,
+    saveHistory,
+    setError,
+  ]);
 
   const openWorkspace = useCallback((args: OpenWorkspaceArguments) => {
     setDir(args.dir);

@@ -1,7 +1,8 @@
 import type { PropsWithViewStyle } from '@/definitions';
 import { View } from 'react-native-macos';
-import { styles } from './KeyValueViewer.styles';
 import { SelectableText } from '../text/SelectableText';
+import { useThemeContext } from '@/states/theme';
+import { createStyles } from './KeyValueViewer.styles';
 
 export function KeyValueViewer({
   style,
@@ -9,6 +10,9 @@ export function KeyValueViewer({
 }: PropsWithViewStyle<{
   data: Record<string, string>;
 }>) {
+  const { theme } = useThemeContext();
+  const { styles } = createStyles(theme);
+
   return (
     <View style={style}>
       <View style={styles.container}>

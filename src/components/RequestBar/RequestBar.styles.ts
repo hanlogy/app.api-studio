@@ -1,88 +1,83 @@
+import type { Theme } from '@/states/theme/definitions';
 import { StyleSheet } from 'react-native';
 
-export const styles = StyleSheet.create({
-  container: {
-    display: 'flex',
-    flexDirection: 'row',
-  },
+export function createStyles({ isLight, colors }: Theme) {
+  return {
+    styles: StyleSheet.create({
+      container: {
+        display: 'flex',
+        flexDirection: 'row',
+      },
 
-  methodAndUrl: {
-    display: 'flex',
-    flexDirection: 'row',
-    minHeight: 42,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: '#999',
-    paddingHorizontal: 8,
-    paddingVertical: 6,
-    alignItems: 'center',
-    flex: 1,
-  },
+      methodAndUrl: {
+        display: 'flex',
+        flexDirection: 'row',
+        minHeight: 42,
+        borderRadius: 6,
+        borderWidth: 1,
+        borderColor: isLight ? '#999' : '#666',
+        paddingHorizontal: 8,
+        paddingVertical: 6,
+        alignItems: 'center',
+        flex: 1,
+      },
 
-  method: {
-    marginRight: 8,
-  },
+      method: {
+        marginRight: 8,
+      },
 
-  url: {
-    flex: 1,
-  },
+      url: {
+        flex: 1,
+      },
 
-  methodText: {
-    color: '#089',
-    fontWeight: '600',
-  },
+      urlText: {
+        color: isLight ? '#666' : '#EEE',
+        backgroundColor: 'transparent',
+      },
 
-  methodGetText: { color: '#00742b' },
-  methodPostText: { color: '#a36f07' },
-  methodPutText: { color: '#0049af' },
-  methodPatchText: { color: '#572e8c' },
-  methodDeleteText: { color: '#831911' },
-  methodHeadText: { color: '#00742b' },
-  methodOptionsText: { color: '#9d175f' },
+      actionButton: {
+        flexShrink: 0,
+        marginLeft: 8,
+        height: 42,
+        width: 120,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 6,
+      },
+      requestButton: {
+        backgroundColor: colors.primary,
+      },
 
-  urlText: {
-    color: '#666',
-    backgroundColor: 'transparent',
-  },
+      requestButtonHovered: {
+        backgroundColor: '#8e28e1ff',
+      },
 
-  actionButton: {
-    flexShrink: 0,
-    marginLeft: 8,
-    height: 42,
-    width: 120,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 6,
-  },
-  requestButton: {
-    backgroundColor: '#089',
-  },
+      requestButtonPressed: {
+        backgroundColor: '#8e28e1EE',
+      },
+      requestButtonText: {
+        color: '#FFF',
+      },
 
-  requestButtonHovered: {
-    backgroundColor: '#037483ff',
-  },
+      cancelButton: {
+        display: 'flex',
+        flexDirection: 'row',
+        backgroundColor: '#AAA',
+      },
 
-  requestButtonPressed: {
-    backgroundColor: '#025d69ff',
-  },
-  requestButtonText: {
-    color: '#FFF',
-  },
+      cancelButtonHovered: {
+        backgroundColor: '#CCC',
+      },
 
-  cancelButton: {
-    backgroundColor: '#AAA',
-  },
+      cancelButtonPressed: {
+        backgroundColor: '#ddd',
+      },
 
-  cancelButtonHovered: {
-    backgroundColor: '#CCC',
-  },
-
-  cancelButtonPressed: {
-    backgroundColor: '#ddd',
-  },
-
-  cancelButtonText: {
-    color: '#333',
-  },
-});
+      cancelButtonText: {
+        color: '#333',
+        marginLeft: 5,
+      },
+    }),
+  };
+}

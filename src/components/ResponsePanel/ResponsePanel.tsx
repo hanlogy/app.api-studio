@@ -1,13 +1,14 @@
 import { useWorkspaceContext } from '@/states/workspace';
 import { selectCurrentHistories } from '@/states/workspace/selectors';
 import { Text, View } from 'react-native-macos';
-import { styles } from './ResponsePanel.styles';
+import { createStyles } from './ResponsePanel.styles';
 import type { PropsWithViewStyle } from '@/definitions';
 import { HttpStatusText } from '../text';
 import { TabView } from '../TabView';
 import { JsonViewer } from '../JsonViewer';
 import { KeyValueViewer } from '../KeyValueViewer';
 import { checkBodyFormat } from '@/lib/sendHttpRequest/checkBodyFormat';
+import { useThemeContext } from '@/states/theme';
 
 const tabs = [
   { label: 'Body', name: 'body' },
@@ -18,6 +19,7 @@ export function ResponsePanel({ style }: PropsWithViewStyle) {
   const { status, ...restvalue } = useWorkspaceContext();
   const histories = selectCurrentHistories(restvalue);
   const history = histories.length > 0 ? histories[0] : undefined;
+  const { theme } = useThemeContext();
 
   if (status === 'waiting' || !history) {
     return <></>;
@@ -32,7 +34,8 @@ export function ResponsePanel({ style }: PropsWithViewStyle) {
   } = history.response;
 
   const duration = responseTime - requestTime;
-  const bodyFormat = checkBodyFormat(headers);
+  const bodyFormat = checkBodyFormat(headers ?? {});
+  const { styles } = createStyles(theme);
 
   return (
     <View style={[style, styles.container]}>
@@ -71,7 +74,10 @@ export function ResponsePanel({ style }: PropsWithViewStyle) {
 
             case 'headers': {
               return (
-                <KeyValueViewer style={styles.tabContent} data={headers} />
+                <KeyValueViewer
+                  style={styles.tabContent}
+                  data={headers ?? {}}
+                />
               );
             }
           }
