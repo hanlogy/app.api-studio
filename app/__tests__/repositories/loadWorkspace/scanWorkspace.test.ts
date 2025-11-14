@@ -391,14 +391,23 @@ describe('scanWorkspace', () => {
       '/workspace/collections': [
         file({ name: 'profile.json', baseDir: '/workspace/collections' }),
         dir({ name: 'post', baseDir: '/workspace/collections' }),
+        dir({ name: 'article', baseDir: '/workspace/collections' }),
       ],
       '/workspace/collections/post': [
         file({
           name: 'post.json',
           baseDir: '/workspace/collections/post',
         }),
+        file({
+          name: 'post.md',
+          baseDir: '/workspace/collections/post',
+        }),
         dir({
           name: 'createPost',
+          baseDir: '/workspace/collections/post',
+        }),
+        dir({
+          name: 'createPost.md',
           baseDir: '/workspace/collections/post',
         }),
         file({
@@ -408,6 +417,12 @@ describe('scanWorkspace', () => {
         file({
           name: 'deletePost.md',
           baseDir: '/workspace/collections/post',
+        }),
+      ],
+      '/workspace/collections/article': [
+        file({
+          name: 'getArticle.md',
+          baseDir: '/workspace/collections/article',
         }),
       ],
       '/workspace/collections/post/createPost': [
