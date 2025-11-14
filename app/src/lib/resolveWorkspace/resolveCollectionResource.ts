@@ -8,9 +8,10 @@ import { isPlainObject } from '@/helpers/checkTypes';
 import { resolveValuesMap } from './resolveValuesMap';
 import { pickWhenString, removeUndefined } from '@/helpers/filterValues';
 import { resolveRequestResource } from './resolveRequestResource';
-import { resolveStringRecord } from './simpleResolvers';
+import { resolvedOrder, resolveStringRecord } from './simpleResolvers';
 import { resolveResourceKeys } from './resolveResourceKeys';
 import { resolveUrl } from './resolveUrl';
+import { sortByOrder } from '@/helpers/sortByOrder';
 
 export function resolveCollectionResource({
   source,
@@ -28,6 +29,7 @@ export function resolveCollectionResource({
   const {
     id,
     name,
+    order,
     baseUrl,
     description,
     headers,
@@ -55,16 +57,19 @@ export function resolveCollectionResource({
 
   return removeUndefined({
     ...keys,
+    order: resolvedOrder(order),
     description: pickWhenString(description),
     baseUrl: resolvedBaseUrl,
     headers: resolveStringRecord({ source: headers, valuesMap }),
     valuesMap: localValuesMap,
-    requests: resolveRequests({
-      baseUrl: resolvedBaseUrl,
-      source: requests,
-      valuesMap,
-      collectionKey: keys.key,
-    }),
+    requests: sortByOrder(
+      resolveRequests({
+        baseUrl: resolvedBaseUrl,
+        source: requests,
+        valuesMap,
+        collectionKey: keys.key,
+      }),
+    ),
   });
 }
 

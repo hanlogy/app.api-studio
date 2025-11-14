@@ -43,6 +43,7 @@ describe('resolveRequestResource', () => {
         },
       }),
     ).toStrictEqual({
+      order: expect.any(Number),
       key: expect.any(Array),
       id: 'request_1',
       name: 'request-1',

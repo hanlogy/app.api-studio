@@ -9,7 +9,7 @@ import { isPlainObject } from '@/helpers/checkTypes';
 import { resolveValuesMap } from './resolveValuesMap';
 import { resolveJsonValue } from './resolveJsonValue';
 import { pickWhenString, removeUndefined } from '@/helpers/filterValues';
-import { resolveStringRecord } from './simpleResolvers';
+import { resolvedOrder, resolveStringRecord } from './simpleResolvers';
 import { resolveResourceKeys } from './resolveResourceKeys';
 import { resolveUrl } from './resolveUrl';
 
@@ -30,8 +30,18 @@ export function resolveRequestResource({
     return undefined;
   }
 
-  const { id, name, description, url, method, headers, query, body, ...rest } =
-    source;
+  const {
+    id,
+    name,
+    order,
+    description,
+    url,
+    method,
+    headers,
+    query,
+    body,
+    ...rest
+  } = source;
 
   const localValuesMap = resolveValuesMap({
     source: rest,
@@ -54,6 +64,7 @@ export function resolveRequestResource({
 
   return removeUndefined({
     ...keys,
+    order: resolvedOrder(order),
     description: pickWhenString(description),
     url: resolveUrl({ source: url, valuesMap, baseUrl, query: resolvedQuery }),
     method: resolveMethod({ source: method }),

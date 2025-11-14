@@ -35,6 +35,7 @@ export interface RequestResource {
   readonly query?: RequestQuery;
   readonly valuesMap?: ValuesMap;
   readonly body?: JsonValue;
+  readonly order: number;
 }
 
 export type RequestResourceWithExtra = RequestResource & {
@@ -58,6 +59,7 @@ export interface CollectionResource {
   readonly valuesMap?: ValuesMap;
   readonly baseUrl?: string;
   readonly requests: readonly RequestResource[];
+  readonly order: number;
 }
 
 export interface WorkspaceEnvironment {
