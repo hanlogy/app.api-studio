@@ -390,6 +390,7 @@ describe('scanWorkspace', () => {
       ],
       '/workspace/collections': [
         file({ name: 'profile.json', baseDir: '/workspace/collections' }),
+        file({ name: 'profile.md', baseDir: '/workspace/collections' }),
         dir({ name: 'post', baseDir: '/workspace/collections' }),
         dir({ name: 'article', baseDir: '/workspace/collections' }),
       ],
@@ -451,7 +452,9 @@ describe('scanWorkspace', () => {
         config: expect.any(Number),
         collections: {
           'profile.json': expect.any(Number),
+          'profile.md': expect.any(Number),
           'post/post.json': expect.any(Number),
+          'post/post.md': expect.any(Number),
           'post/createPost/createPost.json': expect.any(Number),
           'post/createPost/createPost.md': expect.any(Number),
           'post/createPost/createPost.test.js': expect.any(Number),
@@ -464,7 +467,9 @@ describe('scanWorkspace', () => {
         config: 'config.json',
         collections: [
           'profile.json',
+          'profile.md',
           'post/post.json',
+          'post/post.md',
           'post/createPost/createPost.json',
           'post/createPost/createPost.md',
           'post/createPost/createPost.test.js',

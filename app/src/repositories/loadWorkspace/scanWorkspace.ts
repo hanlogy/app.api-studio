@@ -12,7 +12,7 @@ const isJson = (item: string | { name: string }) => {
   return name.endsWith('.json');
 };
 
-const findConfig = (
+const findFile = (
   items: RNFS.ReadDirItem[],
   name: string,
 ): RNFS.ReadDirItem | undefined =>
@@ -53,7 +53,7 @@ export async function scanWorkspace(
   const rootItems = await RNFS.readDir(dir);
 
   // Find config.json
-  const configFileObject = findConfig(rootItems, WORKSPACE_CONFIG_FILE);
+  const configFileObject = findFile(rootItems, WORKSPACE_CONFIG_FILE);
 
   if (!configFileObject) {
     return undefined;
@@ -101,6 +101,15 @@ export async function scanWorkspace(
           key: collectionsDirItem.name,
           item: collectionsDirItem,
         });
+
+        const docFileName = collectionsDirItem.name.replace(/\.json$/, '.md');
+        const docFileItem = findFile(collectionsDirItems, docFileName);
+        if (docFileItem) {
+          add({
+            key: docFileName,
+            item: docFileItem,
+          });
+        }
       }
 
       continue;
@@ -113,7 +122,7 @@ export async function scanWorkspace(
     const collectionDirPath = `${collectionsDir.path}/${collectionsDirItem.name}`;
     const collectionDirItems = await RNFS.readDir(collectionDirPath);
     const collectionConfigFileName = `${collectionsDirItem.name}.json`;
-    const collectionConfigObj = findConfig(
+    const collectionConfigObj = findFile(
       collectionDirItems,
       collectionConfigFileName,
     );
@@ -129,11 +138,24 @@ export async function scanWorkspace(
       item: collectionConfigObj,
     });
 
+    const collectionDocFileName = `${collectionsDirItem.name}.md`;
+    const collectionDocObj = findFile(
+      collectionDirItems,
+      collectionDocFileName,
+    );
+    if (collectionDocObj) {
+      const collectionDoc = `${collectionsDirItem.name}/${collectionDocFileName}`;
+      add({
+        key: collectionDoc,
+        item: collectionDocObj,
+      });
+    }
+
     const topLevelRequestsEntrances = new Set(
       Array.from(findTopLevelEntrances(collectionDirItems)).filter(
         // We need to exclude the collection config file, in case the request
         // folder has the same name of the collection name.
-        base => base !== collectionsDirItem.name,
+        e => e !== collectionsDirItem.name,
       ),
     );
 
@@ -175,25 +197,22 @@ export async function scanWorkspace(
       const requestDirItems = await RNFS.readDir(requestDirPath);
       // Config file for this request
       const requestConfigFileName = `${collectionDirItem.name}.json`;
-      const requestConfigObj = findConfig(
-        requestDirItems,
-        requestConfigFileName,
-      );
+      const requestConfigObj = findFile(requestDirItems, requestConfigFileName);
 
       if (!requestConfigObj) {
         // Ignore this folder if no config file found
         continue;
       }
 
-      const base = collectionDirItem.name;
-      const requestPrefix = `${collectionsDirItem.name}/${base}`;
+      const requestNameBase = collectionDirItem.name;
+      const requestPrefix = `${collectionsDirItem.name}/${requestNameBase}`;
 
       add({
         key: `${requestPrefix}/${requestConfigFileName}`,
         item: requestConfigObj,
       });
 
-      const extras = findRequestExtras(requestDirItems, base);
+      const extras = findRequestExtras(requestDirItems, requestNameBase);
       for (const extra of extras) {
         add({
           key: `${requestPrefix}/${extra.name}`,
