@@ -1,5 +1,5 @@
 import { AppError, type WorkspaceResources } from '@/definitions';
-import { scanWorkspace, type ScanWorkspaceResult } from './scanWorkspace';
+import { scanWorkspace, type Timestamps } from './scanWorkspace';
 import { readWorkspaceFiles } from './readWorkspaceFiles';
 
 // NOTE:
@@ -23,15 +23,12 @@ export async function loadWorkspace({
   }
 
   const interval = 2000;
-  let snapshot: ScanWorkspaceResult['timestamps'] | undefined;
+  let snapshot: Timestamps | undefined;
 
   const scanAndRead = async () => {
-    const {
-      timestamps,
-      files: { config: configFile, ...otherFiles },
-    } = await scanWorkspace(dir);
+    const scanedResult = await scanWorkspace(dir);
 
-    if (!configFile) {
+    if (!scanedResult) {
       onError(
         new AppError({
           code: 'configMissing',
@@ -41,6 +38,10 @@ export async function loadWorkspace({
 
       return;
     }
+    const {
+      timestamps,
+      files: { config: configFile, ...otherFiles },
+    } = scanedResult;
 
     if (!snapshot || JSON.stringify(timestamps) !== JSON.stringify(snapshot)) {
       const resource = await readWorkspaceFiles({
