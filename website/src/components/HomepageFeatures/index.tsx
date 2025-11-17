@@ -11,21 +11,19 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Self-hosted and private',
-    Svg: require('@site/static/img/self-hosted.svg').default,
-    description: <>All data and requests stay on your own device.</>,
+    title: 'Private',
+    Svg: require('@site/static/img/private.svg').default,
+    description: <>Everything stays on your device.</>,
   },
   {
-    title: 'Config-driven workspace',
+    title: 'File-based',
     Svg: require('@site/static/img/json.svg').default,
-    description: <>Manage APIs using local JSON files for full control.</>,
+    description: <>Organize and manage APIs with local JSON files.</>,
   },
   {
-    title: 'All-in-one API toolkit',
+    title: 'All-in-one',
     Svg: require('@site/static/img/all-in-one.svg').default,
-    description: (
-      <>Testing, documentation management, and mock server features.</>
-    ),
+    description: <>Test, document, and mock APIs in one workspace.</>,
   },
 ];
 

@@ -36,15 +36,14 @@ export default function Home(): ReactNode {
   return (
     <Layout
       title={`${siteConfig.title}`}
-      description="API Studio is an open-source, self-hosted API workspace for developers. It runs entirely locally, keeping your data private while offering a simple, flexible interface for testing and managing APIs."
+      description="API Studio is an open-source API workspace for developers. It runs entirely locally, keeping your data private while offering a simple, flexible interface for testing and managing APIs."
     >
       <HomepageHeader />
       <main>
         <p className={styles.description}>
-          An open-source, privacy-first tool built for developers who value
-          control, simplicity, and transparency. It doesn't collect any user
-          data or connect to external servers — everything runs locally on your
-          device.
+          Api Studio is an open-source, privacy-first API toolkit built for
+          developers who want control and simplicity. It runs fully on your
+          device, with no data collection and no external connections.
         </p>
         <div>
           <Link href="https://apps.apple.com/app/api-studio/id6755138437">
