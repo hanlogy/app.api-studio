@@ -1,6 +1,7 @@
 #import "AppDelegate.h"
 
 #import <React/RCTBundleURLProvider.h>
+#import "ApiStudio-Swift.h"
 
 @implementation AppDelegate
 
@@ -10,8 +11,10 @@
   // You can add your custom initial props in the dictionary below.
   // They will be passed down to the ViewController used by React Native.
   self.initialProps = @{};
-
-  return [super applicationDidFinishLaunching:notification];
+  [super applicationDidFinishLaunching:notification];
+  
+  NSWindow *window = self.window;
+  [window makeTitleBarTransparent];
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
