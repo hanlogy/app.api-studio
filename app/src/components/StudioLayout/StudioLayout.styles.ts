@@ -1,14 +1,19 @@
 import type { Theme } from '@/states/theme/definitions';
 import { StyleSheet } from 'react-native';
 
-export function createStyles({ isLight }: Theme) {
+export function createStyles(_: Theme) {
   return StyleSheet.create({
+    openWorkspaceHelper: {},
+    studioLayout: {
+      display: 'flex',
+      flexDirection: 'row',
+      flex: 1,
+    },
     appBar: {
-      height: 50,
-      paddingLeft: 100,
+      width: 46,
     },
     content: {
-      //
+      flex: 1,
     },
     bottomBanner: {
       position: 'absolute',

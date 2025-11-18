@@ -1,7 +1,7 @@
 import type { RequestResource, CollectionResource } from '@/definitions';
 import { Text, View } from 'react-native';
 import { Clickable } from '../clickables';
-import { ChevronDown, ChevronRight } from '../icons/icons';
+import { ChevronDownIcon, ChevronRightIcon } from '../icons/icons';
 import { createStyles } from './CollectionsList.styles';
 import { useState } from 'react';
 import { useWorkspaceContext } from '@/states/workspace';
@@ -39,7 +39,7 @@ function CollectionItem({
         style={collectionItemStyles.button}
         hoveredStyle={collectionItemStyles.buttonHovered}
         pressedStyle={collectionItemStyles.buttonPressed}>
-        {isExpanded ? <ChevronDown /> : <ChevronRight />}
+        {isExpanded ? <ChevronDownIcon /> : <ChevronRightIcon />}
 
         <Text>{name}</Text>
       </Clickable>

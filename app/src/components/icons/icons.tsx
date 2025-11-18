@@ -1,32 +1,54 @@
-import type { PropsWithChildren } from 'react';
-import { Text, View } from 'react-native';
-import { styles } from './icons.styles';
+import { Text, View, type ColorValue } from 'react-native';
+import { createStyles } from './icons.styles';
 
-function Icon({ children }: PropsWithChildren) {
-  return <View style={styles.container}>{children}</View>;
+export type IconSize = 'small' | 'medium' | 'large';
+interface IconArgs {
+  readonly size?: IconSize;
+  readonly color?: ColorValue;
 }
 
-function FontIcon({ code }: { code: string }) {
+function FontIcon({
+  code,
+  size,
+  color,
+}: {
+  code: string;
+  size?: IconSize;
+  color?: ColorValue;
+}) {
+  const styles = createStyles({ size, color });
+
   return (
-    <Icon>
+    <View style={styles.container}>
       <Text style={styles.fontello}>{code}</Text>
-    </Icon>
+    </View>
   );
 }
 
-export function ChevronRight() {
-  return <FontIcon code={'\ue800'} />;
+export function ChevronRightIcon(args: IconArgs = {}) {
+  return <FontIcon {...args} code={'\ue804'} />;
 }
 
-export function ChevronUp() {
-  return <FontIcon code={'\ue801'} />;
+export function ChevronUpIcon(args: IconArgs = {}) {
+  return <FontIcon {...args} code={'\ue806'} />;
 }
 
-
-export function ChevronLeft() {
-  return <FontIcon code={'\ue802'} />;
+export function ChevronLeftIcon(args: IconArgs = {}) {
+  return <FontIcon {...args} code={'\ue805'} />;
 }
 
-export function ChevronDown() {
-  return <FontIcon code={'\ue803'} />;
+export function ChevronDownIcon(args: IconArgs = {}) {
+  return <FontIcon {...args} code={'\ue800'} />;
+}
+
+export function HttpServerIcon(args: IconArgs = {}) {
+  return <FontIcon {...args} code={'\ue801'} />;
+}
+
+export function ProxyServerIcon(args: IconArgs = {}) {
+  return <FontIcon {...args} code={'\ue802'} />;
+}
+
+export function RequestIcon(args: IconArgs = {}) {
+  return <FontIcon {...args} code={'\ue803'} />;
 }

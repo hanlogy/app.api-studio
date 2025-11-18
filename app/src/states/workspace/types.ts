@@ -23,14 +23,9 @@ type WorkspaceContextValueBase = {
     items: readonly RequestHistoryItem[];
   }[];
   readonly sendRequest?: () => Promise<void>;
-  readonly openWorkspace: (args: { dir: string; environment?: string }) => void;
   readonly openResource?: (key: WorkspaceResourceKey) => void;
   readonly selectEnvironment?: (name?: string) => void;
 };
-
-export type OpenWorkspaceArguments = Parameters<
-  WorkspaceContextValueBase['openWorkspace']
->[0];
 
 export type WorkspaceContextValue =
   | (WorkspaceContextValueBase & {

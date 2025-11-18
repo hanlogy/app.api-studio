@@ -3,7 +3,6 @@ import { createStyles } from './WorkspaceView.styles';
 import React from 'react';
 import { RequestView } from './RequestView';
 import { useWorkspaceContext } from '@/states/workspace';
-import { OpenWorkspaceHelper } from '../OpenWorkspaceHelper';
 import { EnvironmentSelect } from '../EnvironmentSelect';
 import { CollectionsList } from '../CollectionsList';
 import { useThemeContext } from '@/states/theme';
@@ -14,7 +13,7 @@ export function WorkspaceView() {
   const { styles } = createStyles(theme);
 
   if (!workspace) {
-    return <OpenWorkspaceHelper />;
+    return <></>;
   }
 
   const { collections } = workspace;

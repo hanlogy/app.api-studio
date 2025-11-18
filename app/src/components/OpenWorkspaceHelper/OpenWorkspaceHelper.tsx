@@ -1,19 +1,22 @@
 import { Text, View } from 'react-native';
 import { pickFolder } from '@/helpers/pickFolder';
 import { Clickable } from '../clickables';
-import { useWorkspaceContext } from '@/states/workspace/context';
 import { useStudioContext } from '@/states/studio';
 import { createStyles } from './OpenWorkspaceHelper.styles';
 import { useThemeContext } from '@/states/theme';
+import type { PropsWithViewStyle } from '@/definitions';
 
-export function OpenWorkspaceHelper() {
-  const { workspaces } = useStudioContext();
-  const { openWorkspace } = useWorkspaceContext();
+export function OpenWorkspaceHelper({ style }: PropsWithViewStyle) {
+  const { workspaces, setCurrentWorkspace } = useStudioContext();
   const { theme } = useThemeContext();
+
+  if (!setCurrentWorkspace) {
+    return <></>;
+  }
   const { styles, openButtonStyles, tileStyles } = createStyles(theme);
 
   return (
-    <View style={styles.container}>
+    <View style={[style, styles.container]}>
       <View style={styles.left}>
         <Clickable
           style={openButtonStyles.default}
@@ -24,7 +27,7 @@ export function OpenWorkspaceHelper() {
             const selectedEnvironment = workspaces?.find(
               e => e.dir === dir,
             )?.selectedEnvironment;
-            openWorkspace({ dir, environment: selectedEnvironment });
+            setCurrentWorkspace({ dir, environment: selectedEnvironment });
           }}>
           <Text>Open Workspace...</Text>
         </Clickable>
@@ -39,7 +42,10 @@ export function OpenWorkspaceHelper() {
                 <Clickable
                   key={dir}
                   onPress={() =>
-                    openWorkspace({ dir, environment: selectedEnvironment })
+                    setCurrentWorkspace({
+                      dir,
+                      environment: selectedEnvironment,
+                    })
                   }
                   style={tileStyles.default}
                   hoveredStyle={tileStyles.hovered}

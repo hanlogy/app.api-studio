@@ -8,9 +8,8 @@
 import Cocoa
 
 @objc extension NSWindow {
-  @objc func makeTitleBarTransparent() {
+  @objc func adjustTitleBar() {
     self.titleVisibility = .hidden
-    self.titlebarAppearsTransparent = true
-    self.styleMask.insert(.fullSizeContentView)
+    // self.titlebarAppearsTransparent = true
   }
 }

@@ -1,21 +1,27 @@
 import { useStudioContext } from '@/states/studio';
-import { type PropsWithChildren } from 'react';
+import { useState, type PropsWithChildren } from 'react';
 import { Text, View } from 'react-native';
-import { AppBar } from './AppBar';
+import { SideNav } from './SideNav';
 import { useThemeContext } from '@/states/theme';
 import { createStyles } from './StudioLayout.styles';
+import { OpenWorkspaceHelper } from '../OpenWorkspaceHelper';
 
 export const StudioLayout = ({ children }: PropsWithChildren) => {
   const { theme } = useThemeContext();
   const styles = createStyles(theme);
+  const [selectedNav, setSelectedNav] = useState<string>('request');
 
-  const { status, error } = useStudioContext();
+  const { status, error, currentWorkspace } = useStudioContext();
   if (status === 'initializing') {
     return (
       <View>
         <Text>Initializing...</Text>
       </View>
     );
+  }
+
+  if (!currentWorkspace) {
+    return <OpenWorkspaceHelper style={styles.openWorkspaceHelper} />;
   }
 
   return (
@@ -25,8 +31,12 @@ export const StudioLayout = ({ children }: PropsWithChildren) => {
           <Text style={styles.errorText}>{error.message}</Text>
         </View>
       )}
-      <View>
-        <AppBar style={styles.appBar} />
+      <View style={styles.studioLayout}>
+        <SideNav
+          selected={selectedNav}
+          onChanged={setSelectedNav}
+          style={styles.appBar}
+        />
         <View style={styles.content}>{children}</View>
       </View>
     </>

@@ -14,7 +14,7 @@
   [super applicationDidFinishLaunching:notification];
   
   NSWindow *window = self.window;
-  [window makeTitleBarTransparent];
+  [window adjustTitleBar];
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
