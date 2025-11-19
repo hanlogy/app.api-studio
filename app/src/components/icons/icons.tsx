@@ -26,15 +26,15 @@ function FontIcon({
 }
 
 export function ChevronRightIcon(props: NamedIconProps = {}) {
-  return <FontIcon {...props} code={'\ue804'} />;
+  return <FontIcon {...props} code={'\ue802'} />;
 }
 
 export function ChevronUpIcon(props: NamedIconProps = {}) {
-  return <FontIcon {...props} code={'\ue806'} />;
+  return <FontIcon {...props} code={'\ue803'} />;
 }
 
 export function ChevronLeftIcon(props: NamedIconProps = {}) {
-  return <FontIcon {...props} code={'\ue805'} />;
+  return <FontIcon {...props} code={'\ue801'} />;
 }
 
 export function ChevronDownIcon(props: NamedIconProps = {}) {
@@ -42,13 +42,17 @@ export function ChevronDownIcon(props: NamedIconProps = {}) {
 }
 
 export function HttpServerIcon(props: NamedIconProps = {}) {
-  return <FontIcon {...props} code={'\ue801'} />;
+  return <FontIcon {...props} code={'\ue804'} />;
+}
+
+export function ServerIcon(props: NamedIconProps = {}) {
+  return <FontIcon {...props} code={'\ue807'} />;
 }
 
 export function ProxyServerIcon(props: NamedIconProps = {}) {
-  return <FontIcon {...props} code={'\ue802'} />;
+  return <FontIcon {...props} code={'\ue805'} />;
 }
 
 export function RequestIcon(props: NamedIconProps = {}) {
-  return <FontIcon {...props} code={'\ue803'} />;
+  return <FontIcon {...props} code={'\ue806'} />;
 }

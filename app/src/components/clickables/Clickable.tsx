@@ -1,14 +1,13 @@
-import { useState, type ComponentProps, type PropsWithChildren } from 'react';
-import { Pressable, type StyleProp, type ViewStyle } from 'react-native';
+import { useState, type ComponentProps, type ReactNode } from 'react';
+import { Pressable, type StyleProp, type ViewStyle } from 'react-native-macos';
 
-type Props = PropsWithChildren<
-  ComponentProps<typeof Pressable> & {
-    style?: StyleProp<ViewStyle>;
-    pressedStyle?: StyleProp<ViewStyle>;
-    hoveredStyle?: StyleProp<ViewStyle>;
-    disabled?: boolean;
-  }
->;
+type Props = Omit<ComponentProps<typeof Pressable>, 'children'> & {
+  style?: StyleProp<ViewStyle>;
+  pressedStyle?: StyleProp<ViewStyle>;
+  hoveredStyle?: StyleProp<ViewStyle>;
+  disabled?: boolean;
+  children: ((state?: 'hovered' | 'pressed') => ReactNode) | ReactNode;
+};
 
 export function Clickable({
   children,
@@ -19,17 +18,12 @@ export function Clickable({
   ...restProps
 }: Props) {
   const [hovered, setHovered] = useState(false);
-  const hasHoveredStyle = !!hoveredStyle;
 
   return (
     <Pressable
       disabled={disabled}
-      onHoverIn={
-        hasHoveredStyle && !disabled ? () => setHovered(true) : undefined
-      }
-      onHoverOut={
-        hasHoveredStyle && !disabled ? () => setHovered(false) : undefined
-      }
+      onHoverIn={!disabled ? () => setHovered(true) : undefined}
+      onHoverOut={!disabled ? () => setHovered(false) : undefined}
       style={({ pressed }) => [
         { cursor: 'pointer' },
         style,
@@ -37,7 +31,11 @@ export function Clickable({
         pressed && pressedStyle,
       ]}
       {...restProps}>
-      {children}
+      {({ pressed }) => {
+        return typeof children === 'function'
+          ? children(pressed ? 'pressed' : hovered ? 'hovered' : undefined)
+          : children;
+      }}
     </Pressable>
   );
 }

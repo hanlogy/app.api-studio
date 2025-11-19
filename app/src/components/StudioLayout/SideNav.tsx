@@ -3,11 +3,7 @@ import { createStyles } from './SideNav.styles';
 import { useThemeContext } from '@/states/theme';
 import type { NavName, PropsWithViewStyle } from '@/definitions';
 import { Clickable } from '../clickables';
-import {
-  HttpServerIcon,
-  RequestIcon,
-  type NamedIconProps,
-} from '../icons/icons';
+import { RequestIcon, ServerIcon, type NamedIconProps } from '../icons/icons';
 import type { ComponentType } from 'react';
 
 const items: {
@@ -23,7 +19,7 @@ const items: {
   {
     name: 'mockServers',
     label: 'Mock Servers',
-    icon: HttpServerIcon,
+    icon: ServerIcon,
   },
 ];
 
@@ -50,7 +46,20 @@ export function SideNav({
               onPress={() => {
                 onChanged(name);
               }}>
-              <Icon size="medium" color={isSelected ? '#CCC' : '#999'} />
+              {state => {
+                return (
+                  <Icon
+                    size="medium"
+                    color={
+                      isSelected
+                        ? '#CCC'
+                        : state === 'hovered'
+                        ? '#fff'
+                        : '#999'
+                    }
+                  />
+                );
+              }}
             </Clickable>
           );
         })}
