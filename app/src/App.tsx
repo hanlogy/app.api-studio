@@ -1,7 +1,7 @@
 import React from 'react';
 import { LogBox } from 'react-native';
 import { StudioLayout } from '@/components/StudioLayout/StudioLayout';
-import { WorkspaceView } from '@/components/WorkspaceView/WorkspaceView';
+import { RequestsView } from '@/components/RequestsView/RequestsView';
 import { StudioContextProvider } from '@/states/studio';
 import { ThemeContextProvider } from './states/theme/ThemeContextProvider';
 
@@ -16,8 +16,8 @@ export default function App() {
         <StudioLayout
           renderWorkspace={navName => {
             switch (navName) {
-              case 'request':
-                return <WorkspaceView />;
+              case 'requests':
+                return <RequestsView />;
             }
           }}
         />

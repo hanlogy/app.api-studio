@@ -1,6 +1,8 @@
 import type { TextStyle, ViewStyle } from 'react-native';
 import type { StyleProp } from 'react-native-macos';
+import type { navNames } from './constants';
 
+export type NavName = (typeof navNames)[number];
 export type PrimitiveValue = string | number | boolean | null;
 
 export type PrimitiveRecord<T extends PrimitiveValue = PrimitiveValue> = Record<

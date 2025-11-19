@@ -2,7 +2,7 @@ import { Text, View, type ColorValue } from 'react-native';
 import { createStyles } from './icons.styles';
 
 export type IconSize = 'small' | 'medium' | 'large';
-interface IconArgs {
+export interface NamedIconProps {
   readonly size?: IconSize;
   readonly color?: ColorValue;
 }
@@ -25,30 +25,30 @@ function FontIcon({
   );
 }
 
-export function ChevronRightIcon(args: IconArgs = {}) {
-  return <FontIcon {...args} code={'\ue804'} />;
+export function ChevronRightIcon(props: NamedIconProps = {}) {
+  return <FontIcon {...props} code={'\ue804'} />;
 }
 
-export function ChevronUpIcon(args: IconArgs = {}) {
-  return <FontIcon {...args} code={'\ue806'} />;
+export function ChevronUpIcon(props: NamedIconProps = {}) {
+  return <FontIcon {...props} code={'\ue806'} />;
 }
 
-export function ChevronLeftIcon(args: IconArgs = {}) {
-  return <FontIcon {...args} code={'\ue805'} />;
+export function ChevronLeftIcon(props: NamedIconProps = {}) {
+  return <FontIcon {...props} code={'\ue805'} />;
 }
 
-export function ChevronDownIcon(args: IconArgs = {}) {
-  return <FontIcon {...args} code={'\ue800'} />;
+export function ChevronDownIcon(props: NamedIconProps = {}) {
+  return <FontIcon {...props} code={'\ue800'} />;
 }
 
-export function HttpServerIcon(args: IconArgs = {}) {
-  return <FontIcon {...args} code={'\ue801'} />;
+export function HttpServerIcon(props: NamedIconProps = {}) {
+  return <FontIcon {...props} code={'\ue801'} />;
 }
 
-export function ProxyServerIcon(args: IconArgs = {}) {
-  return <FontIcon {...args} code={'\ue802'} />;
+export function ProxyServerIcon(props: NamedIconProps = {}) {
+  return <FontIcon {...props} code={'\ue802'} />;
 }
 
-export function RequestIcon(args: IconArgs = {}) {
-  return <FontIcon {...args} code={'\ue803'} />;
+export function RequestIcon(props: NamedIconProps = {}) {
+  return <FontIcon {...props} code={'\ue803'} />;
 }

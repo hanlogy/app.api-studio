@@ -1,32 +1,42 @@
 import { View } from 'react-native-macos';
 import { createStyles } from './SideNav.styles';
 import { useThemeContext } from '@/states/theme';
-import type { PropsWithViewStyle } from '@/definitions';
+import type { NavName, PropsWithViewStyle } from '@/definitions';
 import { Clickable } from '../clickables';
-import { HttpServerIcon, ProxyServerIcon, RequestIcon } from '../icons/icons';
+import {
+  HttpServerIcon,
+  RequestIcon,
+  type NamedIconProps,
+} from '../icons/icons';
+import type { ComponentType } from 'react';
+
+const items: {
+  name: NavName;
+  label: string;
+  icon: ComponentType<NamedIconProps>;
+}[] = [
+  {
+    name: 'requests',
+    label: 'Requests',
+    icon: RequestIcon,
+  },
+  {
+    name: 'mockServers',
+    label: 'Mock Servers',
+    icon: HttpServerIcon,
+  },
+];
 
 export function SideNav({
   style,
   onChanged,
   selected,
-}: PropsWithViewStyle<{ selected: string; onChanged: (nav: string) => void }>) {
+}: PropsWithViewStyle<{
+  selected: string;
+  onChanged: (nav: NavName) => void;
+}>) {
   const { theme } = useThemeContext();
   const styles = createStyles(theme);
-
-  const items = [
-    {
-      name: 'request',
-      icon: RequestIcon,
-    },
-    {
-      name: 'httpServer',
-      icon: HttpServerIcon,
-    },
-    {
-      name: 'proxyServer',
-      icon: ProxyServerIcon,
-    },
-  ];
 
   return (
     <View style={[style, styles.container]}>

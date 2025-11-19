@@ -6,15 +6,16 @@ import { useThemeContext } from '@/states/theme';
 import { createStyles } from './StudioLayout.styles';
 import { OpenWorkspaceHelper } from '../OpenWorkspaceHelper';
 import { WorkspaceContextProvider } from '@/states/workspace';
+import type { NavName } from '@/definitions';
 
 export const StudioLayout = ({
   renderWorkspace,
 }: {
-  readonly renderWorkspace: (name: string) => ReactNode;
+  readonly renderWorkspace: (name: NavName) => ReactNode;
 }) => {
   const { theme } = useThemeContext();
   const styles = createStyles(theme);
-  const [selectedNav, setSelectedNav] = useState<string>('request');
+  const [selectedNav, setSelectedNav] = useState<NavName>('requests');
 
   const { status, error, currentWorkspace } = useStudioContext();
   if (status === 'initializing') {

@@ -1,5 +1,5 @@
 import { ScrollView, View } from 'react-native';
-import { createStyles } from './WorkspaceView.styles';
+import { createStyles } from './RequestsView.styles';
 import React from 'react';
 import { RequestView } from './RequestView';
 import { useWorkspaceContext } from '@/states/workspace';
@@ -7,7 +7,7 @@ import { EnvironmentSelect } from '../EnvironmentSelect';
 import { CollectionsList } from '../CollectionsList';
 import { useThemeContext } from '@/states/theme';
 
-export function WorkspaceView() {
+export function RequestsView() {
   const { workspace } = useWorkspaceContext();
   const { theme } = useThemeContext();
   const { styles } = createStyles(theme);
