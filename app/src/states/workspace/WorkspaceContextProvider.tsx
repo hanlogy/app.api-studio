@@ -34,15 +34,19 @@ import { loadScripts, type ScriptFunctions } from '@/repositories/loadScripts';
 import { hasVariable } from './hasVariable';
 import { upsertRuntimeVariable } from '@/helpers/upsertRuntimeVariable';
 
-export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
-  const { currentWorkspace, setError, updateRecentWorkspace } =
-    useStudioContext();
+export function WorkspaceContextProvider({
+  children,
+  dir,
+  environment: initialEnvironment,
+}: PropsWithChildren<{ dir: string; environment?: string }>) {
+  const { setError, updateRecentWorkspace } = useStudioContext();
   const [status, setStatus] = useState<WorkspaceStatus>('waiting');
-  const [dir, setDir] = useState<string>();
   const [sources, setSources] = useState<WorkspaceResources>();
   const [runtimeWorkspace, setRuntimeWorkspace] = useState<RuntimeWorkspace>(
     {},
   );
+  // TODO: We might move pinnedResources, previewingResource to RequestView
+  // state
   const [pinnedResources, setPinnedResources] = useState<
     WorkspaceResourceKey[]
   >([]);
@@ -50,7 +54,9 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     useState<WorkspaceResourceKey>();
   const [currentResourceKey, setCurrentResourceKey] =
     useState<WorkspaceResourceKey>();
-  const [selectedEnvironment, setSelectedEnvironment] = useState<string>();
+  const [selectedEnvironment, setSelectedEnvironment] = useState<
+    string | undefined
+  >(initialEnvironment);
   const [workspace, setWorkspace] = useState<Workspace>();
   const [histories, setHistories] = useState<
     {
@@ -59,18 +65,6 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     }[]
   >([]);
   const scriptFunctionsRef = useRef<ScriptFunctions>({});
-
-  useEffect(() => {
-    if (!currentWorkspace) {
-      return;
-    }
-    if (dir !== currentWorkspace.dir) {
-      setDir(currentWorkspace.dir);
-    }
-    if (selectedEnvironment !== currentWorkspace.environment) {
-      setSelectedEnvironment(currentWorkspace.environment);
-    }
-  }, [currentWorkspace, dir, selectedEnvironment]);
 
   //When `dir` changed:
   //Load workspace files, parse, resolve, update cache
@@ -93,7 +87,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
         }
       },
     });
-  }, [dir, setDir, setError]);
+  }, [dir, setError]);
 
   // when sources or selectedEnvironment changed.
   useEffect(() => {
