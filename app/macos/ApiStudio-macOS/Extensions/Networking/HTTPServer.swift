@@ -7,28 +7,90 @@
 
 import Foundation
 import Network
+import Security
 
-class HttpServer {
+enum HttpServerError: Error {
+  case tlsIdentityLoadFailed
+}
+
+final class HttpServer {
   private let port: Int
   internal let listener: NWListener
   private var connections: [String: NWConnection] = [:]
   private let emit: ([String: Any]) -> Void
+  private let queue: DispatchQueue
 
-  init(port: Int, emit: @escaping ([String: Any]) -> Void) throws {
+  init(
+    port: Int,
+    emit: @escaping ([String: Any]) -> Void,
+    p12Path: String?,
+    password: String?
+  ) throws {
     self.port = port
     self.emit = emit
+    self.queue = DispatchQueue(label: "HttpServer.\(port)")
 
-    let params = NWParameters.tcp
-    // Allow the port to be reused immediately after the app restarts
+    let params: NWParameters
+
+    if let p12Path = p12Path {
+      let tlsOptions = try HttpServer.makeTLSOptions(
+        p12Path: p12Path,
+        password: password
+      )
+      params = NWParameters(tls: tlsOptions, tcp: NWProtocolTCP.Options())
+    } else {
+      params = NWParameters.tcp
+    }
+
     params.allowLocalEndpointReuse = true
 
     self.listener = try NWListener(
       using: params,
       on: NWEndpoint.Port(rawValue: UInt16(port))!
     )
+  }
 
-    // Disable Bonjour so that listener binds to all interfaces, not only localhost
-    self.listener.service = nil
+  private static func makeTLSOptions(
+    p12Path: String,
+    password: String?
+  ) throws -> NWProtocolTLS.Options {
+    let url = URL(fileURLWithPath: p12Path)
+    let data = try Data(contentsOf: url)
+
+    var importOptions: [String: Any] = [:]
+    if let password = password {
+      importOptions[kSecImportExportPassphrase as String] = password
+    }
+
+    var items: CFArray?
+    let status = SecPKCS12Import(
+      data as CFData,
+      importOptions as CFDictionary,
+      &items
+    )
+
+    guard
+      status == errSecSuccess,
+      let array = items as? [[String: Any]],
+      let cfIdentity = array.first?[kSecImportItemIdentity as String]
+        as? CFTypeRef,
+      CFGetTypeID(cfIdentity) == SecIdentityGetTypeID()
+    else {
+      throw HttpServerError.tlsIdentityLoadFailed
+    }
+
+    let identity = cfIdentity as! SecIdentity
+    guard let secIdentity = sec_identity_create(identity) else {
+      throw HttpServerError.tlsIdentityLoadFailed
+    }
+
+    let tlsOptions = NWProtocolTLS.Options()
+    sec_protocol_options_set_local_identity(
+      tlsOptions.securityProtocolOptions,
+      secIdentity
+    )
+
+    return tlsOptions
   }
 
   func start() {
@@ -36,13 +98,15 @@ class HttpServer {
       self?.handleConnection(connection)
     }
 
-    listener.start(queue: .global())
+    listener.start(queue: queue)
   }
 
   func stop() {
-    listener.cancel()
-    connections.values.forEach { $0.cancel() }
-    connections.removeAll()
+    queue.async {
+      self.listener.cancel()
+      self.connections.values.forEach { $0.cancel() }
+      self.connections.removeAll()
+    }
   }
 
   private func handleConnection(_ connection: NWConnection) {
@@ -50,12 +114,15 @@ class HttpServer {
     connections[id] = connection
 
     connection.stateUpdateHandler = { [weak self] newState in
-      if case .failed(_) = newState {
-        self?.connections.removeValue(forKey: id)
+      guard let self else { return }
+      self.queue.async {
+        if case .failed(_) = newState {
+          self.connections.removeValue(forKey: id)
+        }
       }
     }
 
-    connection.start(queue: .global())
+    connection.start(queue: queue)
     receive(on: connection, id: id)
   }
 
@@ -67,28 +134,32 @@ class HttpServer {
 
       guard let self else { return }
 
-      if let d = data, !d.isEmpty {
-        self.emit([
-          "port": self.port,
-          "connectionId": id,
-          "chunk": Array(d),
-        ])
-      }
+      self.queue.async {
+        if let d = data, !d.isEmpty {
+          self.emit([
+            "port": self.port,
+            "connectionId": id,
+            "chunk": Array(d),
+          ])
+        }
 
-      if isEOF || error != nil {
-        connection.cancel()
-        self.connections.removeValue(forKey: id)
-        return
-      }
+        if isEOF || error != nil {
+          connection.cancel()
+          self.connections.removeValue(forKey: id)
+          return
+        }
 
-      self.receive(on: connection, id: id)
+        self.receive(on: connection, id: id)
+      }
     }
   }
 
   func send(connectionId: String, data: Data) {
-    guard let connection = connections[connectionId] else { return }
+    queue.async {
+      guard let connection = self.connections[connectionId] else { return }
 
-    // Do not cancel here, leave the connection open for the client to close
-    connection.send(content: data, completion: .contentProcessed { _ in })
+      // Do not cancel here, leave the connection open for the client to close
+      connection.send(content: data, completion: .contentProcessed { _ in })
+    }
   }
 }
