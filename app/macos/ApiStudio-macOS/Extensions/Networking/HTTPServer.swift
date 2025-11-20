@@ -10,7 +10,7 @@ import Network
 
 class HttpServer {
   private let port: Int
-  private let listener: NWListener
+  internal let listener: NWListener
   private var connections: [String: NWConnection] = [:]
   private let emit: ([String: Any]) -> Void
 
