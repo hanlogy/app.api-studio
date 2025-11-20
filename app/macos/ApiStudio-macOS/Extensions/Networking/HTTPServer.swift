@@ -14,19 +14,28 @@ class HttpServer {
   private var connections: [String: NWConnection] = [:]
   private let emit: ([String: Any]) -> Void
 
-  init(port: Int, emit: @escaping ([String: Any]) -> Void) {
+  init(port: Int, emit: @escaping ([String: Any]) -> Void) throws {
     self.port = port
     self.emit = emit
-    self.listener = try! NWListener(
-      using: .tcp,
+
+    let params = NWParameters.tcp
+    // Allow the port to be reused immediately after the app restarts
+    params.allowLocalEndpointReuse = true
+
+    self.listener = try NWListener(
+      using: params,
       on: NWEndpoint.Port(rawValue: UInt16(port))!
     )
+
+    // Disable Bonjour so that listener binds to all interfaces, not only localhost
+    self.listener.service = nil
   }
 
   func start() {
     listener.newConnectionHandler = { [weak self] connection in
       self?.handleConnection(connection)
     }
+
     listener.start(queue: .global())
   }
 
@@ -47,7 +56,7 @@ class HttpServer {
     }
 
     connection.start(queue: .global())
-    self.receive(on: connection, id: id)
+    receive(on: connection, id: id)
   }
 
   private func receive(on connection: NWConnection, id: String) {
@@ -79,7 +88,7 @@ class HttpServer {
   func send(connectionId: String, data: Data) {
     guard let connection = connections[connectionId] else { return }
 
-    // Do not cancel here — wait for EOF from client
+    // Do not cancel here, leave the connection open for the client to close
     connection.send(content: data, completion: .contentProcessed { _ in })
   }
 }
