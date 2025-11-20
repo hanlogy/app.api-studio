@@ -9,9 +9,8 @@
 
 @interface RCT_EXTERN_MODULE (HttpServerManager, RCTEventEmitter)
 
-RCT_EXTERN_METHOD(startServer : (nonnull NSNumber *)port)
-RCT_EXTERN_METHOD(stopServer : (nonnull NSNumber *)port)
-RCT_EXTERN_METHOD(sendResponse : (nonnull NSNumber *)port connectionId : (
-    NSString *)connectionId response : (NSString *)response)
+RCT_EXTERN_METHOD(startServer : (NSDictionary *)options)
+RCT_EXTERN_METHOD(stopServer : (NSDictionary *)options)
+RCT_EXTERN_METHOD(sendResponse : (NSDictionary *)options)
 
 @end

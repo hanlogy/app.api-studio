@@ -14,14 +14,14 @@ class HttpServerManager: RCTEventEmitter {
   private var servers: [Int: HttpServer] = [:]
 
   @objc
-  func startServer(_ port: NSNumber) {
-    let portNumber = port.intValue
+  func startServer(_ options: NSDictionary) {
+    let port = (options["port"] as? NSNumber)?.intValue ?? 0
 
-    if servers[portNumber] != nil {
+    if servers[port] != nil {
       sendEvent(
         withName: "onError",
         body: [
-          "port": portNumber,
+          "port": port,
           "error": "alreadyRunning",
         ]
       )
@@ -31,43 +31,35 @@ class HttpServerManager: RCTEventEmitter {
 
     do {
       let server = try HttpServer(
-        port: portNumber,
+        port: port,
         emit: { [weak self] event in
           self?.sendEvent(withName: "onRequest", body: event)
-        }
+        },
       )
 
       server.listener.stateUpdateHandler = { [weak self] state in
         guard let self else { return }
 
         switch state {
-
         case .ready:
-          self.servers[portNumber] = server
+          self.servers[port] = server
 
         case .failed(let error):
-          let errorCode: String
-
-          if case .posix(let errno) = error,
-            errno == .EADDRINUSE
-          {
+          var errorCode = "startFailed"
+          if case .posix(let errno) = error, errno == .EADDRINUSE {
             errorCode = "portInUse"
-          } else {
-            errorCode = "startFailed"
           }
 
           self.sendEvent(
             withName: "onError",
             body: [
-              "port": portNumber,
+              "port": port,
               "error": errorCode,
             ]
           )
-
           server.listener.cancel()
 
-        default:
-          break
+        default: break
         }
       }
 
@@ -76,7 +68,7 @@ class HttpServerManager: RCTEventEmitter {
       sendEvent(
         withName: "onError",
         body: [
-          "port": portNumber,
+          "port": port,
           "error": "failedToCreateListener",
         ]
       )
@@ -84,20 +76,19 @@ class HttpServerManager: RCTEventEmitter {
   }
 
   @objc
-  func stopServer(_ port: NSNumber) {
-    let portNumber = port.intValue
-    servers[portNumber]?.stop()
-    servers.removeValue(forKey: portNumber)
+  func stopServer(_ options: NSDictionary) {
+    let port = (options["port"] as? NSNumber)?.intValue ?? 0
+    servers[port]?.stop()
+    servers.removeValue(forKey: port)
   }
 
   @objc
-  func sendResponse(
-    _ port: NSNumber,
-    connectionId: String,
-    response: String
-  ) {
-    let portNumber = port.intValue
-    servers[portNumber]?.send(
+  func sendResponse(_ options: NSDictionary) {
+    let port = (options["port"] as? NSNumber)?.intValue ?? 0
+    let connectionId = options["connectionId"] as? String ?? ""
+    let response = options["response"] as? String ?? ""
+
+    servers[port]?.send(
       connectionId: connectionId,
       data: Data(response.utf8)
     )
