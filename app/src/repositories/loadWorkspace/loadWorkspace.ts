@@ -1,6 +1,7 @@
 import { AppError, type WorkspaceSource } from '@/definitions';
-import { scanWorkspace, type Timestamps } from './scanWorkspace';
+import { scanWorkspace } from './scanWorkspace';
 import { readWorkspaceFiles } from './readWorkspaceFiles';
+import type { Timestamps } from './types';
 
 // NOTE:
 // DO NOT create the config file if it does not exist, because the user might
