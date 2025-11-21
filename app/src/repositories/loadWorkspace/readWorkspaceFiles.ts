@@ -4,7 +4,7 @@ import {
   WORKSPACE_COLLECTIONS_DIR,
   type JsonRecord,
   type JsonValue,
-  type WorkspaceResources,
+  type WorkspaceSource,
 } from '@/definitions';
 
 const fileTypeMap = {
@@ -86,7 +86,7 @@ export async function readWorkspaceFiles({
 }: {
   dir: string;
   files: WorkspaceFiles;
-}): Promise<WorkspaceResources> {
+}): Promise<WorkspaceSource> {
   dir = dir.replace(/\/$/, '');
 
   const configData = await readJsonRecord({

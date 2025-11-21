@@ -1,4 +1,4 @@
-import { AppError, type WorkspaceResources } from '@/definitions';
+import { AppError, type WorkspaceSource } from '@/definitions';
 import { scanWorkspace, type Timestamps } from './scanWorkspace';
 import { readWorkspaceFiles } from './readWorkspaceFiles';
 
@@ -14,7 +14,7 @@ export async function loadWorkspace({
   onError,
 }: {
   dir: string;
-  onData: (sources: WorkspaceResources) => void;
+  onData: (sources: WorkspaceSource) => void;
   onError: (error: AppError) => void;
 }) {
   if (timer) {

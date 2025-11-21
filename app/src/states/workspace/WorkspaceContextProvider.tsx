@@ -1,11 +1,11 @@
 import {
   AppError,
-  type RequestResourceKey,
+  type RequestKey,
   type RuntimeVariable,
   type RuntimeWorkspace,
   type Workspace,
   type WorkspaceResourceKey,
-  type WorkspaceResources,
+  type WorkspaceSource,
 } from '@/definitions';
 import {
   useCallback,
@@ -41,7 +41,7 @@ export function WorkspaceContextProvider({
 }: PropsWithChildren<{ dir: string; environment?: string }>) {
   const { setError, updateRecentWorkspace } = useStudioContext();
   const [status, setStatus] = useState<WorkspaceStatus>('waiting');
-  const [sources, setSources] = useState<WorkspaceResources>();
+  const [sources, setSources] = useState<WorkspaceSource>();
   const [runtimeWorkspace, setRuntimeWorkspace] = useState<RuntimeWorkspace>(
     {},
   );
@@ -60,7 +60,7 @@ export function WorkspaceContextProvider({
   const [workspace, setWorkspace] = useState<Workspace>();
   const [histories, setHistories] = useState<
     {
-      key: RequestResourceKey;
+      key: RequestKey;
       items: RequestHistoryItem[];
     }[]
   >([]);
@@ -139,7 +139,7 @@ export function WorkspaceContextProvider({
 
   const saveHistory = useCallback(
     (
-      key: RequestResourceKey,
+      key: RequestKey,
       { request, response }: { request: HttpRequest; response: HttpResponse },
     ) => {
       setHistories(prev => {

@@ -1,4 +1,4 @@
-import type { RequestResource, CollectionResource } from '@/definitions';
+import type { Request, Collection } from '@/definitions';
 import { Text, View } from 'react-native';
 import { Clickable } from '../clickables';
 import { ChevronDownIcon, ChevronRightIcon } from '../icons/icons';
@@ -11,7 +11,7 @@ import { MethodText } from '../text';
 export function CollectionsList({
   collections,
 }: {
-  collections: readonly CollectionResource[];
+  collections: readonly Collection[];
 }) {
   return (
     <>
@@ -25,7 +25,7 @@ export function CollectionsList({
 function CollectionItem({
   collection: { name = 'unnamed', requests },
 }: {
-  collection: CollectionResource;
+  collection: Collection;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const { theme } = useThemeContext();
@@ -57,7 +57,7 @@ function CollectionItem({
   );
 }
 
-function RequestItem({ request }: { request: RequestResource }) {
+function RequestItem({ request }: { request: Request }) {
   const { openResource } = useWorkspaceContext();
   const { name = 'unnamed' } = request;
   const { theme } = useThemeContext();

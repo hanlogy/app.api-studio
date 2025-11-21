@@ -1,4 +1,4 @@
-import type { JsonValue, RequestResourceKey } from '@/definitions';
+import type { JsonValue, RequestKey } from '@/definitions';
 import { stringFromStringOrNumber } from '@/helpers/filterValues';
 import { toSafeId } from '@/helpers/toSafeId';
 
@@ -28,7 +28,7 @@ export function resolveResourceKeys(
   | {
       id: string;
       name: string;
-      key: RequestResourceKey;
+      key: RequestKey;
     }
   | undefined;
 

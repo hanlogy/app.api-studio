@@ -1,8 +1,8 @@
-import type { RequestResourceKey } from '@/definitions';
+import type { RequestKey } from '@/definitions';
 
 export function isSameResourceKey(
-  key1: string | RequestResourceKey,
-  key2: string | RequestResourceKey,
+  key1: string | RequestKey,
+  key2: string | RequestKey,
 ) {
   if (typeof key1 !== typeof key2) {
     return false;

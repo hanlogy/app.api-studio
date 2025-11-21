@@ -1,13 +1,13 @@
-import type { MockServerConfig } from '@/definitions';
 import { NativeModules, NativeEventEmitter } from 'react-native-macos';
 import type { ErrorEvent, RequestEvent } from './definitions';
 import { Buffer } from 'buffer';
+import type { MockServer } from '@/definitions';
 
 const { HttpServerManager } = NativeModules;
 
 const eventEmitter = new NativeEventEmitter(HttpServerManager);
 
-export class MockServer {
+export class HttpServer {
   private readonly port: number;
   private readonly workspaceDir: string;
   private readonly p12File?: string;
@@ -20,7 +20,7 @@ export class MockServer {
     config: { port, https },
   }: {
     readonly workspaceDir: string;
-    readonly config: MockServerConfig;
+    readonly config: MockServer;
   }) {
     this.port = port;
     this.workspaceDir = workspaceDir;

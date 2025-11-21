@@ -1,0 +1,34 @@
+import type { JsonValue, RequestMethod } from './common';
+
+export interface MockServer {
+  readonly name: string;
+  readonly port: number;
+  readonly https?: {
+    readonly p12File: string;
+    readonly p12Password?: string;
+  };
+  readonly headers?: Record<string, string>;
+  readonly routes: readonly MockServerRoute[];
+}
+
+export interface MockServerRoute {
+  readonly name: string;
+  readonly method: RequestMethod | 'ALL';
+  readonly path: string;
+  readonly delay?: number;
+  readonly cases: readonly MockServerCase[];
+}
+
+type MockServerCaseBase = {
+  readonly request?: Record<string, JsonValue>;
+};
+
+export type MockServerCase =
+  | MockServerCaseBase
+  | (MockServerCaseBase & {
+      // The response file name
+      readonly response: string;
+    })
+  | (MockServerCaseBase & {
+      readonly response: Record<string, JsonValue>;
+    });

@@ -1,6 +1,6 @@
 import type {
   AppError,
-  RequestResourceKey,
+  RequestKey,
   Workspace,
   WorkspaceResourceKey,
 } from '@/definitions';
@@ -19,7 +19,7 @@ type WorkspaceContextValueBase = {
   readonly selectedEnvironment?: string;
   readonly currentResourceKey?: WorkspaceResourceKey;
   readonly histories: readonly {
-    key: RequestResourceKey;
+    key: RequestKey;
     items: readonly RequestHistoryItem[];
   }[];
   readonly sendRequest?: () => Promise<void>;

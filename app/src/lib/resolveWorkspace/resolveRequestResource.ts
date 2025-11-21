@@ -1,6 +1,6 @@
 import {
   type ValuesMap,
-  type RequestResource,
+  type Request,
   type JsonValue,
   type RequestMethod,
   requestMethods,
@@ -25,7 +25,7 @@ export function resolveRequestResource({
   baseUrl?: string;
   accumulateIds: string[];
   valuesMap?: ValuesMap;
-}): RequestResource | undefined {
+}): Request | undefined {
   if (!isPlainObject(source)) {
     return undefined;
   }

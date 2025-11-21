@@ -1,29 +1,56 @@
 import type {
   JsonRecord,
   JsonValue,
-  PrimitiveRecord,
-  PrimitiveValue,
+  RequestHeaders,
+  RequestMethod,
+  RequestQuery,
   ValuesMap,
-} from './basic';
-import { requestMethods } from './constants';
+} from './common';
 
-export type RequestHeaders = PrimitiveRecord<string>;
-export type RequestQuery = PrimitiveRecord<string>;
+import type { MockServer } from './mockServer';
 
-export type RequestMethod = (typeof requestMethods)[number];
+export type RequestKey = [key: string, collectionKey: string];
+export type WorkspaceResourceKey = string | RequestKey;
 
-export interface WorkspaceResources {
+// The raw json read from files
+export interface WorkspaceSource {
   readonly config: JsonRecord;
   readonly collections: readonly JsonRecord[];
 }
 
-export type RequestResourceKey = [key: string, collectionKey: string];
-export type WorkspaceResourceKey = string | RequestResourceKey;
+export interface Workspace {
+  readonly name: string;
+  readonly dir: string;
+  readonly description?: string;
+  readonly environments: readonly WorkspaceEnvironment[];
+  readonly collections: readonly Collection[];
+  readonly mockServers: readonly MockServer[];
+}
+
+export interface WorkspaceEnvironment {
+  readonly isGlobal: boolean;
+  readonly name: string;
+  readonly valuesMap?: ValuesMap;
+  readonly headers?: RequestHeaders;
+}
+
+export interface Collection {
+  readonly key: string;
+  // Must unique globally in current **workspace**.
+  readonly id: string;
+  readonly name: string;
+  readonly description?: string;
+  readonly headers?: RequestHeaders;
+  readonly valuesMap?: ValuesMap;
+  readonly baseUrl?: string;
+  readonly requests: readonly Request[];
+  readonly order: number;
+}
 
 // NOTE: The url, headers, and body should be the only resolved result, but not
 // the assembled one, we assemble it at the UI rendering step
-export interface RequestResource {
-  readonly key: RequestResourceKey;
+export interface Request {
+  readonly key: RequestKey;
   // Must unique globally in current **workspace**, it allows users to move
   // the request to differnt collection
   readonly id: string;
@@ -38,9 +65,9 @@ export interface RequestResource {
   readonly order: number;
 }
 
-export type RequestResourceWithExtra = RequestResource & {
+export type RequestWithExtra = Request & {
   readonly collection: Pick<
-    CollectionResource,
+    Collection,
     'name' | 'baseUrl' | 'headers' | 'valuesMap'
   >;
   readonly environments: Pick<
@@ -48,66 +75,3 @@ export type RequestResourceWithExtra = RequestResource & {
     'isGlobal' | 'headers' | 'name' | 'valuesMap'
   >[];
 };
-
-export interface CollectionResource {
-  readonly key: string;
-  // Must unique globally in current **workspace**.
-  readonly id: string;
-  readonly name: string;
-  readonly description?: string;
-  readonly headers?: RequestHeaders;
-  readonly valuesMap?: ValuesMap;
-  readonly baseUrl?: string;
-  readonly requests: readonly RequestResource[];
-  readonly order: number;
-}
-
-export interface WorkspaceEnvironment {
-  readonly isGlobal: boolean;
-  readonly name: string;
-  readonly valuesMap?: ValuesMap;
-  readonly headers?: RequestHeaders;
-}
-
-export interface Workspace {
-  readonly name: string;
-  readonly dir: string;
-  readonly description?: string;
-  readonly environments: readonly WorkspaceEnvironment[];
-  readonly collections: readonly CollectionResource[];
-}
-
-export type RuntimeVariable =
-  | {
-      readonly type: 'environment' | 'collection';
-      readonly key: string;
-      readonly name: string;
-      readonly value: PrimitiveValue;
-    }
-  | {
-      readonly type: 'request';
-      readonly key: RequestResourceKey;
-      readonly name: string;
-      readonly value: PrimitiveValue;
-    };
-
-export interface RuntimeWorkspaceEnvironment {
-  readonly name: string;
-  readonly valuesMap?: ValuesMap;
-}
-
-export interface RuntimeRequestResource {
-  readonly key: RequestResourceKey;
-  readonly valuesMap?: ValuesMap;
-}
-
-export interface RuntimeCollectionResource {
-  readonly key: string;
-  readonly valuesMap?: ValuesMap;
-  readonly requests?: readonly RuntimeRequestResource[];
-}
-
-export interface RuntimeWorkspace {
-  readonly environments?: readonly RuntimeWorkspaceEnvironment[];
-  readonly collections?: readonly RuntimeCollectionResource[];
-}
