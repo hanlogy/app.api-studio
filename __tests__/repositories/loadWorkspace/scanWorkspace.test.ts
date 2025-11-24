@@ -32,10 +32,8 @@ const createItem = ({
   isFile: () => !isDir,
 });
 
-export function mockWorkspace(
-  structure: readonly FSItem[],
-  root = '/workspace',
-) {
+export function mockWorkspace(structure: readonly FSItem[]) {
+  const root = '/workspace';
   const mockReadDir = RNFS.readDir as jest.Mock;
   const fs: Record<string, Partial<RNFS.ReadDirItem>[]> = {};
 
@@ -93,6 +91,10 @@ describe('scanWorkspace', () => {
         type: 'dir',
         name: 'collections',
       },
+      {
+        type: 'dir',
+        name: 'servers',
+      },
     ] as const;
 
     mockWorkspace(workspace);
@@ -107,8 +109,8 @@ describe('scanWorkspace', () => {
 
     const result = await scanWorkspace('/workspace');
     expect(result).toStrictEqual({
-      timestamps: { config: expect.any(Number), collections: {} },
-      files: { config: 'config.json', collections: [] },
+      timestamps: { config: expect.any(Number), collections: {}, servers: {} },
+      files: { config: 'config.json', collections: [], servers: [] },
     });
   });
 
@@ -125,8 +127,26 @@ describe('scanWorkspace', () => {
 
     const result = await scanWorkspace('/workspace');
     expect(result).toStrictEqual({
-      timestamps: { config: expect.any(Number), collections: {} },
-      files: { config: 'config.json', collections: [] },
+      timestamps: { config: expect.any(Number), collections: {}, servers: {} },
+      files: { config: 'config.json', collections: [], servers: [] },
+    });
+  });
+
+  test('no valid mock servers', async () => {
+    const workspace = [
+      { type: 'file', name: 'config.json' },
+      {
+        type: 'dir',
+        name: 'servers',
+        children: [{ type: 'file', name: 'test.md' }],
+      },
+    ] as const;
+    mockWorkspace(workspace);
+
+    const result = await scanWorkspace('/workspace');
+    expect(result).toStrictEqual({
+      timestamps: { config: expect.any(Number), collections: {}, servers: {} },
+      files: { config: 'config.json', collections: [], servers: [] },
     });
   });
 
@@ -157,15 +177,49 @@ describe('scanWorkspace', () => {
           'user.json': expect.any(Number),
           'profile.json': expect.any(Number),
         },
+        servers: {},
       },
       files: {
         config: 'config.json',
         collections: ['user.json', 'profile.json'],
+        servers: [],
       },
     });
   });
 
-  describe('with description folder', () => {
+  test('valid servers', async () => {
+    const workspace = [
+      {
+        type: 'file',
+        name: 'config.json',
+      },
+      {
+        type: 'dir',
+        name: 'servers',
+        children: [{ type: 'file', name: 'user.json' }],
+      },
+    ] as const;
+
+    mockWorkspace(workspace);
+
+    const result = await scanWorkspace('/workspace');
+    expect(result).toStrictEqual({
+      timestamps: {
+        config: expect.any(Number),
+        collections: {},
+        servers: {
+          'user.json': expect.any(Number),
+        },
+      },
+      files: {
+        config: 'config.json',
+        collections: [],
+        servers: ['user.json'],
+      },
+    });
+  });
+
+  describe('with collection folder', () => {
     test('collection folder is ignored', async () => {
       mockWorkspace([
         { type: 'file', name: 'config.json' },
@@ -195,10 +249,12 @@ describe('scanWorkspace', () => {
             'profile.json': expect.any(Number),
             'post.json': expect.any(Number),
           },
+          servers: {},
         },
         files: {
           config: 'config.json',
           collections: ['profile.json', 'post.json'],
+          servers: [],
         },
       });
     });
@@ -232,6 +288,7 @@ describe('scanWorkspace', () => {
             'post/post.json': expect.any(Number),
             'post/createPost.json': expect.any(Number),
           },
+          servers: {},
         },
         files: {
           config: 'config.json',
@@ -240,6 +297,7 @@ describe('scanWorkspace', () => {
             'post/post.json',
             'post/createPost.json',
           ],
+          servers: [],
         },
       });
     });
@@ -268,10 +326,126 @@ describe('scanWorkspace', () => {
           collections: {
             'profile.json': expect.any(Number),
           },
+          servers: {},
         },
         files: {
           config: 'config.json',
           collections: ['profile.json'],
+          servers: [],
+        },
+      });
+    });
+  });
+
+  describe('with route folder', () => {
+    test('route folder is ignored, because overide by the file', async () => {
+      mockWorkspace([
+        { type: 'file', name: 'config.json' },
+        {
+          type: 'dir',
+          name: 'servers',
+          children: [
+            { type: 'file', name: 'user.json' },
+            { type: 'file', name: 'post.json' },
+            {
+              type: 'dir',
+              name: 'post',
+              children: [
+                { type: 'file', name: 'post.json' },
+                { type: 'file', name: 'createPost.json' },
+              ],
+            },
+          ],
+        },
+      ]);
+
+      const result = await scanWorkspace('/workspace');
+      expect(result).toStrictEqual({
+        timestamps: {
+          config: expect.any(Number),
+          collections: {},
+          servers: {
+            'user.json': expect.any(Number),
+            'post.json': expect.any(Number),
+          },
+        },
+        files: {
+          config: 'config.json',
+          collections: [],
+          servers: ['user.json', 'post.json'],
+        },
+      });
+    });
+
+    test('valid route folder', async () => {
+      mockWorkspace([
+        { type: 'file', name: 'config.json' },
+        {
+          type: 'dir',
+          name: 'servers',
+          children: [
+            { type: 'file', name: 'user.json' },
+            {
+              type: 'dir',
+              name: 'post',
+              children: [
+                { type: 'file', name: 'post.json' },
+                { type: 'file', name: 'createPost.json' },
+              ],
+            },
+          ],
+        },
+      ]);
+
+      const result = await scanWorkspace('/workspace');
+      expect(result).toStrictEqual({
+        timestamps: {
+          config: expect.any(Number),
+          collections: {},
+          servers: {
+            'user.json': expect.any(Number),
+            'post/post.json': expect.any(Number),
+            'post/createPost.json': expect.any(Number),
+          },
+        },
+        files: {
+          config: 'config.json',
+          collections: [],
+          servers: ['user.json', 'post/post.json', 'post/createPost.json'],
+        },
+      });
+    });
+
+    test('collection config is missing', async () => {
+      mockWorkspace([
+        { type: 'file', name: 'config.json' },
+        {
+          type: 'dir',
+          name: 'collections',
+          children: [
+            { type: 'file', name: 'profile.json' },
+            {
+              type: 'dir',
+              name: 'post',
+              children: [{ type: 'file', name: 'createPost.json' }],
+            },
+          ],
+        },
+      ]);
+
+      const result = await scanWorkspace('/workspace');
+      expect(result).toStrictEqual({
+        timestamps: {
+          config: expect.any(Number),
+          collections: {
+            'profile.json': expect.any(Number),
+          },
+          servers: {},
+        },
+        files: {
+          config: 'config.json',
+          collections: ['profile.json'],
+          servers: [],
         },
       });
     });
@@ -312,6 +486,7 @@ describe('scanWorkspace', () => {
             'post/post.json': expect.any(Number),
             'post/createPost.json': expect.any(Number),
           },
+          servers: {},
         },
         files: {
           config: 'config.json',
@@ -320,6 +495,7 @@ describe('scanWorkspace', () => {
             'post/post.json',
             'post/createPost.json',
           ],
+          servers: [],
         },
       });
     });
@@ -357,6 +533,7 @@ describe('scanWorkspace', () => {
             'post/post.json': expect.any(Number),
             'post/createPost/createPost.json': expect.any(Number),
           },
+          servers: {},
         },
         files: {
           config: 'config.json',
@@ -365,6 +542,7 @@ describe('scanWorkspace', () => {
             'post/post.json',
             'post/createPost/createPost.json',
           ],
+          servers: [],
         },
       });
     });
@@ -401,10 +579,12 @@ describe('scanWorkspace', () => {
             'profile.json': expect.any(Number),
             'post/post.json': expect.any(Number),
           },
+          servers: {},
         },
         files: {
           config: 'config.json',
           collections: ['profile.json', 'post/post.json'],
+          servers: [],
         },
       });
     });
@@ -447,6 +627,21 @@ describe('scanWorkspace', () => {
           },
         ],
       },
+      {
+        type: 'dir',
+        name: 'servers',
+        children: [
+          { type: 'file', name: 'user.json' },
+          {
+            type: 'dir',
+            name: 'post',
+            children: [
+              { type: 'file', name: 'post.json' },
+              { type: 'file', name: 'savePost.json' },
+            ],
+          },
+        ],
+      },
     ]);
 
     const result = await scanWorkspace('/workspace');
@@ -465,6 +660,11 @@ describe('scanWorkspace', () => {
           'post/createPost/createPost.test.js': expect.any(Number),
           'post/createPost/createPost.test.json': expect.any(Number),
         },
+        servers: {
+          'user.json': expect.any(Number),
+          'post/post.json': expect.any(Number),
+          'post/savePost.json': expect.any(Number),
+        },
       },
       files: {
         config: 'config.json',
@@ -480,6 +680,7 @@ describe('scanWorkspace', () => {
           'post/createPost/createPost.test.js',
           'post/createPost/createPost.test.json',
         ],
+        servers: ['user.json', 'post/post.json', 'post/savePost.json'],
       },
     });
   });
