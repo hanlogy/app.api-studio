@@ -20,3 +20,7 @@ official documentation:
 
 https://reactnative.dev/ \
 https://microsoft.github.io/react-native-macos/
+
+## Screenshots
+
+![Screenshot-1](docs/assets/screenshot-1.png)
