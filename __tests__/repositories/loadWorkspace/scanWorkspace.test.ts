@@ -5,6 +5,17 @@ jest.mock('react-native-fs', () => ({
   readDir: jest.fn(),
 }));
 
+type FSItem =
+  | {
+      readonly type: 'file';
+      readonly name: string;
+    }
+  | {
+      readonly type: 'dir';
+      readonly name: string;
+      readonly children?: readonly FSItem[];
+    };
+
 const createItem = ({
   name,
   baseDir,
@@ -21,24 +32,43 @@ const createItem = ({
   isFile: () => !isDir,
 });
 
-type MockFS = Record<string, Partial<RNFS.ReadDirItem>[]>;
-
-const file = ({ name, baseDir }: { name: string; baseDir: string }) =>
-  createItem({ name, baseDir, isDir: false });
-
-const dir = ({ name, baseDir }: { name: string; baseDir: string }) =>
-  createItem({ name, baseDir, isDir: true });
-
-function mockWorkspace(structure: MockFS) {
+export function mockWorkspace(
+  structure: readonly FSItem[],
+  root = '/workspace',
+) {
   const mockReadDir = RNFS.readDir as jest.Mock;
+  const fs: Record<string, Partial<RNFS.ReadDirItem>[]> = {};
 
-  mockReadDir.mockImplementation((path: string) => {
-    if (path in structure) {
-      return Promise.resolve(structure[path]);
+  const ensureDir = (path: string) => {
+    if (!fs[path]) {
+      fs[path] = [];
     }
+  };
 
-    return Promise.resolve([]);
-  });
+  const walk = (items: readonly FSItem[], baseDir: string) => {
+    ensureDir(baseDir);
+
+    for (const item of items) {
+      if (item.type === 'file') {
+        fs[baseDir].push(
+          createItem({ name: item.name, baseDir, isDir: false }),
+        );
+      } else {
+        fs[baseDir].push(createItem({ name: item.name, baseDir, isDir: true }));
+
+        const nextBase = `${baseDir}/${item.name}`;
+        if (item.children && item.children.length > 0) {
+          walk(item.children, nextBase);
+        }
+      }
+    }
+  };
+
+  walk(structure, root);
+
+  mockReadDir.mockImplementation((path: string) =>
+    Promise.resolve(fs[path] ?? []),
+  );
 }
 
 describe('scanWorkspace', () => {
@@ -47,33 +77,33 @@ describe('scanWorkspace', () => {
   });
 
   test('empty workspace', async () => {
-    mockWorkspace({
-      '/workspace': [],
-    });
+    mockWorkspace([]);
 
     const result = await scanWorkspace('/workspace');
     expect(result).toBeUndefined();
   });
 
   test('not a valid workspace', async () => {
-    mockWorkspace({
-      '/workspace': [
-        file({ name: 'README.md', baseDir: '/workspace' }),
-        dir({ name: 'collections', baseDir: '/workspace' }),
-      ],
-      '/workspace/collections': [
-        file({ name: 'collections.json', baseDir: '/workspace/collections' }),
-      ],
-    });
+    const workspace = [
+      {
+        type: 'file',
+        name: 'README.md',
+      },
+      {
+        type: 'dir',
+        name: 'collections',
+      },
+    ] as const;
+
+    mockWorkspace(workspace);
 
     const result = await scanWorkspace('/workspace');
     expect(result).toBeUndefined();
   });
 
   test('only a config file', async () => {
-    mockWorkspace({
-      '/workspace': [file({ name: 'config.json', baseDir: '/workspace' })],
-    });
+    const workspace = [{ type: 'file', name: 'config.json' }] as const;
+    mockWorkspace(workspace);
 
     const result = await scanWorkspace('/workspace');
     expect(result).toStrictEqual({
@@ -83,15 +113,15 @@ describe('scanWorkspace', () => {
   });
 
   test('no valid collections', async () => {
-    mockWorkspace({
-      '/workspace': [
-        file({ name: 'config.json', baseDir: '/workspace' }),
-        dir({ name: 'collections', baseDir: '/workspace' }),
-      ],
-      '/workspace/collections': [
-        file({ name: 'test.md', baseDir: '/workspace/collections' }),
-      ],
-    });
+    const workspace = [
+      { type: 'file', name: 'config.json' },
+      {
+        type: 'dir',
+        name: 'collections',
+        children: [{ type: 'file', name: 'test.md' }],
+      },
+    ] as const;
+    mockWorkspace(workspace);
 
     const result = await scanWorkspace('/workspace');
     expect(result).toStrictEqual({
@@ -101,17 +131,23 @@ describe('scanWorkspace', () => {
   });
 
   test('valid collections', async () => {
-    mockWorkspace({
-      '/workspace': [
-        file({ name: 'config.json', baseDir: '/workspace' }),
-        dir({ name: 'collections', baseDir: '/workspace' }),
-      ],
-      '/workspace/collections': [
-        file({ name: 'user.json', baseDir: '/workspace/collections' }),
-        file({ name: 'profile.json', baseDir: '/workspace/collections' }),
-        dir({ name: 'post', baseDir: '/workspace/collections' }),
-      ],
-    });
+    const workspace = [
+      {
+        type: 'file',
+        name: 'config.json',
+      },
+      {
+        type: 'dir',
+        name: 'collections',
+        children: [
+          { type: 'file', name: 'user.json' },
+          { type: 'file', name: 'profile.json' },
+          { type: 'dir', name: 'post' },
+        ],
+      },
+    ] as const;
+
+    mockWorkspace(workspace);
 
     const result = await scanWorkspace('/workspace');
     expect(result).toStrictEqual({
@@ -130,32 +166,26 @@ describe('scanWorkspace', () => {
   });
 
   describe('with description folder', () => {
-    const baseStructure = {
-      '/workspace': [
-        file({ name: 'config.json', baseDir: '/workspace' }),
-        dir({ name: 'collections', baseDir: '/workspace' }),
-      ],
-    };
-
     test('collection folder is ignored', async () => {
-      mockWorkspace({
-        ...baseStructure,
-        '/workspace/collections': [
-          file({ name: 'profile.json', baseDir: '/workspace/collections' }),
-          file({ name: 'post.json', baseDir: '/workspace/collections' }),
-          dir({ name: 'post', baseDir: '/workspace/collections' }),
-        ],
-        '/workspace/collections/post': [
-          file({
-            name: 'post.json',
-            baseDir: '/workspace/collections/post',
-          }),
-          file({
-            name: 'createPost.json',
-            baseDir: '/workspace/collections/post',
-          }),
-        ],
-      });
+      mockWorkspace([
+        { type: 'file', name: 'config.json' },
+        {
+          type: 'dir',
+          name: 'collections',
+          children: [
+            { type: 'file', name: 'profile.json' },
+            { type: 'file', name: 'post.json' },
+            {
+              type: 'dir',
+              name: 'post',
+              children: [
+                { type: 'file', name: 'createPost.json' },
+                { type: 'file', name: 'post.json' },
+              ],
+            },
+          ],
+        },
+      ]);
 
       const result = await scanWorkspace('/workspace');
       expect(result).toStrictEqual({
@@ -174,23 +204,24 @@ describe('scanWorkspace', () => {
     });
 
     test('valid collection folder', async () => {
-      mockWorkspace({
-        ...baseStructure,
-        '/workspace/collections': [
-          file({ name: 'profile.json', baseDir: '/workspace/collections' }),
-          dir({ name: 'post', baseDir: '/workspace/collections' }),
-        ],
-        '/workspace/collections/post': [
-          file({
-            name: 'post.json',
-            baseDir: '/workspace/collections/post',
-          }),
-          file({
-            name: 'createPost.json',
-            baseDir: '/workspace/collections/post',
-          }),
-        ],
-      });
+      mockWorkspace([
+        { type: 'file', name: 'config.json' },
+        {
+          type: 'dir',
+          name: 'collections',
+          children: [
+            { type: 'file', name: 'profile.json' },
+            {
+              type: 'dir',
+              name: 'post',
+              children: [
+                { type: 'file', name: 'post.json' },
+                { type: 'file', name: 'createPost.json' },
+              ],
+            },
+          ],
+        },
+      ]);
 
       const result = await scanWorkspace('/workspace');
       expect(result).toStrictEqual({
@@ -214,19 +245,21 @@ describe('scanWorkspace', () => {
     });
 
     test('collection config is missing', async () => {
-      mockWorkspace({
-        ...baseStructure,
-        '/workspace/collections': [
-          file({ name: 'profile.json', baseDir: '/workspace/collections' }),
-          dir({ name: 'post', baseDir: '/workspace/collections' }),
-        ],
-        '/workspace/collections/post': [
-          file({
-            name: 'createPost.json',
-            baseDir: '/workspace/collections/post',
-          }),
-        ],
-      });
+      mockWorkspace([
+        { type: 'file', name: 'config.json' },
+        {
+          type: 'dir',
+          name: 'collections',
+          children: [
+            { type: 'file', name: 'profile.json' },
+            {
+              type: 'dir',
+              name: 'post',
+              children: [{ type: 'file', name: 'createPost.json' }],
+            },
+          ],
+        },
+      ]);
 
       const result = await scanWorkspace('/workspace');
       expect(result).toStrictEqual({
@@ -245,41 +278,30 @@ describe('scanWorkspace', () => {
   });
 
   describe('with request folder', () => {
-    const baseStructure = {
-      '/workspace': [
-        file({ name: 'config.json', baseDir: '/workspace' }),
-        dir({ name: 'collections', baseDir: '/workspace' }),
-      ],
-      '/workspace/collections': [
-        file({ name: 'profile.json', baseDir: '/workspace/collections' }),
-        dir({ name: 'post', baseDir: '/workspace/collections' }),
-      ],
-    };
-
     test('request folder is ignored', async () => {
-      mockWorkspace({
-        ...baseStructure,
-        '/workspace/collections/post': [
-          file({
-            name: 'post.json',
-            baseDir: '/workspace/collections/post',
-          }),
-          file({
-            name: 'createPost.json',
-            baseDir: '/workspace/collections/post',
-          }),
-          dir({
-            name: 'createPost',
-            baseDir: '/workspace/collections/post',
-          }),
-        ],
-        '/workspace/collections/post/createPost': [
-          file({
-            name: 'createPost.json',
-            baseDir: '/workspace/collections/post/createPost',
-          }),
-        ],
-      });
+      mockWorkspace([
+        { type: 'file', name: 'config.json' },
+        {
+          type: 'dir',
+          name: 'collections',
+          children: [
+            { type: 'file', name: 'profile.json' },
+            {
+              type: 'dir',
+              name: 'post',
+              children: [
+                { type: 'file', name: 'post.json' },
+                { type: 'file', name: 'createPost.json' },
+                {
+                  type: 'dir',
+                  name: 'createPost',
+                  children: [{ type: 'file', name: 'createPost.json' }],
+                },
+              ],
+            },
+          ],
+        },
+      ]);
 
       const result = await scanWorkspace('/workspace');
       expect(result).toStrictEqual({
@@ -303,25 +325,28 @@ describe('scanWorkspace', () => {
     });
 
     test('valid request folder', async () => {
-      mockWorkspace({
-        ...baseStructure,
-        '/workspace/collections/post': [
-          file({
-            name: 'post.json',
-            baseDir: '/workspace/collections/post',
-          }),
-          dir({
-            name: 'createPost',
-            baseDir: '/workspace/collections/post',
-          }),
-        ],
-        '/workspace/collections/post/createPost': [
-          file({
-            name: 'createPost.json',
-            baseDir: '/workspace/collections/post/createPost',
-          }),
-        ],
-      });
+      mockWorkspace([
+        { type: 'file', name: 'config.json' },
+        {
+          type: 'dir',
+          name: 'collections',
+          children: [
+            { type: 'file', name: 'profile.json' },
+            {
+              type: 'dir',
+              name: 'post',
+              children: [
+                { type: 'file', name: 'post.json' },
+                {
+                  type: 'dir',
+                  name: 'createPost',
+                  children: [{ type: 'file', name: 'createPost.json' }],
+                },
+              ],
+            },
+          ],
+        },
+      ]);
 
       const result = await scanWorkspace('/workspace');
       expect(result).toStrictEqual({
@@ -345,25 +370,28 @@ describe('scanWorkspace', () => {
     });
 
     test('request config is missing', async () => {
-      mockWorkspace({
-        ...baseStructure,
-        '/workspace/collections/post': [
-          file({
-            name: 'post.json',
-            baseDir: '/workspace/collections/post',
-          }),
-          dir({
-            name: 'createPost',
-            baseDir: '/workspace/collections/post',
-          }),
-        ],
-        '/workspace/collections/post/createPost': [
-          file({
-            name: 'createPost.md',
-            baseDir: '/workspace/collections/post/createPost',
-          }),
-        ],
-      });
+      mockWorkspace([
+        { type: 'file', name: 'config.json' },
+        {
+          type: 'dir',
+          name: 'collections',
+          children: [
+            { type: 'file', name: 'profile.json' },
+            {
+              type: 'dir',
+              name: 'post',
+              children: [
+                { type: 'file', name: 'post.json' },
+                {
+                  type: 'dir',
+                  name: 'createPost',
+                  children: [{ type: 'file', name: 'createPost.md' }],
+                },
+              ],
+            },
+          ],
+        },
+      ]);
 
       const result = await scanWorkspace('/workspace');
       expect(result).toStrictEqual({
@@ -383,68 +411,43 @@ describe('scanWorkspace', () => {
   });
 
   test('complex structure', async () => {
-    mockWorkspace({
-      '/workspace': [
-        file({ name: 'config.json', baseDir: '/workspace' }),
-        dir({ name: 'collections', baseDir: '/workspace' }),
-      ],
-      '/workspace/collections': [
-        file({ name: 'profile.json', baseDir: '/workspace/collections' }),
-        file({ name: 'profile.md', baseDir: '/workspace/collections' }),
-        dir({ name: 'post', baseDir: '/workspace/collections' }),
-        dir({ name: 'article', baseDir: '/workspace/collections' }),
-      ],
-      '/workspace/collections/post': [
-        file({
-          name: 'post.json',
-          baseDir: '/workspace/collections/post',
-        }),
-        file({
-          name: 'post.md',
-          baseDir: '/workspace/collections/post',
-        }),
-        dir({
-          name: 'createPost',
-          baseDir: '/workspace/collections/post',
-        }),
-        dir({
-          name: 'createPost.md',
-          baseDir: '/workspace/collections/post',
-        }),
-        file({
-          name: 'deletePost.json',
-          baseDir: '/workspace/collections/post',
-        }),
-        file({
-          name: 'deletePost.md',
-          baseDir: '/workspace/collections/post',
-        }),
-      ],
-      '/workspace/collections/article': [
-        file({
-          name: 'getArticle.md',
-          baseDir: '/workspace/collections/article',
-        }),
-      ],
-      '/workspace/collections/post/createPost': [
-        file({
-          name: 'createPost.json',
-          baseDir: '/workspace/collections/post/createPost',
-        }),
-        file({
-          name: 'createPost.md',
-          baseDir: '/workspace/collections/post/createPost',
-        }),
-        file({
-          name: 'createPost.test.js',
-          baseDir: '/workspace/collections/post/createPost',
-        }),
-        file({
-          name: 'createPost.test.json',
-          baseDir: '/workspace/collections/post/createPost',
-        }),
-      ],
-    });
+    mockWorkspace([
+      { type: 'file', name: 'config.json' },
+      {
+        type: 'dir',
+        name: 'collections',
+        children: [
+          { type: 'file', name: 'profile.json' },
+          { type: 'file', name: 'profile.md' },
+          {
+            type: 'dir',
+            name: 'post',
+            children: [
+              { type: 'file', name: 'post.json' },
+              { type: 'file', name: 'post.md' },
+              { type: 'file', name: 'deletePost.json' },
+              { type: 'file', name: 'deletePost.md' },
+              { type: 'file', name: 'createPost.md' },
+              {
+                type: 'dir',
+                name: 'createPost',
+                children: [
+                  { type: 'file', name: 'createPost.json' },
+                  { type: 'file', name: 'createPost.md' },
+                  { type: 'file', name: 'createPost.test.js' },
+                  { type: 'file', name: 'createPost.test.json' },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'dir',
+            name: 'article',
+            children: [{ type: 'file', name: 'getArticle.md' }],
+          },
+        ],
+      },
+    ]);
 
     const result = await scanWorkspace('/workspace');
     expect(result).toStrictEqual({
