@@ -15,15 +15,8 @@ https://hanlogy.github.io/api-studio/docs/quickstart
 
 ## App Development
 
-The app's source code is located in the `/app` folder. It is a React Native
-project with no special setup required. Refer to the official documentation:
+It is a React Native project with no special setup required. Refer to the
+official documentation:
 
 https://reactnative.dev/ \
 https://microsoft.github.io/react-native-macos/
-
-## Document Contribution
-
-The document's source code is located in the `/website` folder. It is a
-Docusaurus project. Refer to the official documentation:
-
-https://docusaurus.io/
