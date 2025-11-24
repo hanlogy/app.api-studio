@@ -1,5 +1,5 @@
 import type {
-  CollectionResource,
+  Collection,
   RequestHeaders,
   WorkspaceEnvironment,
 } from '@/definitions';
@@ -10,7 +10,7 @@ export function mergeRequestHeaders({
   headers: localHeaders = {},
 }: {
   environments?: Pick<WorkspaceEnvironment, 'headers' | 'isGlobal'>[];
-  collection?: Pick<CollectionResource, 'headers'>;
+  collection?: Pick<Collection, 'headers'>;
   headers?: RequestHeaders;
 }) {
   const mergedEnvHeaders = [...environments]

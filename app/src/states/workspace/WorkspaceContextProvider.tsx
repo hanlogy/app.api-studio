@@ -1,11 +1,11 @@
 import {
   AppError,
-  type RequestResourceKey,
+  type RequestKey,
   type RuntimeVariable,
   type RuntimeWorkspace,
   type Workspace,
   type WorkspaceResourceKey,
-  type WorkspaceResources,
+  type WorkspaceSource,
 } from '@/definitions';
 import {
   useCallback,
@@ -16,7 +16,6 @@ import {
   type PropsWithChildren,
 } from 'react';
 import type {
-  OpenWorkspaceArguments,
   RequestHistoryItem,
   WorkspaceContextValue,
   WorkspaceStatus,
@@ -35,14 +34,19 @@ import { loadScripts, type ScriptFunctions } from '@/repositories/loadScripts';
 import { hasVariable } from './hasVariable';
 import { upsertRuntimeVariable } from '@/helpers/upsertRuntimeVariable';
 
-export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
+export function WorkspaceContextProvider({
+  children,
+  dir,
+  environment: initialEnvironment,
+}: PropsWithChildren<{ dir: string; environment?: string }>) {
   const { setError, updateRecentWorkspace } = useStudioContext();
   const [status, setStatus] = useState<WorkspaceStatus>('waiting');
-  const [dir, setDir] = useState<string>();
-  const [sources, setSources] = useState<WorkspaceResources>();
+  const [sources, setSources] = useState<WorkspaceSource>();
   const [runtimeWorkspace, setRuntimeWorkspace] = useState<RuntimeWorkspace>(
     {},
   );
+  // TODO: We might move pinnedResources, previewingResource to RequestView
+  // state
   const [pinnedResources, setPinnedResources] = useState<
     WorkspaceResourceKey[]
   >([]);
@@ -50,11 +54,13 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     useState<WorkspaceResourceKey>();
   const [currentResourceKey, setCurrentResourceKey] =
     useState<WorkspaceResourceKey>();
-  const [selectedEnvironment, setSelectedEnvironment] = useState<string>();
+  const [selectedEnvironment, setSelectedEnvironment] = useState<
+    string | undefined
+  >(initialEnvironment);
   const [workspace, setWorkspace] = useState<Workspace>();
   const [histories, setHistories] = useState<
     {
-      key: RequestResourceKey;
+      key: RequestKey;
       items: RequestHistoryItem[];
     }[]
   >([]);
@@ -81,7 +87,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
         }
       },
     });
-  }, [dir, setDir, setError]);
+  }, [dir, setError]);
 
   // when sources or selectedEnvironment changed.
   useEffect(() => {
@@ -133,7 +139,7 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
 
   const saveHistory = useCallback(
     (
-      key: RequestResourceKey,
+      key: RequestKey,
       { request, response }: { request: HttpRequest; response: HttpResponse },
     ) => {
       setHistories(prev => {
@@ -206,13 +212,6 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     setError,
   ]);
 
-  const openWorkspace = useCallback((args: OpenWorkspaceArguments) => {
-    setDir(args.dir);
-    if (args.environment) {
-      setSelectedEnvironment(args.environment);
-    }
-  }, []);
-
   const openResource = useCallback((key: WorkspaceResourceKey) => {
     setCurrentResourceKey(key);
     setPreviewingResource(key);
@@ -225,7 +224,6 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
       histories,
       selectEnvironment: setSelectedEnvironment,
       openResource,
-      openWorkspace,
     };
 
     if (status === 'waiting') {
@@ -244,7 +242,6 @@ export function WorkspaceContextProvider({ children }: PropsWithChildren<{}>) {
     selectedEnvironment,
     sendRequest,
     histories,
-    openWorkspace,
     openResource,
   ]);
 

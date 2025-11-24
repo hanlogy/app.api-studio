@@ -1,6 +1,6 @@
 import {
-  type RequestResource,
-  type CollectionResource,
+  type Request,
+  type Collection,
   type JsonValue,
   type ValuesMap,
 } from '@/definitions';
@@ -21,7 +21,7 @@ export function resolveCollectionResource({
   readonly source: JsonValue;
   accumulateIds: string[];
   readonly valuesMap?: ValuesMap;
-}): CollectionResource | undefined {
+}): Collection | undefined {
   if (!isPlainObject(source)) {
     return undefined;
   }
@@ -83,7 +83,7 @@ function resolveRequests({
   source: JsonValue;
   collectionKey: string;
   valuesMap: ValuesMap;
-}): RequestResource[] {
+}): Request[] {
   if (!source || !Array.isArray(source)) {
     return [];
   }

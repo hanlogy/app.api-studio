@@ -11,4 +11,6 @@ export const requestMethods = [
   'OPTIONS',
 ] as const;
 
+export const navNames = ['requests', 'mockServers'] as const;
+
 export const STUDIO_CACHE_FILE = 'studio-cache.json';

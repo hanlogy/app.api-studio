@@ -1,32 +1,58 @@
-import type { PropsWithChildren } from 'react';
-import { Text, View } from 'react-native';
-import { styles } from './icons.styles';
+import { Text, View, type ColorValue } from 'react-native';
+import { createStyles } from './icons.styles';
 
-function Icon({ children }: PropsWithChildren) {
-  return <View style={styles.container}>{children}</View>;
+export type IconSize = 'small' | 'medium' | 'large';
+export interface NamedIconProps {
+  readonly size?: IconSize;
+  readonly color?: ColorValue;
 }
 
-function FontIcon({ code }: { code: string }) {
+function FontIcon({
+  code,
+  size,
+  color,
+}: {
+  code: string;
+  size?: IconSize;
+  color?: ColorValue;
+}) {
+  const styles = createStyles({ size, color });
+
   return (
-    <Icon>
+    <View style={styles.container}>
       <Text style={styles.fontello}>{code}</Text>
-    </Icon>
+    </View>
   );
 }
 
-export function ChevronRight() {
-  return <FontIcon code={'\ue800'} />;
+export function ChevronRightIcon(props: NamedIconProps = {}) {
+  return <FontIcon {...props} code={'\ue802'} />;
 }
 
-export function ChevronUp() {
-  return <FontIcon code={'\ue801'} />;
+export function ChevronUpIcon(props: NamedIconProps = {}) {
+  return <FontIcon {...props} code={'\ue803'} />;
 }
 
-
-export function ChevronLeft() {
-  return <FontIcon code={'\ue802'} />;
+export function ChevronLeftIcon(props: NamedIconProps = {}) {
+  return <FontIcon {...props} code={'\ue801'} />;
 }
 
-export function ChevronDown() {
-  return <FontIcon code={'\ue803'} />;
+export function ChevronDownIcon(props: NamedIconProps = {}) {
+  return <FontIcon {...props} code={'\ue800'} />;
+}
+
+export function HttpServerIcon(props: NamedIconProps = {}) {
+  return <FontIcon {...props} code={'\ue804'} />;
+}
+
+export function ServerIcon(props: NamedIconProps = {}) {
+  return <FontIcon {...props} code={'\ue807'} />;
+}
+
+export function ProxyServerIcon(props: NamedIconProps = {}) {
+  return <FontIcon {...props} code={'\ue805'} />;
+}
+
+export function RequestIcon(props: NamedIconProps = {}) {
+  return <FontIcon {...props} code={'\ue806'} />;
 }

@@ -4,29 +4,9 @@ import {
   WORKSPACE_COLLECTIONS_DIR,
   type JsonRecord,
   type JsonValue,
-  type WorkspaceResources,
+  type WorkspaceSource,
 } from '@/definitions';
-
-const fileTypeMap = {
-  '.test.json': 'tests',
-  '.test.js': 'scriptTest',
-  '.json': 'config',
-  '.md': 'doc',
-} as const;
-
-function parseFile(file: string) {
-  for (const [extension, fileType] of Object.entries(fileTypeMap)) {
-    if (file.endsWith(extension)) {
-      const fileName = file.slice(0, -extension.length);
-      return {
-        fileName,
-        fileNameParts: fileName.split('/'),
-        fileType,
-      };
-    }
-  }
-  throw new Error('never');
-}
+import { parseRequestFileName } from './helpers';
 
 function buildCollectionsTree(
   flat: { file: string; content: string | JsonRecord }[],
@@ -40,7 +20,7 @@ function buildCollectionsTree(
   const collections: Record<string, CollectionNode> = {};
 
   for (const { file, content } of flat) {
-    const { fileType, fileNameParts } = parseFile(file);
+    const { fileType, fileNameParts } = parseRequestFileName(file);
     const collectionKey = fileNameParts[0];
     const collection = (collections[collectionKey] ??= {});
 
@@ -86,7 +66,7 @@ export async function readWorkspaceFiles({
 }: {
   dir: string;
   files: WorkspaceFiles;
-}): Promise<WorkspaceResources> {
+}): Promise<WorkspaceSource> {
   dir = dir.replace(/\/$/, '');
 
   const configData = await readJsonRecord({
