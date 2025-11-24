@@ -80,6 +80,7 @@ describe('resolveWorkspace', () => {
       ],
       collections: [
         {
+          order: expect.any(Number),
           key: expect.any(String),
           id: 'my_collection',
           name: 'My Collection',
@@ -92,6 +93,7 @@ describe('resolveWorkspace', () => {
           },
           requests: [
             {
+              order: expect.any(Number),
               key: expect.any(Array),
               id: 'api_1',
               name: 'api-1',

@@ -19,6 +19,10 @@ export const StudioContextProvider = ({ children }: PropsWithChildren<{}>) => {
   const [status, setStatus] = useState<StudioStateStatus>('initializing');
   const [error, setError] = useState<AppError | undefined>();
   const [workspaces, setWorkspaces] = useState<readonly WorkspaceCache[]>([]);
+  const [currentWorkspace, setCurrentWorkspace] = useState<{
+    dir: string;
+    environment?: string;
+  }>();
 
   // When `status` is `initializing`:
   // Load cache, change `status` to `ready`.
@@ -65,11 +69,18 @@ export const StudioContextProvider = ({ children }: PropsWithChildren<{}>) => {
     }
 
     if (status === 'ready' && workspaces) {
-      return { ...common, status, workspaces, updateRecentWorkspace };
+      return {
+        ...common,
+        status,
+        workspaces,
+        currentWorkspace,
+        updateRecentWorkspace,
+        setCurrentWorkspace,
+      };
     }
 
     throw new Error('StudioContextProvider: This should never happen.');
-  }, [status, workspaces, updateRecentWorkspace, error]);
+  }, [status, workspaces, updateRecentWorkspace, error, currentWorkspace]);
 
   return <StudioContext value={value}>{children}</StudioContext>;
 };

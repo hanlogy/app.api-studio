@@ -11,6 +11,7 @@ import { resolveConfig } from './resolveConfig';
 import { removeUndefined } from '@/helpers/filterValues';
 import { resolveCollectionResource } from './resolveCollectionResource';
 import { isPlainObject } from '@/helpers/checkTypes';
+import { sortByOrder } from '@/helpers/sortByOrder';
 
 export function resolveWorkspace({
   sources: { config: configSource, collections: collectionsSources },
@@ -43,18 +44,20 @@ export function resolveWorkspace({
     name,
     description,
     environments,
-    collections: collectionsSources
-      .map(rawEndpontResource => {
-        if (!isPlainObject(rawEndpontResource)) {
-          return undefined;
-        }
-        return resolveCollectionResource({
-          source: rawEndpontResource,
-          valuesMap: environmentValuesMap,
-          accumulateIds: accumulateCollectionIds,
-        });
-      })
-      .filter(e => e !== undefined),
+    collections: sortByOrder(
+      collectionsSources
+        .map(rawEndpontResource => {
+          if (!isPlainObject(rawEndpontResource)) {
+            return undefined;
+          }
+          return resolveCollectionResource({
+            source: rawEndpontResource,
+            valuesMap: environmentValuesMap,
+            accumulateIds: accumulateCollectionIds,
+          });
+        })
+        .filter(e => e !== undefined),
+    ),
   });
 }
 

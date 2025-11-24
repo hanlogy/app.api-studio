@@ -4,6 +4,7 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
 
 > **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
 
+<<<<<<< HEAD
 ## Step 1: Start Metro
 
 First, you will need to run **Metro**, the JavaScript build tool for React Native.
@@ -95,3 +96,26 @@ To learn more about React Native, take a look at the following resources:
 - [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
 - [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
 - [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+=======
+Feel free to share your suggestions, feature proposals, or ideas by opening an
+issue or discussion.
+
+## How to Use
+
+https://hanlogy.github.io/api-studio/docs/quickstart
+
+## App Development
+
+The app's source code is located in the `/app` folder. It is a React Native
+project with no special setup required. Refer to the official documentation:
+
+https://reactnative.dev/ \
+https://microsoft.github.io/react-native-macos/
+
+## Document Contribution
+
+The document's source code is located in the `/website` folder. It is a
+Docusaurus project. Refer to the official documentation:
+
+https://docusaurus.io/
+>>>>>>> cf9b6d3e (V0.2 dev-part1 (#24))

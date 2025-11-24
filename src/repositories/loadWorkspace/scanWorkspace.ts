@@ -3,46 +3,34 @@ import {
   WORKSPACE_CONFIG_FILE,
 } from '@/definitions';
 import RNFS from 'react-native-fs';
+import type { ScanWorkspaceResult } from './types';
+import { findDir, findFile, getModifiedTime } from './helpers';
+import { scanCollections } from './scanCollections';
 
-export async function scanWorkspace(dir: string) {
-  const files = await RNFS.readDir(dir);
+export async function scanWorkspace(
+  dir: string,
+): Promise<ScanWorkspaceResult | undefined> {
+  const rootItems = await RNFS.readDir(dir);
 
-  // Find config.json
-  const configFileObject = files.find(
-    ({ name, isDirectory }) => name === WORKSPACE_CONFIG_FILE && !isDirectory(),
-  );
-
-  // Find collections folder
-  const collectionsDir = files.find(
-    ({ name, isDirectory }) =>
-      name === WORKSPACE_COLLECTIONS_DIR && isDirectory(),
-  );
-
-  const collectionsMap: Record<string, number> = {};
-  const collectionFilesNames: string[] = [];
-
-  if (collectionsDir) {
-    const collectionFiles = await RNFS.readDir(collectionsDir.path);
-    for (const { isDirectory, name, mtime } of collectionFiles) {
-      if (!isDirectory() && name.endsWith('.json')) {
-        collectionsMap[name] = mtime?.getTime() ?? 0;
-        collectionFilesNames.push(name);
-      }
-    }
+  const configFileObject = findFile(rootItems, WORKSPACE_CONFIG_FILE);
+  if (!configFileObject) {
+    return undefined;
   }
+
+  const collectionsDir = findDir(rootItems, WORKSPACE_COLLECTIONS_DIR);
+
+  const { collectionsMap, collectionFiles } = collectionsDir
+    ? await scanCollections(collectionsDir.path)
+    : { collectionsMap: {}, collectionFiles: [] };
 
   return {
     timestamps: {
-      config: configFileObject
-        ? configFileObject.mtime?.getTime() ?? 0
-        : undefined,
+      config: getModifiedTime(configFileObject),
       collections: collectionsMap,
     },
     files: {
-      config: configFileObject ? WORKSPACE_CONFIG_FILE : undefined,
-      collections: collectionFilesNames,
+      config: WORKSPACE_CONFIG_FILE,
+      collections: collectionFiles,
     },
   };
 }
-
-export type ScanWorkspaceResult = Awaited<ReturnType<typeof scanWorkspace>>;
