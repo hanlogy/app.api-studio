@@ -1,6 +1,6 @@
 import {
-  type RequestResource,
-  type CollectionResource,
+  type Request,
+  type Collection,
   type JsonValue,
   type ValuesMap,
 } from '@/definitions';
@@ -8,9 +8,10 @@ import { isPlainObject } from '@/helpers/checkTypes';
 import { resolveValuesMap } from './resolveValuesMap';
 import { pickWhenString, removeUndefined } from '@/helpers/filterValues';
 import { resolveRequestResource } from './resolveRequestResource';
-import { resolveStringRecord } from './simpleResolvers';
+import { resolvedOrder, resolveStringRecord } from './simpleResolvers';
 import { resolveResourceKeys } from './resolveResourceKeys';
 import { resolveUrl } from './resolveUrl';
+import { sortByOrder } from '@/helpers/sortByOrder';
 
 export function resolveCollectionResource({
   source,
@@ -20,7 +21,7 @@ export function resolveCollectionResource({
   readonly source: JsonValue;
   accumulateIds: string[];
   readonly valuesMap?: ValuesMap;
-}): CollectionResource | undefined {
+}): Collection | undefined {
   if (!isPlainObject(source)) {
     return undefined;
   }
@@ -28,6 +29,7 @@ export function resolveCollectionResource({
   const {
     id,
     name,
+    order,
     baseUrl,
     description,
     headers,
@@ -55,16 +57,19 @@ export function resolveCollectionResource({
 
   return removeUndefined({
     ...keys,
+    order: resolvedOrder(order),
     description: pickWhenString(description),
     baseUrl: resolvedBaseUrl,
     headers: resolveStringRecord({ source: headers, valuesMap }),
     valuesMap: localValuesMap,
-    requests: resolveRequests({
-      baseUrl: resolvedBaseUrl,
-      source: requests,
-      valuesMap,
-      collectionKey: keys.key,
-    }),
+    requests: sortByOrder(
+      resolveRequests({
+        baseUrl: resolvedBaseUrl,
+        source: requests,
+        valuesMap,
+        collectionKey: keys.key,
+      }),
+    ),
   });
 }
 
@@ -78,7 +83,7 @@ function resolveRequests({
   source: JsonValue;
   collectionKey: string;
   valuesMap: ValuesMap;
-}): RequestResource[] {
+}): Request[] {
   if (!source || !Array.isArray(source)) {
     return [];
   }

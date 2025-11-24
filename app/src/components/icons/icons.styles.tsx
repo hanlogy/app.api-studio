@@ -1,17 +1,29 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, type ColorValue } from 'react-native';
+import type { IconSize } from './icons';
 
-export const styles = StyleSheet.create({
-  container: {
-    width: 24,
-    height: 24,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+export function createStyles({
+  size = 'small',
+  color = '#666',
+}: {
+  size?: IconSize;
+  color?: ColorValue;
+}) {
+  const containerSize = { small: 24, medium: 32, large: 46 }[size];
+  const fontSize = { small: 16, medium: 22, large: 30 }[size];
 
-  fontello: {
-    fontFamily: 'fontello',
-    color: '#666',
-    fontSize: 16,
-  },
-});
+  return StyleSheet.create({
+    container: {
+      width: containerSize,
+      height: containerSize,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+
+    fontello: {
+      fontFamily: 'fontello',
+      color: color,
+      fontSize: fontSize,
+    },
+  });
+}

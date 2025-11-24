@@ -1,8 +1,8 @@
-import type { RequestResourceKey } from '@/definitions';
+import type { RequestKey } from '@/definitions';
 
-export function findByRequestKey<T extends { key: RequestResourceKey }>(
+export function findByRequestKey<T extends { key: RequestKey }>(
   source: readonly T[],
-  key?: RequestResourceKey,
+  key?: RequestKey,
 ): T | undefined {
   if (!key || !source.length) {
     return undefined;

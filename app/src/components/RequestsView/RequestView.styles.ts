@@ -31,7 +31,7 @@ export function createStyles({ isLight, colors }: Theme) {
       },
 
       responsePanel: {
-        borderTopColor: isLight ? '#EEE' : '#333',
+        borderTopColor: isLight ? '#EDEDED' : '#333',
         borderTopWidth: 1,
         flex: 1,
       },

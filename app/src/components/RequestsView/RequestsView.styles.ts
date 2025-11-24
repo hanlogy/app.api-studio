@@ -13,7 +13,7 @@ export function createStyles({ isLight, colors }: Theme) {
         width: 300,
         flexShrink: 0,
         flexGrow: 0,
-        backgroundColor: isLight ? '#F6F6F6' : '#222',
+        backgroundColor: isLight ? '#F9F9F9' : '#222',
         paddingBottom: 8,
       },
 
@@ -32,7 +32,7 @@ export function createStyles({ isLight, colors }: Theme) {
       mainContent: {
         flex: 1,
         backgroundColor: colors.background,
-        borderLeftColor: isLight ? '#EEE' : '#333',
+        borderLeftColor: isLight ? '#EDEDED' : '#333',
         borderLeftWidth: 1,
       },
       overlay: {

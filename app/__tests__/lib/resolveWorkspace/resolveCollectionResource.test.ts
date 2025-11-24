@@ -45,6 +45,7 @@ describe('resolveCollectionResource', () => {
         },
       }),
     ).toStrictEqual({
+      order: expect.any(Number),
       key: expect.any(String),
       id: 'my_collection',
       name: 'My Collection',
@@ -56,6 +57,7 @@ describe('resolveCollectionResource', () => {
       },
       requests: [
         {
+          order: expect.any(Number),
           key: expect.any(Array),
           id: 'request_1',
           name: 'request-1',
