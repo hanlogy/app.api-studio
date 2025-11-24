@@ -16,6 +16,7 @@ export type WorkspaceResourceKey = string | RequestKey;
 export interface WorkspaceSource {
   readonly config: JsonRecord;
   readonly collections: readonly JsonRecord[];
+  readonly servers: readonly JsonRecord[];
 }
 
 export interface Workspace {

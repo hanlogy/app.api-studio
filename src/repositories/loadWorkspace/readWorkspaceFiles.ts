@@ -2,6 +2,7 @@ import { readJsonRecord, readPlainText } from '@/helpers/fileIO';
 import type { WorkspaceFiles } from './types';
 import {
   WORKSPACE_COLLECTIONS_DIR,
+  WORKSPACE_SERVERS_DIR,
   type JsonRecord,
   type JsonValue,
   type WorkspaceSource,
@@ -60,9 +61,55 @@ function buildCollectionsTree(
   );
 }
 
+function buildServersTree(flat: { file: string; content: JsonRecord }[]) {
+  const FS_ROUTES = Symbol('fsRoutes');
+
+  type ServerNode = {
+    [FS_ROUTES]?: Record<string, Record<string, JsonValue>>;
+  } & Record<string, JsonValue>;
+
+  const servers: Record<string, ServerNode> = {};
+
+  for (const { file, content } of flat) {
+    const fileNameParts = file.slice(0, -'.json'.length).split('/');
+    const serverKey = fileNameParts[0];
+    const server = (servers[serverKey] ??= {});
+
+    if (
+      fileNameParts.length === 1 ||
+      (fileNameParts.length === 2 && fileNameParts[0] === fileNameParts[1])
+    ) {
+      Object.assign(server, content);
+      continue;
+    }
+
+    const routeKey = fileNameParts[1];
+    const fsRoutes = (server[FS_ROUTES] ??= {});
+    const route = (fsRoutes[routeKey] ??= {});
+
+    Object.assign(route, content);
+  }
+
+  return Object.values(servers).map(
+    ({ [FS_ROUTES]: fsRoutes, routes, ...rest }) => {
+      return {
+        ...rest,
+        routes: [
+          ...(Array.isArray(routes) ? routes : []),
+          ...(fsRoutes ? Object.values(fsRoutes) : []),
+        ],
+      };
+    },
+  );
+}
+
 export async function readWorkspaceFiles({
   dir,
-  files: { config: configFile, collections: collectionFiles },
+  files: {
+    config: configFile,
+    collections: collectionFiles,
+    servers: serverFiles,
+  },
 }: {
   dir: string;
   files: WorkspaceFiles;
@@ -90,8 +137,22 @@ export async function readWorkspaceFiles({
       e.content !== null,
   );
 
+  const serversDir = `${dir}/${WORKSPACE_SERVERS_DIR}`;
+
+  const serversFlattenData = (
+    await Promise.all(
+      serverFiles.map(async file => ({
+        file,
+        content: await readJsonRecord({ dir: serversDir, file }),
+      })),
+    )
+  ).filter(
+    (e): e is { file: string; content: JsonRecord } => e.content !== null,
+  );
+
   return {
     config: configData ?? {},
     collections: buildCollectionsTree(collectionsFlattenData),
+    servers: buildServersTree(serversFlattenData),
   };
 }
