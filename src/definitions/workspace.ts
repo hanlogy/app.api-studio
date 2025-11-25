@@ -25,7 +25,7 @@ export interface Workspace {
   readonly description?: string;
   readonly environments: readonly WorkspaceEnvironment[];
   readonly collections: readonly Collection[];
-  readonly mockServers: readonly MockServer[];
+  readonly servers: readonly MockServer[];
 }
 
 export interface WorkspaceEnvironment {

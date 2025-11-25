@@ -12,15 +12,21 @@ import { removeUndefined } from '@/helpers/filterValues';
 import { resolveCollectionResource } from './resolveCollectionResource';
 import { isPlainObject } from '@/helpers/checkTypes';
 import { sortByOrder } from '@/helpers/sortByOrder';
+import { resolveServerSource } from './resolveServerSource';
 
 export function resolveWorkspace({
-  sources: { config: configSource, collections: collectionsSources },
+  sources: {
+    config: configSource,
+    collections: collectionsSources,
+    servers: serversSources,
+  },
   environmentName,
   runtimeWorkspace = {},
 }: {
   readonly sources: {
     readonly config: JsonValue;
     readonly collections: readonly JsonValue[];
+    readonly servers: readonly JsonValue[];
   };
   readonly environmentName?: string;
   readonly runtimeWorkspace?: RuntimeWorkspace;
@@ -54,6 +60,18 @@ export function resolveWorkspace({
             source: rawEndpontResource,
             valuesMap: environmentValuesMap,
             accumulateIds: accumulateCollectionIds,
+          });
+        })
+        .filter(e => e !== undefined),
+    ),
+    servers: sortByOrder(
+      serversSources
+        .map(rawServer => {
+          if (!isPlainObject(rawServer)) {
+            return undefined;
+          }
+          return resolveServerSource({
+            source: rawServer,
           });
         })
         .filter(e => e !== undefined),

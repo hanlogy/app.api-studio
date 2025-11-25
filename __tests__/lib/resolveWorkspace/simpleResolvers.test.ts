@@ -1,16 +1,16 @@
-import { resolvedOrder } from '@/lib/resolveWorkspace/simpleResolvers';
+import { resolveOrder } from '@/lib/resolveWorkspace/simpleResolvers';
 
-describe('resolvedOrder', () => {
+describe('resolveOrder', () => {
   test('returns number if source is a number', () => {
-    expect(resolvedOrder(5)).toBe(5);
+    expect(resolveOrder(5)).toBe(5);
   });
 
   test('returns number if source is a numeric string', () => {
-    expect(resolvedOrder('42')).toBe(42);
+    expect(resolveOrder('42')).toBe(42);
   });
 
   test('returns MAX_SAFE_INTEGER if source is invalid and no name', () => {
-    expect(resolvedOrder('abc')).toBe(Number.MAX_SAFE_INTEGER);
-    expect(resolvedOrder(undefined)).toBe(Number.MAX_SAFE_INTEGER);
+    expect(resolveOrder('abc')).toBe(Number.MAX_SAFE_INTEGER);
+    expect(resolveOrder(undefined)).toBe(Number.MAX_SAFE_INTEGER);
   });
 });

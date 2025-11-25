@@ -8,7 +8,7 @@ import { isPlainObject } from '@/helpers/checkTypes';
 import { resolveValuesMap } from './resolveValuesMap';
 import { pickWhenString, removeUndefined } from '@/helpers/filterValues';
 import { resolveRequestResource } from './resolveRequestResource';
-import { resolvedOrder, resolveStringRecord } from './simpleResolvers';
+import { resolveOrder, resolveStringRecord } from './simpleResolvers';
 import { resolveResourceKeys } from './resolveResourceKeys';
 import { resolveUrl } from './resolveUrl';
 import { sortByOrder } from '@/helpers/sortByOrder';
@@ -57,7 +57,7 @@ export function resolveCollectionResource({
 
   return removeUndefined({
     ...keys,
-    order: resolvedOrder(order),
+    order: resolveOrder(order),
     description: pickWhenString(description),
     baseUrl: resolvedBaseUrl,
     headers: resolveStringRecord({ source: headers, valuesMap }),

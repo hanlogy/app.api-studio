@@ -1,6 +1,7 @@
 import type { JsonValue, RequestMethod } from './common';
 
 export interface MockServer {
+  readonly order: number;
   readonly name: string;
   readonly port: number;
   readonly https?: {
@@ -12,6 +13,7 @@ export interface MockServer {
 }
 
 export interface MockServerRoute {
+  readonly order: number;
   readonly name: string;
   readonly method: RequestMethod | 'ALL';
   readonly path: string;
@@ -21,6 +23,7 @@ export interface MockServerRoute {
 
 type MockServerCaseBase = {
   readonly request?: Record<string, JsonValue>;
+  readonly delay?: number;
 };
 
 export type MockServerCase =
@@ -31,4 +34,7 @@ export type MockServerCase =
     })
   | (MockServerCaseBase & {
       readonly response: Record<string, JsonValue>;
+    })
+  | (MockServerCaseBase & {
+      readonly forward: string;
     });
