@@ -7,7 +7,7 @@ import {
   stringFromStringOrNumber,
 } from '@/helpers/filterValues';
 import { sortByOrder } from '@/helpers/sortByOrder';
-import { resolveRouteSource } from './resolveRouteSource';
+import { resolveRouteSource } from './resolveRoute';
 
 export function resolveServerSource({
   source,

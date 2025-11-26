@@ -11,7 +11,7 @@ import {
 import { resolveResourceKeys } from './resolveResourceKeys';
 import { resolveUrl } from './resolveUrl';
 
-export function resolveRequestResource({
+export function resolveRequest({
   source,
   collectionKey,
   baseUrl,

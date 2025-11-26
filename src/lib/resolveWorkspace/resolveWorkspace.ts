@@ -9,10 +9,10 @@ import {
 } from '@/definitions';
 import { resolveConfig } from './resolveConfig';
 import { removeUndefined } from '@/helpers/filterValues';
-import { resolveCollectionResource } from './resolveCollectionResource';
+import { resolveCollection } from './resolveCollection';
 import { isPlainObject } from '@/helpers/checkTypes';
 import { sortByOrder } from '@/helpers/sortByOrder';
-import { resolveServerSource } from './resolveServerSource';
+import { resolveServerSource } from './resolveServer';
 
 export function resolveWorkspace({
   sources: {
@@ -56,7 +56,7 @@ export function resolveWorkspace({
           if (!isPlainObject(rawEndpontResource)) {
             return undefined;
           }
-          return resolveCollectionResource({
+          return resolveCollection({
             source: rawEndpontResource,
             valuesMap: environmentValuesMap,
             accumulateIds: accumulateCollectionIds,

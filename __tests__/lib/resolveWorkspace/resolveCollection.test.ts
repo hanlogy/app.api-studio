@@ -1,21 +1,21 @@
-import { resolveCollectionResource } from '@/lib/resolveWorkspace/resolveCollectionResource';
+import { resolveCollection } from '@/lib/resolveWorkspace/resolveCollection';
 
-describe('resolveCollectionResource', () => {
+describe('resolveCollection', () => {
   test('invalid source', () => {
     expect(
-      resolveCollectionResource({ source: null, accumulateIds: [] }),
+      resolveCollection({ source: null, accumulateIds: [] }),
     ).toBeUndefined();
   });
 
   test('empty input', () => {
     expect(
-      resolveCollectionResource({ source: {}, accumulateIds: [] }),
+      resolveCollection({ source: {}, accumulateIds: [] }),
     ).toBeUndefined();
   });
 
   test('with everything', () => {
     expect(
-      resolveCollectionResource({
+      resolveCollection({
         accumulateIds: [],
         source: {
           name: 'My Collection',

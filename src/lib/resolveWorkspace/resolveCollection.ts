@@ -7,13 +7,13 @@ import {
 import { isPlainObject } from '@/helpers/checkTypes';
 import { resolveValuesMap } from './resolveValuesMap';
 import { pickWhenString, removeUndefined } from '@/helpers/filterValues';
-import { resolveRequestResource } from './resolveRequestResource';
+import { resolveRequest } from './resolveRequest';
 import { resolveOrder, resolveStringRecord } from './simpleResolvers';
 import { resolveResourceKeys } from './resolveResourceKeys';
 import { resolveUrl } from './resolveUrl';
 import { sortByOrder } from '@/helpers/sortByOrder';
 
-export function resolveCollectionResource({
+export function resolveCollection({
   source,
   valuesMap: environmentValuesMap = {},
   accumulateIds,
@@ -92,7 +92,7 @@ function resolveRequests({
 
   return source
     .map(item =>
-      resolveRequestResource({
+      resolveRequest({
         source: item,
         valuesMap,
         collectionKey,
