@@ -33,7 +33,7 @@ describe('matchRoute', () => {
     expect(result).toBeUndefined();
   });
 
-  test('returns captured params', () => {
+  test('returns captured path params', () => {
     const routes = [
       {
         method: 'GET',
@@ -48,7 +48,7 @@ describe('matchRoute', () => {
 
     expect(result).toStrictEqual({
       route: routes[0],
-      params: { id: '42' },
+      pathParams: { id: '42' },
     });
   });
 
@@ -67,7 +67,7 @@ describe('matchRoute', () => {
       }),
     ).toStrictEqual({
       route: routes[0],
-      params: {},
+      pathParams: {},
     });
 
     expect(
@@ -77,7 +77,7 @@ describe('matchRoute', () => {
       }),
     ).toStrictEqual({
       route: routes[0],
-      params: {},
+      pathParams: {},
     });
   });
 
@@ -105,7 +105,7 @@ describe('matchRoute', () => {
         }),
       ).toStrictEqual({
         route: routes[1],
-        params: {},
+        pathParams: {},
       });
     });
 
@@ -117,7 +117,7 @@ describe('matchRoute', () => {
         }),
       ).toStrictEqual({
         route: routes[2],
-        params: { id: '456' },
+        pathParams: { id: '456' },
       });
 
       expect(
@@ -127,7 +127,7 @@ describe('matchRoute', () => {
         }),
       ).toStrictEqual({
         route: routes[0],
-        params: { '*': '123/info.html' },
+        pathParams: { '*': '123/info.html' },
       });
     });
 
@@ -139,7 +139,7 @@ describe('matchRoute', () => {
         }),
       ).toStrictEqual({
         route: routes[0],
-        params: { '*': '123/info.html' },
+        pathParams: { '*': '123/info.html' },
       });
     });
   });

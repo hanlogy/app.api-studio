@@ -2,8 +2,8 @@ import type { MockServerRoute } from '@/definitions';
 import { matchPath } from './matchPath';
 import { routeSpecificityScore } from './routeSpecificityScore';
 
-export function matchRoute(
-  routes: readonly Pick<MockServerRoute, 'method' | 'path'>[],
+export function matchRoute<T extends Pick<MockServerRoute, 'method' | 'path'>>(
+  routes: readonly T[],
   {
     method: requestMethod,
     path: requestPath,
@@ -23,7 +23,7 @@ export function matchRoute(
         return undefined;
       }
 
-      return { route, params: match.params };
+      return { route, pathParams: match.params };
     })
     .filter(e => e !== undefined);
 
