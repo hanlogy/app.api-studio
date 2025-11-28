@@ -60,7 +60,9 @@ export function MockServersView() {
                 <View
                   style={[
                     serverItemStyles.statusDot,
-                    isRunning ? serverItemStyles.statusDotActive : undefined,
+                    isServerRunning?.(port)
+                      ? serverItemStyles.statusDotActive
+                      : undefined,
                   ]}
                 />
                 <Text>{name}</Text>
