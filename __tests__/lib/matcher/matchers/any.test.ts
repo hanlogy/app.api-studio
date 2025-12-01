@@ -2,7 +2,7 @@ import { any } from '@/lib/matcher/matchers/any';
 
 describe('any', () => {
   test('matcher name', () => {
-    expect(any(String).name).toBe('any(String)');
+    expect(any(String).name).toBe('any');
   });
 
   describe('String', () => {

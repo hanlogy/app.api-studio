@@ -1,15 +1,22 @@
 import { MATCHER, type Matcher } from '../Matcher';
 
-type AnyTypeName = 'String' | 'Number' | 'Boolean' | 'Array' | 'Object';
+export type AnyConstructorName =
+  | 'String'
+  | 'Number'
+  | 'Boolean'
+  | 'Array'
+  | 'Object';
 
-type AnyCtor =
+type AnyConstructor =
   | StringConstructor
   | NumberConstructor
   | BooleanConstructor
   | ArrayConstructor
   | ObjectConstructor;
 
-function toTypeName(arg: AnyTypeName | AnyCtor): AnyTypeName {
+function toTypeName(
+  arg: AnyConstructorName | AnyConstructor,
+): AnyConstructorName {
   if (typeof arg === 'string') {
     return arg;
   }
@@ -31,12 +38,12 @@ function toTypeName(arg: AnyTypeName | AnyCtor): AnyTypeName {
   return 'Object';
 }
 
-export function any(type: AnyTypeName | AnyCtor): Matcher {
+export function any(type: AnyConstructorName | AnyConstructor): Matcher {
   const typeName = toTypeName(type);
 
   return {
     $$typeof: MATCHER,
-    name: `any(${typeName})`,
+    name: 'any',
     test(actual: unknown): boolean {
       switch (typeName) {
         case 'String':
