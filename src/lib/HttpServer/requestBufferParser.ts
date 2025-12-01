@@ -1,6 +1,9 @@
 import { Buffer } from 'buffer';
+import type { JsonRecord } from '@/definitions';
+import { removeUndefined } from '@/helpers/filterValues';
+import type { ParsedRequest } from './definitions';
 
-export function requestBufferParser(buffer: Buffer) {
+export function requestBufferParser(buffer: Buffer): ParsedRequest | undefined {
   const headerEnd = buffer.indexOf('\r\n\r\n');
   if (headerEnd === -1) {
     return;
@@ -23,7 +26,7 @@ export function requestBufferParser(buffer: Buffer) {
           return undefined;
         }
 
-        return [name.toLowerCase(), valueParts.join(':')] as const;
+        return [name.toLowerCase(), valueParts.join(':').trim()] as const;
       })
       .filter(e => e !== undefined),
   );
@@ -51,13 +54,13 @@ export function requestBufferParser(buffer: Buffer) {
   const [method, rawPath = '/', _httpVersion] = requestLine.split(' ');
   const [pathOnly, queryString] = rawPath.split('?');
 
-  const path = pathOnly.replace(/^\/+/, '');
+  const path = pathOnly.replace(/^\/+/, '') || '/';
 
   const query = queryString
     ? Object.fromEntries(new URLSearchParams(queryString))
     : undefined;
 
-  let bodyJson: unknown;
+  let bodyJson: JsonRecord | undefined;
   const contentType = headers['content-type'] ?? '';
   if (contentType.includes('application/json') && bodyText) {
     try {
@@ -67,13 +70,12 @@ export function requestBufferParser(buffer: Buffer) {
     }
   }
 
-  return {
+  return removeUndefined({
     method,
     path,
     rawPath,
     query,
     headers,
-    bodyText,
-    bodyJson,
-  };
+    body: bodyJson ?? bodyText,
+  });
 }
