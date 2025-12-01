@@ -37,4 +37,43 @@ describe('parseMatcher', () => {
       expect(parseMatcher('{{any(String, Number)}}')).toBeNull();
     });
   });
+
+  describe('stringContaining', () => {
+    test('with args', () => {
+      const matcher = parseMatcher('{{stringContaining("foo")}}');
+      expect(matcher?.name).toBe('stringContaining');
+    });
+
+    test('without args', () => {
+      expect(parseMatcher('{{stringContaining()}}')).toBeNull();
+    });
+
+    test('too many args', () => {
+      expect(parseMatcher('{{stringContaining("1", "2")}}')).toBeNull();
+    });
+
+    test('invalid arg', () => {
+      expect(parseMatcher('{{stringContaining(foo)}}')).toBeNull();
+    });
+  });
+
+  describe('stringMatching', () => {
+    test('with args', () => {
+      const matcher = parseMatcher('{{stringMatching(/foo/)}}');
+      expect(matcher?.name).toBe('stringMatching');
+    });
+
+    test('without args', () => {
+      expect(parseMatcher('{{stringMatching()}}')).toBeNull();
+    });
+
+    test('too many args', () => {
+      expect(parseMatcher('{{stringMatching(/a/, /b/)}}')).toBeNull();
+    });
+
+    test('invalid arg', () => {
+      expect(parseMatcher('{{stringMatching("foo")}}')).toBeNull();
+      expect(parseMatcher('{{stringMatching("/foo/")}}')).toBeNull();
+    });
+  });
 });

@@ -1,6 +1,8 @@
 import type { Matcher } from './Matcher';
 import { any, type AnyConstructorName } from './matchers/any';
 import { anything } from './matchers/anything';
+import { stringContaining } from './matchers/stringContaining';
+import { stringMatching } from './matchers/stringMatching';
 
 type MatcherFactory = (args: string[]) => Matcher;
 
@@ -18,6 +20,34 @@ const matcherRegistry: Record<string, MatcherFactory> = {
     }
 
     return any(args[0] as AnyConstructorName);
+  },
+
+  stringContaining: (args: string[]) => {
+    if (args.length !== 1) {
+      throw new Error(
+        'stringContaining() expects exactly 1 argument, e.g. stringContaining("foo")',
+      );
+    }
+
+    const substr = stripQuotedString(args[0]);
+    return stringContaining(substr);
+  },
+
+  stringMatching: (args: string[]) => {
+    if (args.length !== 1) {
+      throw new Error(
+        'stringMatching() expects exactly 1 argument, e.g. stringMatching(/[a-z]+/)',
+      );
+    }
+
+    const source = args[0];
+    if (!/^\/(.+)\/([a-z]*)$/.test(source)) {
+      throw new Error(
+        'stringMatching() requires a JavaScript RegExp literal, e.g. stringMatching(/[a-z]+/i)',
+      );
+    }
+
+    return stringMatching(source);
   },
 };
 
@@ -50,4 +80,15 @@ export function parseMatcher(raw: string): Matcher | null {
   } catch {
     return null;
   }
+}
+
+function stripQuotedString(value: string): string {
+  const isDoubleQuoted = value.startsWith('"') && value.endsWith('"');
+  const isSingleQuoted = value.startsWith("'") && value.endsWith("'");
+
+  if (!isDoubleQuoted && !isSingleQuoted) {
+    throw new Error('argument must be a quoted string');
+  }
+
+  return value.slice(1, -1);
 }
