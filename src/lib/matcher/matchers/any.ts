@@ -1,11 +1,4 @@
-import { MATCHER, type Matcher } from '../Matcher';
-
-export type AnyConstructorName =
-  | 'String'
-  | 'Number'
-  | 'Boolean'
-  | 'Array'
-  | 'Object';
+import { MATCHER, type AnyConstructorName, type Matcher } from '../definitions';
 
 type AnyConstructor =
   | StringConstructor

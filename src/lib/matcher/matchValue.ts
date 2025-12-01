@@ -1,12 +1,6 @@
-import type { PrimitiveValue } from '@/definitions';
 import { isPlainObject } from '@/helpers/checkTypes';
-import { isMatcher, type Matcher } from './Matcher';
-
-type Pattern =
-  | PrimitiveValue
-  | Matcher
-  | Pattern[]
-  | { [key: string]: Pattern };
+import { isMatcher } from './isMatcher';
+import type { Pattern } from './definitions';
 
 export function matchValue(actual: unknown, pattern: Pattern): boolean {
   if (isMatcher(pattern)) {

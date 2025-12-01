@@ -1,4 +1,4 @@
-import { MATCHER, type Matcher } from '../Matcher';
+import { MATCHER, type Matcher } from '../definitions';
 
 function toRegExp(rawPattern: string): RegExp {
   const patternMatch = rawPattern.match(/^\/(.+)\/([a-z]*)$/);

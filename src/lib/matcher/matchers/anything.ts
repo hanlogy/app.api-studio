@@ -1,4 +1,4 @@
-import { MATCHER, type Matcher } from '../Matcher';
+import { MATCHER, type Matcher } from '../definitions';
 
 export function anything(): Matcher {
   return {

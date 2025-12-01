@@ -1,5 +1,5 @@
-import type { Matcher } from './Matcher';
-import { any, type AnyConstructorName } from './matchers/any';
+import type { AnyConstructorName, Matcher } from './definitions';
+import { any } from './matchers/any';
 import { anything } from './matchers/anything';
 import { stringContaining } from './matchers/stringContaining';
 import { stringMatching } from './matchers/stringMatching';
