@@ -8,7 +8,7 @@ export const MATCHER = Symbol('mock.matcher');
 export interface Matcher {
   readonly $$typeof: typeof MATCHER;
   readonly name: string;
-  test(actual: unknown): boolean;
+  test(actual?: unknown): boolean;
 }
 
 export function isMatcher(x: unknown): x is Matcher {
