@@ -6,7 +6,7 @@ export function matchRequestCase({
   request,
   requestPattern,
 }: {
-  request: ParsedRequest & { parthParams?: Record<string, string> };
+  request: ParsedRequest & { pathParams?: Record<string, string> };
   requestPattern?: MockServerCase['request'];
 }) {
   if (!requestPattern) {
@@ -18,7 +18,7 @@ export function matchRequestCase({
       section === 'body' ||
       section === 'headers' ||
       section === 'query' ||
-      section === 'parthParams'
+      section === 'pathParams'
     ) {
       if (!matchValue(request[section], compilePattern(rawPattern))) {
         return false;
