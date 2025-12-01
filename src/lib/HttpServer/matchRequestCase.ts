@@ -1,6 +1,6 @@
 import type { MockServerCase } from '@/definitions';
-import type { ParsedRequest } from './requestChunkParser';
 import { compilePattern, matchValue } from '../matcher';
+import type { ParsedRequest } from './definitions';
 
 export function matchRequestCase({
   request,
@@ -8,7 +8,7 @@ export function matchRequestCase({
 }: {
   request: ParsedRequest & { pathParams?: Record<string, string> };
   requestPattern?: MockServerCase['request'];
-}) {
+}): boolean {
   if (!requestPattern) {
     return true;
   }
@@ -23,12 +23,8 @@ export function matchRequestCase({
       if (!matchValue(request[section], compilePattern(rawPattern))) {
         return false;
       }
-    }
-
-    if (section === 'method' || section === 'path') {
-      if (
-        request[section]?.toLowerCase() !== String(rawPattern).toLowerCase()
-      ) {
+    } else if (section === 'method' || section === 'path') {
+      if (request[section] !== rawPattern) {
         return false;
       }
     }
