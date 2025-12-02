@@ -1,9 +1,13 @@
 import { Buffer } from 'buffer';
 import type { JsonRecord } from '@/definitions';
 import { removeUndefined } from '@/helpers/filterValues';
-import type { ParsedRequest } from './definitions';
+import type { ServerRequest } from './definitions';
 
-export function requestBufferParser(buffer: Buffer): ParsedRequest | undefined {
+export function parseHttpRequest(buffer: Buffer):
+  | (Omit<ServerRequest, 'pathParams'> & {
+      pathParams?: never;
+    })
+  | undefined {
   const headerEnd = buffer.indexOf('\r\n\r\n');
   if (headerEnd === -1) {
     return;

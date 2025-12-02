@@ -11,14 +11,21 @@ export interface ErrorEvent {
   readonly error: string;
 }
 
+export type ServerResponse = {
+  status: number;
+  headers?: Record<string, string>;
+  body: string;
+};
+
 /**
  * The request recieved at server side.
  */
-export interface ParsedRequest {
+export interface ServerRequest {
   readonly method: string;
   readonly path: string;
   readonly rawPath: string;
-  readonly query?: Record<string, string>;
   readonly headers: Record<string, string>;
+  readonly pathParams?: Record<string, string>;
+  readonly query?: Record<string, string>;
   readonly body: string | JsonRecord;
 }

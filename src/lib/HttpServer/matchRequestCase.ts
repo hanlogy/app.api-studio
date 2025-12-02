@@ -1,12 +1,12 @@
 import type { MockServerCase } from '@/definitions';
 import { compilePattern, matchValue } from '../matcher';
-import type { ParsedRequest } from './definitions';
+import type { ServerRequest } from './definitions';
 
 export function matchRequestCase({
   request,
   requestPattern,
 }: {
-  request: ParsedRequest & { pathParams?: Record<string, string> };
+  request: ServerRequest & { pathParams?: Record<string, string> };
   requestPattern?: MockServerCase['request'];
 }): boolean {
   if (!requestPattern) {

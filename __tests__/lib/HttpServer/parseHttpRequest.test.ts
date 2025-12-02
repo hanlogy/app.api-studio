@@ -1,5 +1,5 @@
 import { Buffer } from 'buffer';
-import { requestBufferParser } from '@/lib/HttpServer/requestBufferParser';
+import { parseHttpRequest } from '@/lib/HttpServer/parseHttpRequest';
 import type { RequestMethod } from '@/definitions';
 
 const buildRequestBuffer = ({
@@ -36,11 +36,11 @@ const buildRequestBuffer = ({
   return Buffer.from(items.join(''), 'utf8');
 };
 
-describe('requestBufferParser', () => {
+describe('parseHttpRequest', () => {
   test('headers are not complete', () => {
     const raw = 'GET / HTTP/1.1\r\nHost: example.com\r\n';
     const buffer = Buffer.from(raw, 'utf8');
-    const parsed = requestBufferParser(buffer);
+    const parsed = parseHttpRequest(buffer);
 
     expect(parsed).toBeUndefined();
   });
@@ -51,7 +51,7 @@ describe('requestBufferParser', () => {
       url: '/hello/world',
     });
 
-    const parsed = requestBufferParser(buffer);
+    const parsed = parseHttpRequest(buffer);
 
     expect(parsed).toStrictEqual({
       method: 'GET',
@@ -70,7 +70,7 @@ describe('requestBufferParser', () => {
       url: '/hello/world?foo=bar&baz=qux',
     });
 
-    const parsed = requestBufferParser(buffer);
+    const parsed = parseHttpRequest(buffer);
 
     expect(parsed).toMatchObject({
       method: 'GET',
@@ -94,7 +94,7 @@ describe('requestBufferParser', () => {
       },
       body,
     });
-    const parsed = requestBufferParser(buffer);
+    const parsed = parseHttpRequest(buffer);
 
     expect(parsed).toBeUndefined();
   });
@@ -111,7 +111,7 @@ describe('requestBufferParser', () => {
       body,
     });
 
-    const parsed = requestBufferParser(buffer);
+    const parsed = parseHttpRequest(buffer);
 
     expect(parsed).toStrictEqual({
       method: 'POST',
@@ -138,7 +138,7 @@ describe('requestBufferParser', () => {
       body,
     });
 
-    const parsed = requestBufferParser(buffer);
+    const parsed = parseHttpRequest(buffer);
 
     expect(parsed?.body).toBe(body);
   });
