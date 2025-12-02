@@ -6,7 +6,7 @@ export function matchRequestCase({
   request,
   requestPattern,
 }: {
-  request: ServerRequest & { pathParams?: Record<string, string> };
+  request: ServerRequest;
   requestPattern?: MockServerCase['request'];
 }): boolean {
   if (!requestPattern) {
