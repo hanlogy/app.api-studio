@@ -229,17 +229,20 @@ export function WorkspaceContextProvider({
 
   const startServer = useCallback(
     (port: number) => {
-      if (!workspace || isServerRunning(port)) {
+      const workspaceDir = workspace?.dir;
+      const servers = workspace?.servers;
+
+      if (!workspaceDir || !servers || isServerRunning(port)) {
         return;
       }
 
-      const config = workspace.servers.find(e => e.port === port);
+      const config = servers.find(e => e.port === port);
       if (!config) {
         return;
       }
 
       const server = new HttpServer({
-        workspaceDir: workspace.dir,
+        workspaceDir,
         config,
       });
 
@@ -249,7 +252,7 @@ export function WorkspaceContextProvider({
         return [...prev, port];
       });
     },
-    [workspace, isServerRunning],
+    [workspace?.dir, workspace?.servers, isServerRunning],
   );
 
   const stopServer = useCallback(
