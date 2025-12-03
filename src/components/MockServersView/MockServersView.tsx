@@ -4,7 +4,6 @@ import { Text, ScrollView, View } from 'react-native-macos';
 import { createStyles } from './MockServersView.styles';
 import { Clickable } from '../clickables';
 import { useCallback, useMemo, useState } from 'react';
-import type { MockServer } from '@/definitions';
 import { JsonViewer } from '../JsonViewer';
 
 export function MockServersView() {
@@ -12,7 +11,14 @@ export function MockServersView() {
     useWorkspaceContext();
   const { theme } = useThemeContext();
   const { styles, serverItemStyles, serverContext } = createStyles(theme);
-  const [currentServer, setCurrentServer] = useState<MockServer>();
+  const [currentServerPort, setCurrentServerPort] = useState<number>();
+
+  const currentServer = useMemo(() => {
+    if (!currentServerPort) {
+      return undefined;
+    }
+    return workspace?.servers.find(e => e.port === currentServerPort);
+  }, [currentServerPort, workspace?.servers]);
 
   const isRunning = useMemo(() => {
     if (!currentServer?.port || !isServerRunning) {
@@ -52,7 +58,7 @@ export function MockServersView() {
               <Clickable
                 key={[name, port].join('_')}
                 onPress={() => {
-                  setCurrentServer(server);
+                  setCurrentServerPort(server.port);
                 }}
                 style={serverItemStyles.button}
                 hoveredStyle={serverItemStyles.buttonHovered}
