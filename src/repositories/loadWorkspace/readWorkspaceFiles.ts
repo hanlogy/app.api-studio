@@ -8,9 +8,11 @@ import {
   type WorkspaceSource,
 } from '@/definitions';
 import { parseRequestFileName } from './helpers';
+import { resolveFilePlaceholders } from './resolveFilePlaceholders';
+import { getDirFromFilePath } from '@/helpers/pathHelpers';
 
 function buildCollectionsTree(
-  flat: { file: string; content: string | JsonRecord }[],
+  flat: readonly { file: string; content: string | JsonRecord }[],
 ) {
   const FS_REQUESTS = Symbol('fsRequests');
 
@@ -61,7 +63,9 @@ function buildCollectionsTree(
   );
 }
 
-function buildServersTree(flat: { file: string; content: JsonRecord }[]) {
+function buildServersTree(
+  flat: readonly { file: string; content: JsonRecord }[],
+) {
   const FS_ROUTES = Symbol('fsRoutes');
 
   type ServerNode = {
@@ -103,6 +107,24 @@ function buildServersTree(flat: { file: string; content: JsonRecord }[]) {
   );
 }
 
+async function readJsonRecordAndResolveFile({
+  dir,
+  file,
+}: {
+  readonly dir: string;
+  readonly file: string;
+}) {
+  const content = await readJsonRecord({ dir, file });
+  if (!content) {
+    return content;
+  }
+
+  return await resolveFilePlaceholders({
+    baseDir: getDirFromFilePath(`${dir}/${file}`),
+    content,
+  });
+}
+
 export async function readWorkspaceFiles({
   dir,
   files: {
@@ -111,12 +133,12 @@ export async function readWorkspaceFiles({
     servers: serverFiles,
   },
 }: {
-  dir: string;
-  files: WorkspaceFiles;
+  readonly dir: string;
+  readonly files: WorkspaceFiles;
 }): Promise<WorkspaceSource> {
   dir = dir.replace(/\/$/, '');
 
-  const configData = await readJsonRecord({
+  const configData = await readJsonRecordAndResolveFile({
     dir,
     file: configFile,
   });
@@ -128,7 +150,7 @@ export async function readWorkspaceFiles({
       collectionFiles.map(async file => ({
         file,
         content: file.endsWith('.json')
-          ? await readJsonRecord({ dir: collectionsDir, file })
+          ? await readJsonRecordAndResolveFile({ dir: collectionsDir, file })
           : await readPlainText({ dir: collectionsDir, file }),
       })),
     )
@@ -143,7 +165,7 @@ export async function readWorkspaceFiles({
     await Promise.all(
       serverFiles.map(async file => ({
         file,
-        content: await readJsonRecord({ dir: serversDir, file }),
+        content: await readJsonRecordAndResolveFile({ dir: serversDir, file }),
       })),
     )
   ).filter(
