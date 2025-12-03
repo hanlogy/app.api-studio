@@ -1,4 +1,9 @@
-import type { JsonValue, RequestMethod } from './common';
+import type {
+  JsonValue,
+  RequestHeaders,
+  RequestMethod,
+  RequestQuery,
+} from './common';
 
 export interface MockServer {
   readonly order: number;
@@ -8,6 +13,7 @@ export interface MockServer {
     readonly p12File: string;
     readonly p12Password?: string;
   };
+  // Global response header. It does not apply to `forward` case.
   readonly headers?: Record<string, string>;
   readonly routes: readonly MockServerRoute[];
 }
@@ -22,19 +28,27 @@ export interface MockServerRoute {
 }
 
 type MockServerCaseBase = {
-  readonly request?: Record<string, JsonValue>;
+  readonly request?: MockServerRequest;
   readonly delay?: number;
 };
 
 export type MockServerCase =
   | MockServerCaseBase
   | (MockServerCaseBase & {
-      // The response file name
-      readonly response: string;
-    })
-  | (MockServerCaseBase & {
-      readonly response: Record<string, JsonValue>;
+      readonly response: MockServerResponse;
     })
   | (MockServerCaseBase & {
       readonly forward: string;
     });
+
+interface MockServerRequest {
+  readonly query?: RequestQuery;
+  readonly headers?: RequestHeaders;
+  readonly body?: JsonValue;
+}
+
+interface MockServerResponse {
+  readonly status: number;
+  readonly headers?: RequestHeaders;
+  readonly body?: JsonValue;
+}
