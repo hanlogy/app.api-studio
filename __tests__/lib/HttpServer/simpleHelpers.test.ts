@@ -1,22 +1,22 @@
-import { normalizePath } from '@/lib/HttpServer/simpleHelpers';
+import { parsePath } from '@/lib/HttpServer/simpleHelpers';
 
-describe('normalizePath', () => {
+describe('parsePath', () => {
   test('emtpy input', () => {
-    expect(normalizePath('')).toStrictEqual({
+    expect(parsePath('')).toStrictEqual({
       path: '',
       segments: [''],
     });
   });
 
   test('/ input', () => {
-    expect(normalizePath('/')).toStrictEqual({
+    expect(parsePath('/')).toStrictEqual({
       path: '',
       segments: [''],
     });
   });
 
   test('with leading and tailing slash, and duplicated slash', () => {
-    expect(normalizePath('//hello//world//123///')).toStrictEqual({
+    expect(parsePath('//hello//world//123///')).toStrictEqual({
       path: 'hello/world/123',
       segments: ['hello', 'world', '123'],
     });

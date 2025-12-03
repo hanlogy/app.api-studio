@@ -1,4 +1,4 @@
-import { normalizePath } from './simpleHelpers';
+import { parsePath } from './simpleHelpers';
 
 type MatchResult = {
   path: string;
@@ -12,8 +12,8 @@ export function matchPath({
   path?: string;
   pattern?: string;
 } = {}): MatchResult | undefined {
-  const { segments: patternSegments } = normalizePath(pattern);
-  const { path: normalizedPath, segments: pathSegments } = normalizePath(path);
+  const { segments: patternSegments } = parsePath(pattern);
+  const { path: normalizedPath, segments: pathSegments } = parsePath(path);
   const params: Record<string, string> = {};
 
   let patternPointer = 0;
