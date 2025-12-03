@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer';
 import type { ServerResponse } from './definitions';
 
 const STATUS_REASONS: Record<number, string> = {

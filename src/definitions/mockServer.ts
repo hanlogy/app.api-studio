@@ -48,7 +48,7 @@ interface MockServerRequest {
 }
 
 interface MockServerResponse {
-  readonly status: number;
+  readonly status?: number;
   readonly headers?: RequestHeaders;
   readonly body?: JsonValue;
 }

@@ -78,7 +78,11 @@ export async function processRequest({
     };
   }
 
-  const { status, headers: responseHeaders, body } = selectedCase.response;
+  const {
+    status = 200,
+    headers: responseHeaders,
+    body,
+  } = selectedCase.response;
 
   let bodyText = '';
   if (body !== undefined) {
