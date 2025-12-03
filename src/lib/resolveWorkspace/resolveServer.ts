@@ -7,9 +7,9 @@ import {
   stringFromStringOrNumber,
 } from '@/helpers/filterValues';
 import { sortByOrder } from '@/helpers/sortByOrder';
-import { resolveRouteSource } from './resolveRoute';
+import { resolveRoute } from './resolveRoute';
 
-export function resolveServerSource({
+export function resolveServer({
   source,
 }: {
   readonly source: JsonValue;
@@ -56,7 +56,7 @@ export function resolveServerSource({
     routes: Array.isArray(routes)
       ? sortByOrder(
           routes
-            .map(item => resolveRouteSource({ source: item }))
+            .map(item => resolveRoute({ source: item }))
             .filter(e => e !== undefined),
         )
       : [],

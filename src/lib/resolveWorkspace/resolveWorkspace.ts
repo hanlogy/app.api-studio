@@ -12,7 +12,7 @@ import { removeUndefined } from '@/helpers/filterValues';
 import { resolveCollection } from './resolveCollection';
 import { isPlainObject } from '@/helpers/checkTypes';
 import { sortByOrder } from '@/helpers/sortByOrder';
-import { resolveServerSource } from './resolveServer';
+import { resolveServer } from './resolveServer';
 
 export function resolveWorkspace({
   sources: {
@@ -70,7 +70,7 @@ export function resolveWorkspace({
           if (!isPlainObject(rawServer)) {
             return undefined;
           }
-          return resolveServerSource({
+          return resolveServer({
             source: rawServer,
           });
         })

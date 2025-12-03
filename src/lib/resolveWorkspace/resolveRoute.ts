@@ -7,7 +7,7 @@ import {
 } from '@/helpers/filterValues';
 import { resolveOrder, resolveMethod } from './simpleResolvers';
 
-export function resolveRouteSource({
+export function resolveRoute({
   source,
 }: {
   source: JsonValue;

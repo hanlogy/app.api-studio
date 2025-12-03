@@ -1,4 +1,4 @@
-import { buildTextResponse } from './buildResponse';
+import { createTextResponse } from './createResponses';
 import type { ServerResponse, ServerRequest } from './definitions';
 import { resolveForwardUrl } from './resolveForwardUrl';
 
@@ -43,7 +43,7 @@ export async function forwardRequest({
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e);
 
-    return buildTextResponse({
+    return createTextResponse({
       status: 502,
       body: `Failed to forward to ${url}: ${message}`,
     });
