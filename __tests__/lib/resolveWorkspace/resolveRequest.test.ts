@@ -1,9 +1,9 @@
-import { resolveRequestResource } from '@/lib/resolveWorkspace/resolveRequestResource';
+import { resolveRequest } from '@/lib/resolveWorkspace/resolveRequest';
 
-describe('resolveRequestResource', () => {
+describe('resolveRequest', () => {
   test('invalid source', () => {
     expect(
-      resolveRequestResource({
+      resolveRequest({
         collectionKey: '1',
         source: null,
         accumulateIds: [],
@@ -13,7 +13,7 @@ describe('resolveRequestResource', () => {
 
   test('empty', () => {
     expect(
-      resolveRequestResource({
+      resolveRequest({
         collectionKey: '1',
         source: {},
         accumulateIds: [],
@@ -23,7 +23,7 @@ describe('resolveRequestResource', () => {
 
   test('with everything', () => {
     expect(
-      resolveRequestResource({
+      resolveRequest({
         accumulateIds: [],
         collectionKey: 'collection_1',
         source: {
@@ -43,6 +43,7 @@ describe('resolveRequestResource', () => {
         },
       }),
     ).toStrictEqual({
+      order: expect.any(Number),
       key: expect.any(Array),
       id: 'request_1',
       name: 'request-1',

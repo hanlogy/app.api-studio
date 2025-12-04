@@ -3,13 +3,17 @@ import { resolveWorkspace } from '@/lib/resolveWorkspace/resolveWorkspace';
 describe('resolveWorkspace', () => {
   test('invalid source', () => {
     expect(
-      resolveWorkspace({ sources: { config: null, collections: [] } }),
+      resolveWorkspace({
+        sources: { config: null, collections: [], servers: [] },
+      }),
     ).toBeUndefined();
   });
 
   test('empty input', () => {
     expect(
-      resolveWorkspace({ sources: { config: {}, collections: [] } }),
+      resolveWorkspace({
+        sources: { config: {}, collections: [], servers: [] },
+      }),
     ).toBeUndefined();
   });
 
@@ -54,6 +58,23 @@ describe('resolveWorkspace', () => {
               ],
             },
           ],
+          servers: [
+            {
+              name: 'My Server',
+              port: 20,
+              routes: [
+                {
+                  name: 'user',
+                  method: 'ALL',
+                  cases: [
+                    {
+                      forward: 'https://foo',
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
         },
         environmentName: 'dev',
       }),
@@ -80,6 +101,7 @@ describe('resolveWorkspace', () => {
       ],
       collections: [
         {
+          order: expect.any(Number),
           key: expect.any(String),
           id: 'my_collection',
           name: 'My Collection',
@@ -92,6 +114,7 @@ describe('resolveWorkspace', () => {
           },
           requests: [
             {
+              order: expect.any(Number),
               key: expect.any(Array),
               id: 'api_1',
               name: 'api-1',
@@ -103,6 +126,26 @@ describe('resolveWorkspace', () => {
                 lastName: 'bar',
                 level: 8,
               },
+            },
+          ],
+        },
+      ],
+      servers: [
+        {
+          name: 'My Server',
+          order: expect.any(Number),
+          port: 20,
+          routes: [
+            {
+              name: 'user',
+              method: 'ALL',
+              order: expect.any(Number),
+              path: '',
+              cases: [
+                {
+                  forward: 'https://foo',
+                },
+              ],
             },
           ],
         },

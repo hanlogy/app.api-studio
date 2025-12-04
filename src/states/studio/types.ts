@@ -23,6 +23,11 @@ interface StudioContextValueBase {
   readonly updateRecentWorkspace?: (workspace: WorkspaceCache) => void;
   readonly setError: (error?: AppError) => void;
   readonly error?: AppError;
+  readonly currentWorkspace?: { dir: string; environment?: string };
+  readonly setCurrentWorkspace?: (args: {
+    dir: string;
+    environment?: string;
+  }) => void;
 }
 
 export type StudioContextValue =
@@ -32,5 +37,8 @@ export type StudioContextValue =
   | (StudioContextValueBase & {
       readonly status: 'ready';
     } & Required<
-        Pick<StudioContextValueBase, 'workspaces' | 'updateRecentWorkspace'>
+        Pick<
+          StudioContextValueBase,
+          'workspaces' | 'updateRecentWorkspace' | 'setCurrentWorkspace'
+        >
       >);

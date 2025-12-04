@@ -9,17 +9,24 @@ import {
 } from '@/definitions';
 import { resolveConfig } from './resolveConfig';
 import { removeUndefined } from '@/helpers/filterValues';
-import { resolveCollectionResource } from './resolveCollectionResource';
+import { resolveCollection } from './resolveCollection';
 import { isPlainObject } from '@/helpers/checkTypes';
+import { sortByOrder } from '@/helpers/sortByOrder';
+import { resolveServer } from './resolveServer';
 
 export function resolveWorkspace({
-  sources: { config: configSource, collections: collectionsSources },
+  sources: {
+    config: configSource,
+    collections: collectionsSources,
+    servers: serversSources,
+  },
   environmentName,
   runtimeWorkspace = {},
 }: {
   readonly sources: {
     readonly config: JsonValue;
     readonly collections: readonly JsonValue[];
+    readonly servers: readonly JsonValue[];
   };
   readonly environmentName?: string;
   readonly runtimeWorkspace?: RuntimeWorkspace;
@@ -43,18 +50,32 @@ export function resolveWorkspace({
     name,
     description,
     environments,
-    collections: collectionsSources
-      .map(rawEndpontResource => {
-        if (!isPlainObject(rawEndpontResource)) {
-          return undefined;
-        }
-        return resolveCollectionResource({
-          source: rawEndpontResource,
-          valuesMap: environmentValuesMap,
-          accumulateIds: accumulateCollectionIds,
-        });
-      })
-      .filter(e => e !== undefined),
+    collections: sortByOrder(
+      collectionsSources
+        .map(rawEndpontResource => {
+          if (!isPlainObject(rawEndpontResource)) {
+            return undefined;
+          }
+          return resolveCollection({
+            source: rawEndpontResource,
+            valuesMap: environmentValuesMap,
+            accumulateIds: accumulateCollectionIds,
+          });
+        })
+        .filter(e => e !== undefined),
+    ),
+    servers: sortByOrder(
+      serversSources
+        .map(rawServer => {
+          if (!isPlainObject(rawServer)) {
+            return undefined;
+          }
+          return resolveServer({
+            source: rawServer,
+          });
+        })
+        .filter(e => e !== undefined),
+    ),
   });
 }
 

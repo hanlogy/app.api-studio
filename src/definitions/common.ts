@@ -1,6 +1,8 @@
 import type { TextStyle, ViewStyle } from 'react-native';
 import type { StyleProp } from 'react-native-macos';
+import type { navNames, requestMethods } from './constants';
 
+export type NavName = (typeof navNames)[number];
 export type PrimitiveValue = string | number | boolean | null;
 
 export type PrimitiveRecord<T extends PrimitiveValue = PrimitiveValue> = Record<
@@ -34,3 +36,8 @@ export type PropsWithViewStyle<P = unknown> = P & {
 export type PropsWithTextStyle<P = unknown> = P & {
   style?: StyleProp<TextStyle>;
 };
+
+export type PathParams = PrimitiveRecord<string>;
+export type RequestHeaders = PrimitiveRecord<string>;
+export type RequestQuery = Record<string, string | string[]>;
+export type RequestMethod = (typeof requestMethods)[number];

@@ -30,7 +30,7 @@ export function createStyles({ isLight }: Theme) {
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        paddingLeft: 8,
+        paddingLeft: 0,
         paddingRight: 8,
         height: 28,
         borderRadius: 16,
@@ -41,6 +41,9 @@ export function createStyles({ isLight }: Theme) {
       buttonPressed: {
         backgroundColor: isLight ? '#DDD' : '#2F2F2F',
       },
+      method: { marginRight: 4, width: 39 },
+      methodText: { fontSize: 10, textAlign: 'right', fontWeight: '600' },
+
       text: {
         color: isLight ? '#666' : '#DDD',
       },

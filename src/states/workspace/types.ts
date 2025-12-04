@@ -1,6 +1,6 @@
 import type {
   AppError,
-  RequestResourceKey,
+  RequestKey,
   Workspace,
   WorkspaceResourceKey,
 } from '@/definitions';
@@ -19,18 +19,16 @@ type WorkspaceContextValueBase = {
   readonly selectedEnvironment?: string;
   readonly currentResourceKey?: WorkspaceResourceKey;
   readonly histories: readonly {
-    key: RequestResourceKey;
+    key: RequestKey;
     items: readonly RequestHistoryItem[];
   }[];
   readonly sendRequest?: () => Promise<void>;
-  readonly openWorkspace: (args: { dir: string; environment?: string }) => void;
   readonly openResource?: (key: WorkspaceResourceKey) => void;
   readonly selectEnvironment?: (name?: string) => void;
+  readonly isServerRunning?: (port: number) => boolean;
+  readonly startServer?: (port: number) => void;
+  readonly stopServer?: (port: number) => void;
 };
-
-export type OpenWorkspaceArguments = Parameters<
-  WorkspaceContextValueBase['openWorkspace']
->[0];
 
 export type WorkspaceContextValue =
   | (WorkspaceContextValueBase & {
@@ -41,6 +39,12 @@ export type WorkspaceContextValue =
     } & Required<
         Pick<
           WorkspaceContextValueBase,
-          'workspace' | 'openResource' | 'selectEnvironment' | 'sendRequest'
+          | 'workspace'
+          | 'openResource'
+          | 'selectEnvironment'
+          | 'sendRequest'
+          | 'isServerRunning'
+          | 'startServer'
+          | 'stopServer'
         >
       >);

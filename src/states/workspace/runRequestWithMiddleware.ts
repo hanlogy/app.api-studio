@@ -2,7 +2,7 @@ import {
   AppError,
   GLOBAL_ENV_NAME,
   type PrimitiveValue,
-  type RequestResourceKey,
+  type RequestKey,
   type RuntimeVariable,
   type Workspace,
 } from '@/definitions';
@@ -19,7 +19,7 @@ import { isHttpResponse } from '@/lib/sendHttpRequest/isHttpResponse';
 
 interface RunRequestWithMiddlewareOptions {
   readonly middleware?: Function;
-  readonly requestKey: RequestResourceKey;
+  readonly requestKey: RequestKey;
   readonly selectedEnvironment?: string;
   readonly workspace: Workspace;
   readonly setRuntimeVariable: (variable: RuntimeVariable) => void;
@@ -78,7 +78,7 @@ export async function runRequestWithMiddleware({
         send: sendRequest,
         isKey: isSameResourceKey,
         setRequestVariable: (
-          key: RequestResourceKey,
+          key: RequestKey,
           name: string,
           value: PrimitiveValue,
         ) => {

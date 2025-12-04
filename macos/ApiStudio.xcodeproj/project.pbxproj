@@ -14,6 +14,10 @@
 		514201582437B4B40078DB4F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 514201572437B4B40078DB4F /* main.m */; };
 		99097C554C74C1CE8DD0BED1 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = C4C3EC31E0513D723F5C13C8 /* PrivacyInfo.xcprivacy */; };
 		DA65AF5C2EBF62BC0034672F /* fontello.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA65AF5B2EBF62BC0034672F /* fontello.ttf */; };
+		DA706C912ECC4E1B00B6D6BD /* HTTPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA706C902ECC4E1B00B6D6BD /* HTTPServer.swift */; };
+		DA706C962ECC59CA00B6D6BD /* WindowExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA706C952ECC59CA00B6D6BD /* WindowExtensions.swift */; };
+		DA706CA02ECE0C6200B6D6BD /* HttpServerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA706C9F2ECE0C6200B6D6BD /* HttpServerManager.swift */; };
+		DA706CA22ECE0C8700B6D6BD /* HttpServerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DA706CA12ECE0C8700B6D6BD /* HttpServerManager.m */; };
 		DAC8EF6E2EAD42EF007867A6 /* FolderPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC8EF6D2EAD42EF007867A6 /* FolderPicker.m */; };
 /* End PBXBuildFile section */
 
@@ -30,8 +34,14 @@
 		CAD4A41B86B142634B740337 /* libPods-ApiStudio-macOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ApiStudio-macOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2553B775E13C25AFD13FECF /* Pods-ApiStudio-macOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ApiStudio-macOS.release.xcconfig"; path = "Target Support Files/Pods-ApiStudio-macOS/Pods-ApiStudio-macOS.release.xcconfig"; sourceTree = "<group>"; };
 		DA65AF5B2EBF62BC0034672F /* fontello.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = fontello.ttf; sourceTree = "<group>"; };
+		DA706C8F2ECC4E1B00B6D6BD /* ApiStudio-macOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ApiStudio-macOS-Bridging-Header.h"; sourceTree = "<group>"; };
+		DA706C902ECC4E1B00B6D6BD /* HTTPServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPServer.swift; sourceTree = "<group>"; };
+		DA706C952ECC59CA00B6D6BD /* WindowExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowExtensions.swift; sourceTree = "<group>"; };
+		DA706C9F2ECE0C6200B6D6BD /* HttpServerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpServerManager.swift; sourceTree = "<group>"; };
+		DA706CA12ECE0C8700B6D6BD /* HttpServerManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HttpServerManager.m; sourceTree = "<group>"; };
 		DAC8EF6C2EAD42EF007867A6 /* FolderPicker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FolderPicker.h; sourceTree = "<group>"; };
 		DAC8EF6D2EAD42EF007867A6 /* FolderPicker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FolderPicker.m; sourceTree = "<group>"; };
+		DAFAAE732ECF20EF00AEC2DD /* HttpServerManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HttpServerManager.h; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		EFDE4F57ADED2A44502F8EDE /* Pods-ApiStudio-macOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ApiStudio-macOS.debug.xcconfig"; path = "Target Support Files/Pods-ApiStudio-macOS/Pods-ApiStudio-macOS.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -69,6 +79,7 @@
 		5142014A2437B4B30078DB4F /* ApiStudio-macOS */ = {
 			isa = PBXGroup;
 			children = (
+				DA706C932ECC591E00B6D6BD /* Extensions */,
 				5142014B2437B4B30078DB4F /* AppDelegate.h */,
 				5142014C2437B4B30078DB4F /* AppDelegate.mm */,
 				514201512437B4B40078DB4F /* Assets.xcassets */,
@@ -78,6 +89,7 @@
 				514201592437B4B40078DB4F /* ApiStudio.entitlements */,
 				DAC8EF6C2EAD42EF007867A6 /* FolderPicker.h */,
 				DAC8EF6D2EAD42EF007867A6 /* FolderPicker.m */,
+				DA706C8F2ECC4E1B00B6D6BD /* ApiStudio-macOS-Bridging-Header.h */,
 			);
 			path = "ApiStudio-macOS";
 			sourceTree = "<group>";
@@ -111,6 +123,26 @@
 				514201492437B4B30078DB4F /* ApiStudio.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		DA706C922ECC4E9B00B6D6BD /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				DA706C902ECC4E1B00B6D6BD /* HTTPServer.swift */,
+				DA706C9F2ECE0C6200B6D6BD /* HttpServerManager.swift */,
+				DA706CA12ECE0C8700B6D6BD /* HttpServerManager.m */,
+				DAFAAE732ECF20EF00AEC2DD /* HttpServerManager.h */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		DA706C932ECC591E00B6D6BD /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				DA706C922ECC4E9B00B6D6BD /* Networking */,
+				DA706C952ECC59CA00B6D6BD /* WindowExtensions.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -147,6 +179,7 @@
 					514201482437B4B30078DB4F = {
 						CreatedOnToolsVersion = 11.4;
 						DevelopmentTeam = SRHSX6M8CZ;
+						LastSwiftMigration = 2610;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -257,9 +290,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA706CA22ECE0C8700B6D6BD /* HttpServerManager.m in Sources */,
+				DA706C912ECC4E1B00B6D6BD /* HTTPServer.swift in Sources */,
 				514201582437B4B40078DB4F /* main.m in Sources */,
 				DAC8EF6E2EAD42EF007867A6 /* FolderPicker.m in Sources */,
 				5142014D2437B4B30078DB4F /* AppDelegate.mm in Sources */,
+				DA706CA02ECE0C6200B6D6BD /* HttpServerManager.swift in Sources */,
+				DA706C962ECC59CA00B6D6BD /* WindowExtensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,7 +326,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = SRHSX6M8CZ;
 				ENABLE_APP_SANDBOX = YES;
-				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = YES;
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
 				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
@@ -314,6 +351,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.hanlogy.apiStudio;
 				PRODUCT_NAME = ApiStudio;
 				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "ApiStudio-macOS/ApiStudio-macOS-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
@@ -330,7 +368,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = SRHSX6M8CZ;
 				ENABLE_APP_SANDBOX = YES;
-				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = YES;
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
 				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
@@ -355,6 +393,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.hanlogy.apiStudio;
 				PRODUCT_NAME = ApiStudio;
 				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "ApiStudio-macOS/ApiStudio-macOS-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -415,7 +454,10 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -471,7 +513,10 @@
 					"\"$(inherited)\"",
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = false;
