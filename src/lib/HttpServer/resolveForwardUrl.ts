@@ -1,10 +1,13 @@
+import type { RequestQuery } from '@/definitions';
+import { buildQueryString } from '@/helpers/buildQueryString';
+
 export function resolveForwardUrl({
   template,
   query,
   pathParams = {},
 }: {
   readonly template: string;
-  readonly query?: Record<string, string>;
+  readonly query?: RequestQuery;
   readonly pathParams?: Record<string, string>;
 }): string {
   const expanded = template.replace(
@@ -21,7 +24,7 @@ export function resolveForwardUrl({
     },
   );
 
-  const search = query && new URLSearchParams(query).toString();
+  const search = query && buildQueryString(query);
   if (!search) {
     return expanded;
   }
