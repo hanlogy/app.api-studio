@@ -2,6 +2,7 @@ import { Buffer } from 'buffer';
 import type { JsonRecord } from '@/definitions';
 import { removeUndefined } from '@/helpers/filterValues';
 import type { ServerRequest } from './definitions';
+import { parseQueryString } from '@/helpers/parseQueryString';
 
 export function parseHttpRequest(buffer: Buffer):
   | (Omit<ServerRequest, 'pathParams'> & {
@@ -60,9 +61,7 @@ export function parseHttpRequest(buffer: Buffer):
 
   const path = pathOnly.replace(/^\/+/, '') || '/';
 
-  const query = queryString
-    ? Object.fromEntries(new URLSearchParams(queryString))
-    : undefined;
+  const query = parseQueryString(queryString);
 
   let bodyJson: JsonRecord | undefined;
   const contentType = headers['content-type'] ?? '';

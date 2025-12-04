@@ -57,6 +57,7 @@ describe('parseHttpRequest', () => {
       method: 'GET',
       path: 'hello/world',
       rawPath: '/hello/world',
+      query: {},
       headers: {
         host: 'example.com',
       },

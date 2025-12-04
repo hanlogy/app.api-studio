@@ -5,8 +5,8 @@ const decode = (value: string): string =>
   decodeURIComponent(value.replace(/\+/g, ' '));
 
 // Do not use `URLSearchParams`
-export const parseQueryString = (query: string): QueryObject => {
-  const queryString = query.startsWith('?') ? query.slice(1) : query;
+export const parseQueryString = (query?: string): QueryObject => {
+  const queryString = query?.startsWith('?') ? query.slice(1) : query;
   if (!queryString) {
     return {};
   }

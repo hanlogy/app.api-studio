@@ -1,6 +1,10 @@
 import { parseQueryString } from '@/helpers/parseQueryString';
 
 describe('parseQueryString', () => {
+  test('undefined string', () => {
+    expect(parseQueryString()).toEqual({});
+  });
+
   test('empty string', () => {
     expect(parseQueryString('')).toEqual({});
   });
