@@ -25,6 +25,9 @@ type WorkspaceContextValueBase = {
   readonly sendRequest?: () => Promise<void>;
   readonly openResource?: (key: WorkspaceResourceKey) => void;
   readonly selectEnvironment?: (name?: string) => void;
+  readonly isServerRunning?: (port: number) => boolean;
+  readonly startServer?: (port: number) => void;
+  readonly stopServer?: (port: number) => void;
 };
 
 export type WorkspaceContextValue =
@@ -36,6 +39,12 @@ export type WorkspaceContextValue =
     } & Required<
         Pick<
           WorkspaceContextValueBase,
-          'workspace' | 'openResource' | 'selectEnvironment' | 'sendRequest'
+          | 'workspace'
+          | 'openResource'
+          | 'selectEnvironment'
+          | 'sendRequest'
+          | 'isServerRunning'
+          | 'startServer'
+          | 'stopServer'
         >
       >);

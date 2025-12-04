@@ -1,4 +1,4 @@
-import type { JsonValue, PrimitiveRecord, ValuesMap } from '@/definitions';
+import type { JsonValue, RequestQuery, ValuesMap } from '@/definitions';
 import { resolveString } from './resolveString';
 import { buildUrl } from '@/helpers/buildUrl';
 import { stringFromStringOrNumber } from '@/helpers/filterValues';
@@ -11,7 +11,7 @@ export function resolveUrl({
 }: {
   source: JsonValue;
   baseUrl?: string;
-  query?: PrimitiveRecord<string>;
+  query?: RequestQuery;
   valuesMap?: ValuesMap;
 }): string | undefined {
   const url = stringFromStringOrNumber(

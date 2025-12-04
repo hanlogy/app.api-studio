@@ -15,6 +15,16 @@ export function stringFromStringOrNumber(value: unknown) {
   return String(result);
 }
 
+export function numberFromStringOrNumber(value: unknown) {
+  const result = pickWhenNumber(value) ?? pickWhenString(value);
+  if (result === undefined) {
+    return result;
+  }
+
+  const parsed = Number(result);
+  return Number.isNaN(parsed) ? undefined : parsed;
+}
+
 export function removeUndefined<T extends object>(obj: T) {
   return Object.fromEntries(
     Object.entries(obj).filter(([_, v]) => v !== undefined),

@@ -37,6 +37,7 @@ export type PropsWithTextStyle<P = unknown> = P & {
   style?: StyleProp<TextStyle>;
 };
 
+export type PathParams = PrimitiveRecord<string>;
 export type RequestHeaders = PrimitiveRecord<string>;
-export type RequestQuery = PrimitiveRecord<string>;
+export type RequestQuery = Record<string, string | string[]>;
 export type RequestMethod = (typeof requestMethods)[number];

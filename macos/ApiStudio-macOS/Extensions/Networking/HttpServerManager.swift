@@ -105,6 +105,16 @@ class HttpServerManager: RCTEventEmitter {
     )
   }
 
+  // Called by RN when the bridge is invalidated (e.g. on reload)
+  override func invalidate() {
+    for server in servers.values {
+      server.stop()
+    }
+    
+    servers.removeAll()
+    super.invalidate()
+  }
+
   override func supportedEvents() -> [String] {
     return ["onRequest", "onError"]
   }

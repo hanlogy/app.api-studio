@@ -1,4 +1,8 @@
-import type { JsonRecord } from '@/definitions';
+import {
+  WORKSPACE_COLLECTIONS_DIR,
+  WORKSPACE_SERVERS_DIR,
+  type JsonRecord,
+} from '@/definitions';
 import { readJsonRecord, readPlainText } from '@/helpers/fileIO';
 import { readWorkspaceFiles } from '@/repositories/loadWorkspace/readWorkspaceFiles';
 
@@ -15,10 +19,21 @@ const mockPlainText = readPlainText as jest.MockedFunction<
   typeof readPlainText
 >;
 
-const mockWorkspace = (data: Record<string, string | JsonRecord>) => {
+const mockWorkspace = ({
+  collections = {},
+  servers = {},
+}: {
+  collections?: Record<string, string | JsonRecord>;
+  servers?: Record<string, JsonRecord>;
+}) => {
+  const isCollectionsDir = (dir?: string) =>
+    !!dir && dir.endsWith(`/${WORKSPACE_COLLECTIONS_DIR}`);
+  const isServersDir = (dir?: string) =>
+    !!dir && dir.endsWith(`/${WORKSPACE_SERVERS_DIR}`);
+
   mockPlainText.mockImplementation(({ file }) => {
-    if (file in data) {
-      const value = data[file];
+    if (file in collections) {
+      const value = collections[file];
       if (typeof value !== 'string') {
         throw new Error('never');
       }
@@ -28,17 +43,21 @@ const mockWorkspace = (data: Record<string, string | JsonRecord>) => {
     return Promise.resolve(null);
   });
 
-  mockReadJson.mockImplementation(({ file }) => {
+  mockReadJson.mockImplementation(({ dir, file }) => {
     if (file === 'config.json') {
       return Promise.resolve({ name: 'workspace' });
     }
 
-    if (file in data) {
-      const value = data[file];
+    if (isCollectionsDir(dir) && file in collections) {
+      const value = collections[file];
       if (typeof value === 'string') {
         throw new Error('never');
       }
       return Promise.resolve(value);
+    }
+
+    if (isServersDir(dir) && file in servers) {
+      return Promise.resolve(servers[file]);
     }
 
     return Promise.resolve(null);
@@ -47,6 +66,7 @@ const mockWorkspace = (data: Record<string, string | JsonRecord>) => {
 
 describe('readWorkspaceFiles', () => {
   beforeEach(() => {
+    mockPlainText.mockReset();
     mockReadJson.mockReset();
   });
 
@@ -64,17 +84,26 @@ describe('readWorkspaceFiles', () => {
       'profile/createProfile/createProfile.md': 'doc',
     };
 
-    mockWorkspace(mockCollections);
+    const mockServers = {
+      'auth.json': { name: 'auth server' },
+      'article/article.json': {
+        name: 'article server',
+        routes: [{ name: 'delete article' }],
+      },
+      'article/saveArticle.json': { name: 'save article' },
+    };
+
+    mockWorkspace({ collections: mockCollections, servers: mockServers });
 
     const result = await readWorkspaceFiles({
       dir: '/root/workspace',
       files: {
         config: 'config.json',
         collections: Object.keys(mockCollections),
+        servers: Object.keys(mockServers),
       },
     });
 
-    // console.log(JSON.stringify(result, undefined, 2));
     expect(result).toStrictEqual({
       config: {
         name: 'workspace',
@@ -96,6 +125,23 @@ describe('readWorkspaceFiles', () => {
             {
               name: 'createProfile request',
               doc: 'doc',
+            },
+          ],
+        },
+      ],
+      servers: [
+        {
+          name: 'auth server',
+          routes: [],
+        },
+        {
+          name: 'article server',
+          routes: [
+            {
+              name: 'delete article',
+            },
+            {
+              name: 'save article',
             },
           ],
         },
