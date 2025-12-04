@@ -53,6 +53,17 @@ export function createStyles({ isLight, colors }: Theme) {
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: 16,
+        borderBottomColor: isLight ? '#EDEDED' : '#333',
+        borderBottomWidth: 1,
+        justifyContent: 'space-between',
+      },
+
+      statusText: {
+        fontWeight: 500,
+      },
+
+      statusTip: {
+        color: '#999',
       },
 
       toggleButton: {
@@ -62,7 +73,9 @@ export function createStyles({ isLight, colors }: Theme) {
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
         borderRadius: 18,
+        width: 100,
       },
       toggleButtonHovered: {
         backgroundColor: '#EEE',

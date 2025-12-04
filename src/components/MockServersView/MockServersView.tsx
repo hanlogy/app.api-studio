@@ -81,6 +81,16 @@ export function MockServersView() {
         {currentServer ? (
           <View style={serverContext.container}>
             <View style={serverContext.toolbar}>
+              <View>
+                <Text style={serverContext.statusText}>
+                  {isRunning ? 'Running' : 'Stopped'}
+                </Text>
+                <Text style={serverContext.statusTip}>
+                  You need to restart the server each time the config is
+                  changed.
+                </Text>
+              </View>
+
               <Clickable
                 onPress={() => toggleServer()}
                 style={serverContext.toggleButton}
