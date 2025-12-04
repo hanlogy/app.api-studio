@@ -1,4 +1,9 @@
-import type { JsonRecord } from '@/definitions';
+import type {
+  JsonRecord,
+  PathParams,
+  RequestHeaders,
+  RequestQuery,
+} from '@/definitions';
 
 export interface RequestEvent {
   readonly port: number;
@@ -13,7 +18,7 @@ export interface ErrorEvent {
 
 export type ServerResponse = {
   status: number;
-  headers?: Record<string, string>;
+  headers?: RequestHeaders;
   body: string;
 };
 
@@ -24,8 +29,8 @@ export interface ServerRequest {
   readonly method: string;
   readonly path: string;
   readonly rawPath: string;
-  readonly headers: Record<string, string>;
-  readonly pathParams?: Record<string, string>;
-  readonly query?: Record<string, string>;
+  readonly headers: RequestHeaders;
+  readonly pathParams?: PathParams;
+  readonly query?: RequestQuery;
   readonly body: string | JsonRecord;
 }
