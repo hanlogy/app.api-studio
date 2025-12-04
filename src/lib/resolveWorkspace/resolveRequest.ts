@@ -1,19 +1,17 @@
-import {
-  type ValuesMap,
-  type Request,
-  type JsonValue,
-  type RequestMethod,
-  requestMethods,
-} from '@/definitions';
+import { type ValuesMap, type Request, type JsonValue } from '@/definitions';
 import { isPlainObject } from '@/helpers/checkTypes';
 import { resolveValuesMap } from './resolveValuesMap';
 import { resolveJsonValue } from './resolveJsonValue';
 import { pickWhenString, removeUndefined } from '@/helpers/filterValues';
-import { resolvedOrder, resolveStringRecord } from './simpleResolvers';
+import {
+  resolveOrder,
+  resolveMethod,
+  resolveStringRecord,
+} from './simpleResolvers';
 import { resolveResourceKeys } from './resolveResourceKeys';
 import { resolveUrl } from './resolveUrl';
 
-export function resolveRequestResource({
+export function resolveRequest({
   source,
   collectionKey,
   baseUrl,
@@ -64,7 +62,7 @@ export function resolveRequestResource({
 
   return removeUndefined({
     ...keys,
-    order: resolvedOrder(order),
+    order: resolveOrder(order),
     description: pickWhenString(description),
     url: resolveUrl({ source: url, valuesMap, baseUrl, query: resolvedQuery }),
     method: resolveMethod({ source: method }),
@@ -73,21 +71,4 @@ export function resolveRequestResource({
     body: resolveJsonValue({ source: body, valuesMap }),
     valuesMap: localValuesMap,
   });
-}
-
-function resolveMethod({
-  source,
-}: {
-  source: JsonValue;
-}): RequestMethod | undefined {
-  if (!source || typeof source !== 'string') {
-    return undefined;
-  }
-
-  source = source.toUpperCase();
-
-  if (requestMethods.some(e => e === source)) {
-    return source as RequestMethod;
-  }
-  return undefined;
 }

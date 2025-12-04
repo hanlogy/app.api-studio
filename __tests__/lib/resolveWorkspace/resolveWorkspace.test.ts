@@ -3,13 +3,17 @@ import { resolveWorkspace } from '@/lib/resolveWorkspace/resolveWorkspace';
 describe('resolveWorkspace', () => {
   test('invalid source', () => {
     expect(
-      resolveWorkspace({ sources: { config: null, collections: [] } }),
+      resolveWorkspace({
+        sources: { config: null, collections: [], servers: [] },
+      }),
     ).toBeUndefined();
   });
 
   test('empty input', () => {
     expect(
-      resolveWorkspace({ sources: { config: {}, collections: [] } }),
+      resolveWorkspace({
+        sources: { config: {}, collections: [], servers: [] },
+      }),
     ).toBeUndefined();
   });
 
@@ -50,6 +54,23 @@ describe('resolveWorkspace', () => {
                     lastName: '{{lastName}}',
                     level: '{{level}}',
                   },
+                },
+              ],
+            },
+          ],
+          servers: [
+            {
+              name: 'My Server',
+              port: 20,
+              routes: [
+                {
+                  name: 'user',
+                  method: 'ALL',
+                  cases: [
+                    {
+                      forward: 'https://foo',
+                    },
+                  ],
                 },
               ],
             },
@@ -105,6 +126,26 @@ describe('resolveWorkspace', () => {
                 lastName: 'bar',
                 level: 8,
               },
+            },
+          ],
+        },
+      ],
+      servers: [
+        {
+          name: 'My Server',
+          order: expect.any(Number),
+          port: 20,
+          routes: [
+            {
+              name: 'user',
+              method: 'ALL',
+              order: expect.any(Number),
+              path: '',
+              cases: [
+                {
+                  forward: 'https://foo',
+                },
+              ],
             },
           ],
         },

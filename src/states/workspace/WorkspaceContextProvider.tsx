@@ -33,6 +33,7 @@ import {
 import { loadScripts, type ScriptFunctions } from '@/repositories/loadScripts';
 import { hasVariable } from './hasVariable';
 import { upsertRuntimeVariable } from '@/helpers/upsertRuntimeVariable';
+import { HttpServer } from '@/lib/HttpServer';
 
 export function WorkspaceContextProvider({
   children,
@@ -42,9 +43,11 @@ export function WorkspaceContextProvider({
   const { setError, updateRecentWorkspace } = useStudioContext();
   const [status, setStatus] = useState<WorkspaceStatus>('waiting');
   const [sources, setSources] = useState<WorkspaceSource>();
+  const [runningServers, setRunningServers] = useState<number[]>([]);
   const [runtimeWorkspace, setRuntimeWorkspace] = useState<RuntimeWorkspace>(
     {},
   );
+  const serversRef = useRef<Record<number, HttpServer>>({});
   // TODO: We might move pinnedResources, previewingResource to RequestView
   // state
   const [pinnedResources, setPinnedResources] = useState<
@@ -217,6 +220,59 @@ export function WorkspaceContextProvider({
     setPreviewingResource(key);
   }, []);
 
+  const isServerRunning = useCallback(
+    (port: number) => {
+      return runningServers.some(e => e === port);
+    },
+    [runningServers],
+  );
+
+  const startServer = useCallback(
+    (port: number) => {
+      const workspaceDir = workspace?.dir;
+      const servers = workspace?.servers;
+
+      if (!workspaceDir || !servers || isServerRunning(port)) {
+        return;
+      }
+
+      const config = servers.find(e => e.port === port);
+      if (!config) {
+        return;
+      }
+
+      const server = new HttpServer({
+        workspaceDir,
+        config,
+      });
+
+      server.start();
+      serversRef.current[port] = server;
+      setRunningServers(prev => {
+        return [...prev, port];
+      });
+    },
+    [workspace?.dir, workspace?.servers, isServerRunning],
+  );
+
+  const stopServer = useCallback(
+    (port: number) => {
+      if (!workspace || !isServerRunning(port)) {
+        return;
+      }
+      const ref = serversRef.current[port];
+      if (!ref) {
+        return;
+      }
+      ref.stop();
+
+      setRunningServers(prev => {
+        return [...prev].filter(e => e !== port);
+      });
+    },
+    [workspace, isServerRunning],
+  );
+
   const value = useMemo<WorkspaceContextValue>(() => {
     const common = {
       selectedEnvironment,
@@ -231,7 +287,15 @@ export function WorkspaceContextProvider({
     }
 
     if (status === 'ready' && workspace) {
-      return { ...common, status, workspace, sendRequest };
+      return {
+        ...common,
+        status,
+        workspace,
+        sendRequest,
+        isServerRunning,
+        startServer,
+        stopServer,
+      };
     }
 
     throw new Error('This should never happen.');
@@ -243,6 +307,9 @@ export function WorkspaceContextProvider({
     sendRequest,
     histories,
     openResource,
+    isServerRunning,
+    startServer,
+    stopServer,
   ]);
 
   return <WorkspaceContext value={value}>{children}</WorkspaceContext>;

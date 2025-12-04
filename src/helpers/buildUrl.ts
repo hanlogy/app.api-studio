@@ -1,4 +1,5 @@
-import { type PrimitiveRecord } from '@/definitions';
+import { type RequestQuery } from '@/definitions';
+import { buildQueryString } from './buildQueryString';
 
 export function buildUrl({
   url,
@@ -7,22 +8,15 @@ export function buildUrl({
 }: {
   url?: string;
   baseUrl?: string;
-  query?: PrimitiveRecord<string>;
+  query?: RequestQuery;
 } = {}): string {
-  const queryString = Object.entries(query)
-    .map(
-      ([key, value]) =>
-        `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`,
-    )
-    .join('&');
-
   const mergedUrl = [baseUrl, url]
     .filter(Boolean)
     .map(e => e?.replace(/\/*$/, ''))
     .join('/');
 
   const [path, existingQueryString] = mergedUrl.split('?', 2);
-  const fullQuery = [existingQueryString, queryString]
+  const fullQuery = [existingQueryString, buildQueryString(query)]
     .filter(Boolean)
     .join('&');
 
