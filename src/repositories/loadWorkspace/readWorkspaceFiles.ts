@@ -151,7 +151,7 @@ export async function readWorkspaceFiles({
         file,
         content: file.endsWith('.json')
           ? await readJsonRecordAndResolveFile({ dir: collectionsDir, file })
-          : await readPlainText({ dir: collectionsDir, file }),
+          : await readPlainText(`${collectionsDir}/${file}`),
       })),
     )
   ).filter(

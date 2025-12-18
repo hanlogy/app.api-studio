@@ -14,7 +14,7 @@ export async function readJsonRecord({
   dir?: string;
   file: string;
 }): Promise<JsonRecord | null> {
-  const content = await readPlainText({ dir, file });
+  const content = await readPlainText(buildFilePath({ dir, file }));
   if (!content) {
     return null;
   }
@@ -50,14 +50,7 @@ export async function writeJsonRecord({
   await RNFS.writeFile(path, JSON.stringify(data), 'utf8');
 }
 
-export async function readPlainText({
-  dir = CACHE_FOLDER,
-  file,
-}: {
-  dir?: string;
-  file: string;
-}): Promise<string | null> {
-  const path = buildFilePath({ dir, file });
+export async function readPlainText(path: string): Promise<string | null> {
   const exists = await RNFS.exists(path);
   if (!exists) {
     return null;
