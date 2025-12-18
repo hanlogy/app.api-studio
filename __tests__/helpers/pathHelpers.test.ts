@@ -1,4 +1,5 @@
 import {
+  joinPath,
   getDirFromFilePath,
   normalizePath,
   resolvePath,
@@ -15,7 +16,7 @@ describe('getDirFromFilePath', () => {
 
   test('absolute path', () => {
     expect(getDirFromFilePath('/var/log/app.log')).toBe('/var/log');
-  }) ;
+  });
 });
 
 describe('normalizePath', () => {
@@ -95,5 +96,31 @@ describe('resolvePath', () => {
         relativePath: '///users/app.log',
       }),
     ).toBe('/var/log/users/app.log');
+  });
+});
+
+describe('joinPath', () => {
+  test('string parts', () => {
+    expect(joinPath('api', 'v1', 'users')).toBe('api/v1/users');
+  });
+
+  test('array overload', () => {
+    expect(joinPath(['api', 'v1', 'users'])).toBe('api/v1/users');
+  });
+
+  test('numbers', () => {
+    expect(joinPath('users', 123, 'profile')).toBe('users/123/profile');
+  });
+
+  test('normalization', () => {
+    expect(joinPath('api/', '/v1/', '/users/')).toBe('api/v1/users');
+  });
+
+  test('empty input', () => {
+    expect(joinPath([])).toBe('');
+  });
+
+  it('filters invalid', () => {
+    expect(joinPath(['api', '', 'v1', ''])).toBe('api/v1');
   });
 });

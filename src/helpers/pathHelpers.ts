@@ -1,3 +1,14 @@
+type PathParts = (string | number)[];
+
+export function joinPath(args: PathParts): string;
+export function joinPath(...args: PathParts): string;
+export function joinPath(...input: [PathParts] | PathParts): string {
+  const parts = (Array.isArray(input[0]) ? input[0] : input)
+    .filter(Boolean)
+    .map(String);
+  return normalizePath(parts.join('/'));
+}
+
 // Remove the duplicated slash and the tailing slash
 export function normalizePath(path: string): string {
   return path.replace(/\/+/g, '/').replace(/\/$/, '');
