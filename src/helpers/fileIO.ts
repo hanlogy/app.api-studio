@@ -1,20 +1,12 @@
 import { type JsonRecord } from '@/definitions';
 import RNFS from 'react-native-fs';
 import { isPlainObject } from './checkTypes';
+import { getDirFromFilePath } from './pathHelpers';
 
 export const CACHE_FOLDER = `${RNFS.LibraryDirectoryPath}/Application Support/ApiStudio`;
 
-const buildFilePath = ({ dir, file }: { dir: string; file: string }) =>
-  `${dir}/${file}`;
-
-export async function readJsonRecord({
-  dir = CACHE_FOLDER,
-  file,
-}: {
-  dir?: string;
-  file: string;
-}): Promise<JsonRecord | null> {
-  const content = await readPlainText(buildFilePath({ dir, file }));
+export async function readJsonRecord(path: string): Promise<JsonRecord | null> {
+  const content = await readPlainText(path);
   if (!content) {
     return null;
   }
@@ -33,19 +25,17 @@ export async function readJsonRecord({
 }
 
 export async function writeJsonRecord({
-  dir = CACHE_FOLDER,
-  file,
+  path,
   data,
 }: {
-  dir?: string;
-  file: string;
+  path: string;
   data: unknown;
 }) {
   if (!isPlainObject(data)) {
     return;
   }
 
-  const path = buildFilePath({ dir, file });
+  const dir = getDirFromFilePath(path);
   await RNFS.mkdir(dir);
   await RNFS.writeFile(path, JSON.stringify(data), 'utf8');
 }

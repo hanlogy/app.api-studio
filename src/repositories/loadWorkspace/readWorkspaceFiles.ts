@@ -9,7 +9,7 @@ import {
 } from '@/definitions';
 import { parseRequestFileName } from './helpers';
 import { resolveFilePlaceholders } from './resolveFilePlaceholders';
-import { getDirFromFilePath } from '@/helpers/pathHelpers';
+import { getDirFromFilePath, joinPath } from '@/helpers/pathHelpers';
 
 function buildCollectionsTree(
   flat: readonly { file: string; content: string | JsonRecord }[],
@@ -114,7 +114,7 @@ async function readJsonRecordAndResolveFile({
   readonly dir: string;
   readonly file: string;
 }) {
-  const content = await readJsonRecord({ dir, file });
+  const content = await readJsonRecord(joinPath(dir, file));
   if (!content) {
     return content;
   }

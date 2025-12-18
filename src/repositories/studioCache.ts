@@ -1,8 +1,13 @@
 import { type JsonRecord, STUDIO_CACHE_FILE } from '@/definitions';
-import { readJsonRecord, writeJsonRecord } from '@/helpers/fileIO';
+import {
+  CACHE_FOLDER,
+  readJsonRecord,
+  writeJsonRecord,
+} from '@/helpers/fileIO';
 import { isPlainObject } from '@/helpers/checkTypes';
 import { type StudioStateCache } from '@/states/studio/types';
 import { pickWhenString, removeUndefined } from '@/helpers/filterValues';
+import { joinPath } from '@/helpers/pathHelpers';
 
 var data: StudioStateCache = {};
 
@@ -13,15 +18,13 @@ export async function updateStudioCache<K extends keyof StudioStateCache>(
   data[name] = value;
 
   await writeJsonRecord({
-    file: STUDIO_CACHE_FILE,
+    path: joinPath(CACHE_FOLDER, STUDIO_CACHE_FILE),
     data: data,
   });
 }
 
 export async function readStudioCache(): Promise<StudioStateCache> {
-  const cache = await readJsonRecord({
-    file: STUDIO_CACHE_FILE,
-  });
+  const cache = await readJsonRecord(joinPath(CACHE_FOLDER, STUDIO_CACHE_FILE));
 
   data = parseStudioCache(cache) ?? {};
   return data;
