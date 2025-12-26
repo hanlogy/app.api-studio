@@ -40,6 +40,7 @@ export function collectExternalRefs(
       }
 
       // do not walk siblings
+      // https://spec.openapis.org/oas/v3.1.2.html#reference-object
       return;
     }
 
