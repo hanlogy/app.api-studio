@@ -1,24 +1,29 @@
-import { type JsonRecord } from '@/definitions';
+import YAML from 'yaml';
 import RNFS from 'react-native-fs';
+
+import { type JsonRecord } from '@/definitions';
 import { isPlainObject } from './checkTypes';
 import { getDirFromFilePath } from './pathHelpers';
+import { getExtension } from './fileHelpers';
 
 export const CACHE_FOLDER = `${RNFS.LibraryDirectoryPath}/Application Support/ApiStudio`;
 
+// Support `.json`, `.yaml`, '.yml'
 export async function readJsonRecord(path: string): Promise<JsonRecord | null> {
-  const content = await readPlainText(path);
-  if (!content) {
+  const type = getExtension(path);
+
+  if (!type || ['.json', '.yaml', '.yml'].includes(type)) {
+    return null;
+  }
+
+  const text = await readPlainText(path);
+  if (!text) {
     return null;
   }
 
   try {
-    const value = JSON.parse(content);
-
-    if (isPlainObject(value)) {
-      return value as JsonRecord;
-    }
-
-    return null;
+    const value = type === 'json' ? JSON.parse(text) : YAML.parse(text);
+    return isPlainObject(value) ? (value as JsonRecord) : null;
   } catch {
     return null;
   }
