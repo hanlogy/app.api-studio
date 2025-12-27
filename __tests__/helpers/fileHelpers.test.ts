@@ -2,14 +2,14 @@ import { getExtension } from '@/helpers/fileHelpers';
 
 describe('getExtension', () => {
   test('returns lowercase extension, keeps leading dot', () => {
-    expect(getExtension('foo.JPG')).toBe('.jpg');
-    expect(getExtension('tar.PdF')).toBe('.pdf');
+    expect(getExtension('foo.JPG')).toBe('jpg');
+    expect(getExtension('tar.PdF')).toBe('pdf');
   });
 
   test('multi-dot filenames', () => {
-    expect(getExtension('foo.tar.gz')).toBe('.gz');
-    expect(getExtension('a.b.c')).toBe('.c');
-    expect(getExtension('a..b')).toBe('.b');
+    expect(getExtension('foo.tar.gz')).toBe('gz');
+    expect(getExtension('a.b.c')).toBe('c');
+    expect(getExtension('a..b')).toBe('b');
   });
 
   test('no dot', () => {
@@ -25,7 +25,7 @@ describe('getExtension', () => {
   });
 
   test('with paths', () => {
-    expect(getExtension('/path/to/file.TXT')).toBe('.txt');
-    expect(getExtension('C:\\path\\to\\file.zip')).toBe('.zip');
+    expect(getExtension('/path/to/file.TXT')).toBe('txt');
+    expect(getExtension('C:\\path\\to\\file.zip')).toBe('zip');
   });
 });

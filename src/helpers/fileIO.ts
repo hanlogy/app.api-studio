@@ -12,7 +12,7 @@ export const CACHE_FOLDER = `${RNFS.LibraryDirectoryPath}/Application Support/Ap
 export async function readJsonRecord(path: string): Promise<JsonRecord | null> {
   const extension = getExtension(path);
 
-  if (!extension || !['.json', '.yaml', '.yml'].includes(extension)) {
+  if (!extension || !['json', 'yaml', 'yml'].includes(extension)) {
     return null;
   }
 
@@ -22,7 +22,7 @@ export async function readJsonRecord(path: string): Promise<JsonRecord | null> {
   }
 
   try {
-    const value = extension === '.json' ? JSON.parse(text) : YAML.parse(text);
+    const value = extension === 'json' ? JSON.parse(text) : YAML.parse(text);
     return isPlainObject(value) ? (value as JsonRecord) : null;
   } catch {
     return null;
