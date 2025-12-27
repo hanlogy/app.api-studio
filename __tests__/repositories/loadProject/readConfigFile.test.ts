@@ -2,10 +2,14 @@ import { readConfigFile } from '@/repositories/loadProject/readConfigFile';
 import { readJsonRecord } from '@/helpers/fileIO';
 import { joinPath, resolvePath } from '@/helpers/pathHelpers';
 
-jest.mock('@/definitions', () => ({
-  WORKSPACE_CONFIG_FILE: 'config.json',
-  WORKSPACE_DIR: 'api-studio',
-}));
+jest.mock('@/definitions', () => {
+  const actual = jest.requireActual('@/definitions');
+  return {
+    ...actual,
+    WORKSPACE_CONFIG_FILE: 'config.json',
+    WORKSPACE_DIR: 'api-studio',
+  };
+});
 
 jest.mock('@/helpers/fileIO', () => ({
   readJsonRecord: jest.fn(),
@@ -37,23 +41,36 @@ beforeEach(() => {
 
 describe('readConfigFile', () => {
   test('config file does not exist', async () => {
-    mockReadJsonRecord.mockResolvedValueOnce(null);
-
-    await expect(readConfigFile('/project')).resolves.toBeNull();
+    mockReadJsonRecord.mockRejectedValueOnce({
+      code: 'fileNotFound',
+    });
+    await expect(readConfigFile('/project')).rejects.toMatchObject({
+      code: 'fileNotFound',
+    });
   });
 
   test('invalid openapi value', async () => {
-    mockReadJsonRecord.mockResolvedValueOnce({ overlays: ['a.yaml'] });
-    await expect(readConfigFile('/project')).resolves.toBeNull();
+    mockReadJsonRecord.mockResolvedValueOnce({
+      json: { overlays: ['a.yaml'] },
+    });
 
-    mockReadJsonRecord.mockResolvedValueOnce({ openapi: 123 });
-    await expect(readConfigFile('/project')).resolves.toBeNull();
+    await expect(readConfigFile('/project')).rejects.toMatchObject({
+      code: 'invalidOpenapi',
+    });
+
+    mockReadJsonRecord.mockResolvedValueOnce({ json: { openapi: 123 } });
+
+    await expect(readConfigFile('/project')).rejects.toMatchObject({
+      code: 'invalidOpenapi',
+    });
 
     expect(mockResolvePath).not.toHaveBeenCalled();
   });
 
   test('no overlays', async () => {
-    mockReadJsonRecord.mockResolvedValueOnce({ openapi: './openapi.yaml' });
+    mockReadJsonRecord.mockResolvedValueOnce({
+      json: { openapi: './openapi.yaml' },
+    });
 
     await expect(readConfigFile('/project')).resolves.toEqual({
       openApiEntryPath: '/project/api-studio::./openapi.yaml',
@@ -68,8 +85,10 @@ describe('readConfigFile', () => {
 
   test('parses overlaysPaths', async () => {
     mockReadJsonRecord.mockResolvedValueOnce({
-      openapi: 'openapi.yaml',
-      overlays: ['o1.yaml', 123, null, { a: 1 }, 'o2.yaml'],
+      json: {
+        openapi: 'openapi.yaml',
+        overlays: ['o1.yaml', 123, null, { a: 1 }, 'o2.yaml'],
+      },
     });
 
     await expect(readConfigFile('/project')).resolves.toEqual({
@@ -85,8 +104,10 @@ describe('readConfigFile', () => {
 
   test('overlays is not an array', async () => {
     mockReadJsonRecord.mockResolvedValueOnce({
-      openapi: 'openapi.yaml',
-      overlays: 'not-an-array',
+      json: {
+        openapi: 'openapi.yaml',
+        overlays: 'not-an-array',
+      },
     });
 
     await expect(readConfigFile('/project')).resolves.toEqual({

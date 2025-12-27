@@ -1,23 +1,22 @@
-import { WORKSPACE_CONFIG_FILE, WORKSPACE_DIR } from '@/definitions';
+import { AppError, WORKSPACE_CONFIG_FILE, WORKSPACE_DIR } from '@/definitions';
 import { readJsonRecord } from '@/helpers/fileIO';
 import { joinPath, resolvePath } from '@/helpers/pathHelpers';
 
 export async function readConfigFile(
   projectDir: string,
-): Promise<{ openApiEntryPath: string; overlaysPaths: string[] } | null> {
+): Promise<{ openApiEntryPath: string; overlaysPaths: string[] }> {
   const apiStudioDir = joinPath(projectDir, WORKSPACE_DIR);
   const configPath = joinPath(apiStudioDir, WORKSPACE_CONFIG_FILE);
-  const configData = await readJsonRecord(configPath);
-
-  if (!configData) {
-    return null;
-  }
+  const { json } = await readJsonRecord(configPath);
 
   const { openapi: openApiRelativePath, overlays: overlaysRelativePaths } =
-    configData;
+    json;
 
   if (typeof openApiRelativePath !== 'string') {
-    return null;
+    throw new AppError({
+      code: 'invalidOpenapi',
+      message: 'openapi path is invalid',
+    });
   }
 
   const openApiEntryPath = resolvePath({
