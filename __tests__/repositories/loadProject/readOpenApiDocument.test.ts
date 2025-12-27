@@ -23,24 +23,6 @@ describe('readOpenApiDocument', () => {
     jest.clearAllMocks();
   });
 
-  test('URL refs', async () => {
-    await expect(
-      readOpenApiDocument('https://example.com/openapi.json'),
-    ).rejects.toBeInstanceOf(AppError);
-
-    await expect(
-      readOpenApiDocument('https://example.com/openapi.json'),
-    ).rejects.toMatchObject({
-      code: 'unsupportedTarget',
-      message: expect.any(String),
-      data: { path: 'https://example.com/openapi.json' },
-    });
-
-    expect(readJsonRecordMock).not.toHaveBeenCalled();
-    expect(getFileInfoMock).not.toHaveBeenCalled();
-    expect(fnv1a32HexMock).not.toHaveBeenCalled();
-  });
-
   test('success', async () => {
     const path = '/tmp/spec.json';
     const mtime = new Date('2025-12-27T10:00:00.000Z').getTime();
@@ -53,7 +35,7 @@ describe('readOpenApiDocument', () => {
 
     await expect(readOpenApiDocument(path)).resolves.toEqual({
       path,
-      format: 'json',
+      type: 'json',
       text,
       mtime,
       json,

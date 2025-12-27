@@ -1,10 +1,7 @@
 import { getFileInfo, readJsonRecord } from '@/helpers/fileIO';
-import { type OpenApiDocument } from './types';
 import { AppError } from '@/definitions';
 import { fnv1a32Hex } from '@/helpers/fnv1a32Hex';
-import { isUrlRef } from './isUrlRef';
-
-type LoadedOpenApiDocument = Omit<OpenApiDocument, 'externalRefs'>;
+import type { JsonRecordDocument } from './types';
 
 async function withAppError<T>(
   run: () => Promise<T>,
@@ -27,15 +24,7 @@ async function withAppError<T>(
 
 export async function readOpenApiDocument(
   path: string,
-): Promise<LoadedOpenApiDocument> {
-  if (isUrlRef(path)) {
-    throw new AppError({
-      code: 'unsupportedTarget',
-      message: 'url ref is not supported',
-      data: { path },
-    });
-  }
-
+): Promise<JsonRecordDocument> {
   const [data, fileInfo] = await Promise.all([
     withAppError(() => readJsonRecord(path), {
       message: `failed to read and parse from ${path}`,
@@ -48,15 +37,14 @@ export async function readOpenApiDocument(
     }),
   ]);
 
-  const { json, type: format, text } = data;
-  const { mtime } = fileInfo;
+  const { json, type, text } = data;
 
   return {
     path,
-    format,
+    type,
     text,
-    mtime,
     json,
+    mtime: fileInfo.mtime,
     hash: fnv1a32Hex(text),
   };
 }
