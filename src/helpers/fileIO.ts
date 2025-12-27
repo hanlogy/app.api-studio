@@ -8,17 +8,29 @@ import { getExtension } from './fileHelpers';
 
 export const CACHE_FOLDER = `${RNFS.LibraryDirectoryPath}/Application Support/ApiStudio`;
 
+export type JsonRecordFileType = 'yaml' | 'json';
+
 export interface ReadJsonRecordResult {
-  type: 'yaml' | 'json';
+  type: JsonRecordFileType;
   json: JsonRecord;
   text: string;
 }
+
+export type FileStatResult = RNFS.StatResult;
 
 const TYPE_MAP: Record<string, 'json' | 'yaml'> = {
   json: 'json',
   yaml: 'yaml',
   yml: 'yaml',
 };
+
+function createFileNotFoundError(path: string) {
+  return new AppError({
+    code: 'fileNotFound',
+    message: `File not found: ${path}`,
+    data: { path },
+  });
+}
 
 // Support `json`, `yaml`, `yml`
 export async function readJsonRecord(
@@ -87,11 +99,7 @@ export async function writeJsonRecord({
 export async function readPlainText(path: string): Promise<string> {
   const exists = await RNFS.exists(path);
   if (!exists) {
-    throw new AppError({
-      code: 'fileNotFound',
-      message: `File not found: ${path}`,
-      data: { path },
-    });
+    throw createFileNotFoundError(path);
   }
 
   try {
@@ -105,10 +113,11 @@ export async function readPlainText(path: string): Promise<string> {
   }
 }
 
-export async function getFileInfo(path: string) {
-  const { mtime } = await RNFS.stat(path);
+export async function getFileInfo(path: string): Promise<FileStatResult> {
+  const exists = await RNFS.exists(path);
+  if (!exists) {
+    throw createFileNotFoundError(path);
+  }
 
-  return {
-    mtime,
-  };
+  return await RNFS.stat(path);
 }
