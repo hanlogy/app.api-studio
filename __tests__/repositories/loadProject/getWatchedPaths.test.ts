@@ -8,7 +8,12 @@ describe('getWatchedPaths', () => {
       projectDir: '/root',
       configPath: '/root/api_studio/config.json',
       entryPath: '/root/openapi.yaml',
-      overlaysPaths: ['/root/overlays/a.yaml', '/root/overlays/b.yaml'],
+      overlaysPaths: [
+        '/root/overlays/a.yaml',
+        '/root/overlays/b.yaml',
+        'https://example.com/overlays/remote.yaml',
+        'http://example.com/overlays/remote2.yaml',
+      ],
       docs: new Map<string, Doc>([
         [
           '/root/openapi.yaml',
@@ -28,7 +33,11 @@ describe('getWatchedPaths', () => {
           {
             path: '/root/paths.yaml',
             // duplicate across docs
-            externalRefs: ['/root/components.yaml'],
+            externalRefs: [
+              '/root/components.yaml',
+              'https://example.com/refs/remote-ref.yaml',
+              'http://example.com/refs/remote-ref2.yaml',
+            ],
           },
         ],
       ]),
@@ -37,7 +46,7 @@ describe('getWatchedPaths', () => {
 
     const out = getWatchedPaths(project as any);
 
-    expect(new Set(out)).toEqual(
+    expect(new Set(out)).toStrictEqual(
       new Set([
         '/root/api_studio/config.json',
         '/root/openapi.yaml',

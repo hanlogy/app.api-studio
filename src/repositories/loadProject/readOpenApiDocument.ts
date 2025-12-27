@@ -2,14 +2,9 @@ import { getFileInfo, readJsonRecord } from '@/helpers/fileIO';
 import { type OpenApiDocument } from './types';
 import { AppError } from '@/definitions';
 import { fnv1a32Hex } from '@/helpers/fnv1a32Hex';
-
-const URL_REF_RE = /^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//;
+import { isUrlRef } from './isUrlRef';
 
 type LoadedOpenApiDocument = Omit<OpenApiDocument, 'externalRefs'>;
-
-function isUrlRef(s: string): boolean {
-  return URL_REF_RE.test(s);
-}
 
 async function withAppError<T>(
   run: () => Promise<T>,
