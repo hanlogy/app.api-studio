@@ -8,11 +8,22 @@ import { getExtension } from './fileHelpers';
 
 export const CACHE_FOLDER = `${RNFS.LibraryDirectoryPath}/Application Support/ApiStudio`;
 
-// Support `.json`, `.yaml`, '.yml'
-export async function readJsonRecord(path: string): Promise<JsonRecord | null> {
+const TYPE_MAP: Record<string, 'json' | 'yaml'> = {
+  json: 'json',
+  yaml: 'yaml',
+  yml: 'yaml',
+};
+
+// Support `json`, `yaml`, 'yml'
+export async function readJsonRecord(path: string): Promise<{
+  type: 'yaml' | 'json';
+  json: JsonRecord;
+  text: string;
+} | null> {
   const extension = getExtension(path);
 
-  if (!extension || !['json', 'yaml', 'yml'].includes(extension)) {
+  const type = extension && TYPE_MAP[extension];
+  if (!type) {
     return null;
   }
 
@@ -22,8 +33,10 @@ export async function readJsonRecord(path: string): Promise<JsonRecord | null> {
   }
 
   try {
-    const value = extension === 'json' ? JSON.parse(text) : YAML.parse(text);
-    return isPlainObject(value) ? (value as JsonRecord) : null;
+    const value = type === 'json' ? JSON.parse(text) : YAML.parse(text);
+    return isPlainObject(value)
+      ? { json: value as JsonRecord, text, type }
+      : null;
   } catch {
     return null;
   }
