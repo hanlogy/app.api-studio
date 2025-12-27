@@ -15,7 +15,8 @@
     "react": "19.0.0",
     "react-native": "0.78.3",
     "react-native-fs": "^2.20.0",
-    "react-native-macos": "^0.78.6"
+    "react-native-macos": "^0.78.6",
+    "yaml": "^2.8.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
