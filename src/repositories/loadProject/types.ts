@@ -9,7 +9,7 @@ export type OpenApiDocument = {
   mtime: number;
   hash: string;
   json: JsonRecord;
-  // canonical absolute paths or URLs
+  // canonical absolute paths
   externalRefs: string[];
 };
 

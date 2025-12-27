@@ -36,7 +36,7 @@ export async function readOpenApiDocument(
   if (isUrlRef(path)) {
     throw new AppError({
       code: 'unsupportedTarget',
-      message: 'url ref is not supported in this loader',
+      message: 'url ref is not supported',
       data: { path },
     });
   }
