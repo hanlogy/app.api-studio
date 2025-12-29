@@ -11,13 +11,16 @@ export const CACHE_FOLDER = `${RNFS.LibraryDirectoryPath}/Application Support/Ap
 export type JsonRecordFileType = 'yaml' | 'json';
 
 export interface JsonRecordDocument<T extends JsonRecord = JsonRecord> {
-  path: string;
-  type: JsonRecordFileType;
-  text: string;
-  json: T;
+  readonly path: string;
+  readonly type: JsonRecordFileType;
+  readonly text: string;
+  readonly json: T;
 }
 
-export type FileStatResult = RNFS.StatResult;
+export interface FileStatResult {
+  readonly mtime: number;
+  readonly size: number;
+}
 
 const TYPE_MAP: Record<string, 'json' | 'yaml'> = {
   json: 'json',
@@ -100,7 +103,8 @@ export async function readPlainText(path: string): Promise<string> {
 
 export async function statFile(path: string): Promise<FileStatResult> {
   try {
-    return await RNFS.stat(path);
+    const { mtime, size } = await RNFS.stat(path);
+    return { mtime, size };
   } catch (e) {
     throw new AppError({
       code: 'statFileFailed',
