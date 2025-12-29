@@ -23,8 +23,11 @@ export async function readJsonRecordWithStat<T extends JsonRecord = JsonRecord>(
       meta: { path },
     });
   }
-  const data = await readJsonRecord<T>(path);
-  const stat = await statFile(path);
+
+  const [data, stat] = await Promise.all([
+    readJsonRecord<T>(path),
+    statFile(path),
+  ]);
 
   return { ...data, ...stat, hash: fnv1a32Hex(data.text) };
 }

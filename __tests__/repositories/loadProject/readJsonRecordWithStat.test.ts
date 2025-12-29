@@ -66,7 +66,6 @@ describe('readJsonRecordWithStat', () => {
     readJsonRecordMock.mockRejectedValue(error);
 
     await expect(readJsonRecordWithStat(path)).rejects.toBe(error);
-    expect(statFileMock).not.toHaveBeenCalled();
   });
 
   test('statFile throws', async () => {

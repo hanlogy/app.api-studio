@@ -13,3 +13,9 @@ export interface JsonRecordDocumentWithStat<T extends JsonRecord = JsonRecord>
   readonly hash: string;
 }
 
+export type ConfigDocument = JsonRecordDocumentWithStat<{
+  openapi: string;
+  overlays: string[];
+}>;
+
+export type OpenApiDocument = JsonRecordDocumentWithStat;
