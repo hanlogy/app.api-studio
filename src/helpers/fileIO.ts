@@ -1,26 +1,72 @@
-import { type JsonRecord } from '@/definitions';
+import YAML from 'yaml';
 import RNFS from 'react-native-fs';
+
+import { AppError, type JsonRecord } from '@/definitions';
 import { isPlainObject } from './checkTypes';
 import { getDirFromFilePath } from './pathHelpers';
+import { getExtension } from './fileHelpers';
 
 export const CACHE_FOLDER = `${RNFS.LibraryDirectoryPath}/Application Support/ApiStudio`;
 
-export async function readJsonRecord(path: string): Promise<JsonRecord | null> {
-  const content = await readPlainText(path);
-  if (!content) {
-    return null;
+export type JsonRecordFileType = 'yaml' | 'json';
+
+export interface JsonRecordDocument<T extends JsonRecord = JsonRecord> {
+  path: string;
+  type: JsonRecordFileType;
+  text: string;
+  json: T;
+}
+
+export type FileStatResult = RNFS.StatResult;
+
+const TYPE_MAP: Record<string, 'json' | 'yaml'> = {
+  json: 'json',
+  yaml: 'yaml',
+  yml: 'yaml',
+};
+
+// Support `json`, `yaml`, `yml`
+export async function readJsonRecord<T extends JsonRecord = JsonRecord>(
+  path: string,
+): Promise<JsonRecordDocument<T>> {
+  const extension = getExtension(path);
+  const type = extension && TYPE_MAP[extension];
+  const errorMeta = { path };
+
+  if (!type) {
+    throw new AppError({
+      code: 'unsupportedFileType',
+      message: `Unsupported file type ".${
+        extension || 'unknown'
+      }". Only .json, .yml, .yaml are supported.`,
+      meta: errorMeta,
+    });
   }
 
-  try {
-    const value = JSON.parse(content);
+  const text = await readPlainText(path);
 
-    if (isPlainObject(value)) {
-      return value as JsonRecord;
+  try {
+    const value = type === 'json' ? JSON.parse(text) : YAML.parse(text);
+
+    if (!isPlainObject(value)) {
+      throw new AppError({
+        code: 'invalidRecord',
+        message: `Invalid ${type} content: expected an object record.`,
+        meta: errorMeta,
+      });
     }
 
-    return null;
-  } catch {
-    return null;
+    return { json: value as T, text, type, path };
+  } catch (e) {
+    if (e instanceof AppError) {
+      throw AppError.from(e, { meta: errorMeta });
+    }
+
+    throw AppError.from(e, {
+      meta: errorMeta,
+      code: 'parseFailed',
+      message: `Failed to parse ${type} file.`,
+    });
   }
 }
 
@@ -40,11 +86,30 @@ export async function writeJsonRecord({
   await RNFS.writeFile(path, JSON.stringify(data), 'utf8');
 }
 
-export async function readPlainText(path: string): Promise<string | null> {
-  const exists = await RNFS.exists(path);
-  if (!exists) {
-    return null;
+export async function readPlainText(path: string): Promise<string> {
+  try {
+    return await RNFS.readFile(path, 'utf8');
+  } catch (e) {
+    throw new AppError({
+      code: 'readPlainTextFailed',
+      message: `Failed to read file: ${path}`,
+      meta: { path },
+    });
   }
+}
 
-  return await RNFS.readFile(path, 'utf8');
+export async function statFile(path: string): Promise<FileStatResult> {
+  try {
+    return await RNFS.stat(path);
+  } catch (e) {
+    throw new AppError({
+      code: 'statFileFailed',
+      message: `Failed to stat file: ${path}`,
+      meta: { path },
+    });
+  }
+}
+
+export async function checkFileExists(path: string) {
+  return RNFS.exists(path);
 }
