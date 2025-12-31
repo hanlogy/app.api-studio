@@ -14,8 +14,23 @@ export interface JsonRecordDocumentWithStat<T extends JsonRecord = JsonRecord>
 }
 
 export type ConfigDocument = JsonRecordDocumentWithStat<{
-  openapi: string;
-  overlays: string[];
+  readonly openapi: string;
+  readonly overlays: readonly string[];
 }>;
 
 export type OpenApiDocument = JsonRecordDocumentWithStat;
+
+export type ReverseDeps = ReadonlyMap<string, readonly string[]>;
+
+export interface ApiStudioProject {
+  readonly projectDir: string;
+  readonly configPath: string;
+  readonly entryPath: string;
+  readonly overlaysPaths: readonly string[];
+  // Including:
+  // - config file
+  // - entry document
+  // - overlays documents
+  readonly docs: ReadonlyMap<string, ConfigDocument | OpenApiDocument>;
+  readonly reverseDeps: ReverseDeps;
+}
