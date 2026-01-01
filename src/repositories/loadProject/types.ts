@@ -20,7 +20,7 @@ export type ConfigDocument = JsonRecordDocumentWithStat<{
 
 export type OpenApiDocument = JsonRecordDocumentWithStat;
 
-export type ReverseDeps = ReadonlyMap<string, readonly string[]>;
+export type ReverseDeps = ReadonlyMap<string, ReadonlySet<string>>;
 
 export interface ApiStudioProject {
   readonly projectDir: string;
