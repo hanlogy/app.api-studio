@@ -1,4 +1,10 @@
+/**
+ * @deprecated use API_STUDIO_DIR
+ */
+export const WORKSPACE_DIR = 'api_studio' as const;
 export const WORKSPACE_CONFIG_FILE = 'config.json' as const;
+export const API_STUDIO_DIR = 'api_studio' as const;
+
 export const WORKSPACE_COLLECTIONS_DIR = 'collections' as const;
 export const WORKSPACE_SERVERS_DIR = 'servers' as const;
 export const GLOBAL_ENV_NAME = '@global';
