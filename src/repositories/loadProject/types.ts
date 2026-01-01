@@ -26,7 +26,7 @@ export interface ApiStudioProject {
   readonly projectDir: string;
   readonly configPath: string;
   readonly entryPath: string;
-  readonly overlaysPaths: readonly string[];
+  readonly overlayPaths: readonly string[];
   // Including:
   // - config file
   // - entry document

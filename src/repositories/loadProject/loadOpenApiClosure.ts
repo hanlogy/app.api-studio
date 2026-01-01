@@ -3,7 +3,7 @@ import { collectExternalRefs } from './collectExternalRefs';
 import type { OpenApiDocument } from './types';
 import { readJsonRecordWithStat } from './readJsonRecordWithStat';
 
-export async function loadOpenApiClosure(entryPath: string): Promise<{
+export async function loadOpenApiClosure(path: string): Promise<{
   openApiDocs: Map<string, OpenApiDocument>;
   forwardDeps: Map<string, Set<string>>;
 }> {
@@ -19,24 +19,24 @@ export async function loadOpenApiClosure(entryPath: string): Promise<{
    */
   const forwardDeps = new Map<string, Set<string>>();
 
-  const queue: string[] = [entryPath];
+  const queue: string[] = [path];
   const visited = new Set<string>();
 
   while (queue.length) {
-    const path = queue.shift();
-    if (!path || visited.has(path)) {
+    const currentPath = queue.shift();
+    if (!currentPath || visited.has(currentPath)) {
       continue;
     }
 
-    visited.add(path);
+    visited.add(currentPath);
 
-    const doc = await readJsonRecordWithStat(path);
-    openApiDocs.set(path, doc);
+    const doc = await readJsonRecordWithStat(currentPath);
+    openApiDocs.set(currentPath, doc);
 
-    const baseDir = getDirFromFilePath(path);
+    const baseDir = getDirFromFilePath(currentPath);
     const refs = collectExternalRefs(doc.json, baseDir);
 
-    forwardDeps.set(path, refs);
+    forwardDeps.set(currentPath, refs);
 
     for (const refPath of refs) {
       if (!visited.has(refPath)) {
