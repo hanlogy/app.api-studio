@@ -1,0 +1,52 @@
+import type { JsonRecord, JsonValue } from '@/definitions';
+import { isPlainObject } from '@/helpers/checkTypes';
+import { resolvePath } from '@/helpers/pathHelpers';
+import { isUrlRef } from './isUrlRef';
+
+// NOTE: The url ref will be ignored
+export function collectExternalRefs(
+  node: JsonRecord,
+  baseDir: string,
+): Set<string> {
+  const out = new Set<string>();
+
+  const walk = (input: JsonValue) => {
+    if (!input) {
+      return;
+    }
+
+    if (Array.isArray(input)) {
+      for (const value of input) {
+        walk(value);
+      }
+      return;
+    }
+
+    if (!isPlainObject(input)) {
+      return;
+    }
+
+    // Spec-accurate: if $ref exists, ignore siblings.
+    const ref = input.$ref;
+    if (typeof ref === 'string') {
+      const raw = ref.trim();
+
+      const filePart = raw.split('#', 1)[0]?.trim() ?? '';
+      if (filePart && !isUrlRef(filePart)) {
+        out.add(resolvePath({ absoluteDir: baseDir, relativePath: filePart }));
+      }
+
+      // do not walk siblings
+      // https://spec.openapis.org/oas/v3.1.2.html#reference-object
+      return;
+    }
+
+    for (const value of Object.values(input)) {
+      walk(value as JsonValue);
+    }
+  };
+
+  walk(node);
+
+  return out;
+}
