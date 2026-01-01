@@ -46,4 +46,16 @@ describe('isSameError', () => {
 
     expect(isSameError(errorA, errorB)).toBe(false);
   });
+
+  test('null values', () => {
+    const error = new AppError({
+      code: 'A',
+      meta: {
+        path: '1',
+      },
+    });
+    expect(isSameError(null, null)).toBe(true);
+    expect(isSameError(error, null)).toBe(false);
+    expect(isSameError(null, error)).toBe(false);
+  });
 });

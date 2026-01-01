@@ -9,6 +9,9 @@ function getPath({ meta }: AppError) {
   return typeof path === 'string' ? path : undefined;
 }
 
-export function isSameError(errorA: AppError, errorB: AppError) {
+export function isSameError(errorA: AppError | null, errorB: AppError | null) {
+  if (!errorA || !errorB) {
+    return errorA === errorB;
+  }
   return errorA.sameAs(errorB) && getPath(errorA) === getPath(errorB);
 }
