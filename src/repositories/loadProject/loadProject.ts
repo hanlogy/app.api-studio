@@ -7,7 +7,7 @@ const POLL_INTERVAL_MS = 2000;
 let timer: NodeJS.Timeout | null = null;
 
 export async function loadProject({
-  dir: projectDir,
+  dir,
   onData,
   onError,
 }: {
@@ -32,10 +32,7 @@ export async function loadProject({
     inFlight = true;
 
     try {
-      const data = await buildProjectData({
-        projectDir,
-        previous: lastData,
-      });
+      const data = await buildProjectData({ dir, previous: lastData });
 
       if (isSameProjectData(data, lastData)) {
         return;

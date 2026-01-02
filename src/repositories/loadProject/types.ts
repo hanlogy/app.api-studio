@@ -18,7 +18,7 @@ export type OpenApiDocument = JsonRecordDocumentWithStat;
 export type DepsGraph = ReadonlyMap<string, ReadonlySet<string>>;
 
 export interface ProjectSource {
-  readonly projectDir: string;
+  readonly dir: string;
   readonly configDoc: ConfigDocument;
   readonly openApiDocs: ReadonlyMap<string, OpenApiDocument>;
   readonly forwardDeps: DepsGraph;

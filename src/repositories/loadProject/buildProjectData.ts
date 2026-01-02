@@ -6,13 +6,13 @@ import { loadOpenApiClosure } from './loadOpenApiClosure';
 import { buildReverseDeps } from './buildReverseDeps';
 
 export async function buildProjectData({
-  projectDir,
+  dir,
   previous,
 }: {
-  projectDir: string;
+  dir: string;
   previous: ProjectSource | null;
 }): Promise<ProjectSource> {
-  const apiStudioDir = joinPath(projectDir, API_STUDIO_DIR);
+  const apiStudioDir = joinPath(dir, API_STUDIO_DIR);
 
   const configDoc = await readConfigFile(apiStudioDir, previous?.configDoc);
   const { openApiDocs, forwardDeps } = await loadOpenApiClosure(
@@ -21,7 +21,7 @@ export async function buildProjectData({
   );
 
   return {
-    projectDir,
+    dir,
     configDoc,
     openApiDocs,
     forwardDeps,

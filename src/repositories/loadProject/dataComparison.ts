@@ -73,7 +73,7 @@ export function isSameProjectData(
   }
 
   if (
-    dataA.projectDir !== dataB.projectDir ||
+    dataA.dir !== dataB.dir ||
     dataA.openApiDocs.size !== dataB.openApiDocs.size ||
     !isSameDocument(dataA.configDoc, dataB.configDoc)
   ) {

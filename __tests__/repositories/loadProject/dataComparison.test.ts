@@ -138,9 +138,9 @@ describe('isSameProjectData', () => {
     expect(isSameProjectData(a, b)).toBe(true);
   });
 
-  test('projectDir differs', () => {
+  test('project dir differs', () => {
     const a = project();
-    const b = project({ projectDir: '/other' });
+    const b = project({ dir: '/other' });
     expect(isSameProjectData(a, b)).toBe(false);
   });
 
@@ -283,7 +283,7 @@ function doc(path: string, mtime: number, hash: string): OpenApiDocument {
 
 function project(overrides: Partial<ProjectSource> = {}): ProjectSource {
   const defaults: ProjectSource = {
-    projectDir: '/p',
+    dir: '/p',
     configDoc: configDoc('/p/api-studio/config.json', 1, 'h1'),
     openApiDocs: new Map<string, ConfigDocument | OpenApiDocument>([
       ['/p/openapi.json', doc('/p/openapi.json', 2, 'h2')],
