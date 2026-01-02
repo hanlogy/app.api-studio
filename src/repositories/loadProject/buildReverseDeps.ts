@@ -1,3 +1,6 @@
+import { isSameDepsGraph } from './dataComparison';
+import type { DepsGraph } from './types';
+
 /**
  * Build reverse dependency graph from forwardDeps.
  *
@@ -11,8 +14,23 @@
  * - Always returns a Set for any key present in the graph (possibly empty).
  */
 export function buildReverseDeps(
-  forwardDeps: Map<string, Set<string>>,
-): Map<string, Set<string>> {
+  forwardDeps: DepsGraph,
+  {
+    previousForwardDeps,
+    previousReverseDeps,
+  }: {
+    previousForwardDeps?: DepsGraph;
+    previousReverseDeps?: DepsGraph;
+  } = {},
+): DepsGraph {
+  if (
+    previousForwardDeps &&
+    previousReverseDeps &&
+    isSameDepsGraph(forwardDeps, previousForwardDeps)
+  ) {
+    return previousReverseDeps;
+  }
+
   const reverseDeps = new Map<string, Set<string>>();
 
   const ensure = (path: string): Set<string> => {

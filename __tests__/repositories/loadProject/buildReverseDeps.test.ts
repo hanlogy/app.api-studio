@@ -31,4 +31,56 @@ describe('buildReverseDeps', () => {
     const reverse = buildReverseDeps(new Map());
     expect(reverse.size).toBe(0);
   });
+
+  describe('with previous states', () => {
+    test('forward graph unchanged', () => {
+      const forward = new Map<string, Set<string>>([
+        ['/a.yaml', new Set(['/b.yaml', '/c.yaml'])],
+        ['/b.yaml', new Set(['/c.yaml'])],
+        ['/c.yaml', new Set()],
+      ]);
+
+      const previousForwardDeps = new Map<string, Set<string>>([
+        ['/a.yaml', new Set(['/b.yaml', '/c.yaml'])],
+        ['/b.yaml', new Set(['/c.yaml'])],
+        ['/c.yaml', new Set()],
+      ]);
+
+      const previousReverseDeps = buildReverseDeps(previousForwardDeps);
+
+      const reverse = buildReverseDeps(forward, {
+        previousForwardDeps,
+        previousReverseDeps,
+      });
+
+      expect(reverse).toBe(previousReverseDeps);
+    });
+
+    test('forward graph changed', () => {
+      const forwardNow = new Map<string, Set<string>>([
+        ['/a.yaml', new Set(['/b.yaml'])],
+        ['/b.yaml', new Set(['/c.yaml'])],
+        ['/c.yaml', new Set()],
+      ]);
+
+      const previousForwardDeps = new Map<string, Set<string>>([
+        ['/a.yaml', new Set(['/b.yaml', '/c.yaml'])],
+        ['/b.yaml', new Set(['/c.yaml'])],
+        ['/c.yaml', new Set()],
+      ]);
+
+      const previousReverseDeps = buildReverseDeps(previousForwardDeps);
+
+      const reverse = buildReverseDeps(forwardNow, {
+        previousForwardDeps,
+        previousReverseDeps,
+      });
+
+      expect(reverse).not.toBe(previousReverseDeps);
+
+      expect(reverse.get('/a.yaml')).toEqual(new Set());
+      expect(reverse.get('/b.yaml')).toEqual(new Set(['/a.yaml']));
+      expect(reverse.get('/c.yaml')).toEqual(new Set(['/b.yaml']));
+    });
+  });
 });

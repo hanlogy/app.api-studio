@@ -15,11 +15,12 @@ export type ConfigDocument = JsonRecordDocumentWithStat<{
 
 export type OpenApiDocument = JsonRecordDocumentWithStat;
 
-export type ReverseDeps = ReadonlyMap<string, ReadonlySet<string>>;
+export type DepsGraph = ReadonlyMap<string, ReadonlySet<string>>;
 
 export interface ApiStudioProject {
   readonly projectDir: string;
   readonly configDoc: ConfigDocument;
   readonly openApiDocs: ReadonlyMap<string, OpenApiDocument>;
-  readonly reverseDeps: ReverseDeps;
+  readonly forwardDeps: DepsGraph;
+  readonly reverseDeps: DepsGraph;
 }

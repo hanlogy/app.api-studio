@@ -3,7 +3,7 @@ import { isPlainObject } from '@/helpers/checkTypes';
 import type {
   ApiStudioProject,
   JsonRecordDocumentWithStat,
-  ReverseDeps,
+  DepsGraph,
 } from './types';
 
 function getPath({ meta }: AppError) {
@@ -37,7 +37,7 @@ function isSameDocument(
   );
 }
 
-export function isSameReverseDeps(depsA?: ReverseDeps, depsB?: ReverseDeps) {
+export function isSameDepsGraph(depsA?: DepsGraph, depsB?: DepsGraph) {
   if (!depsA || !depsB) {
     return depsA === depsB;
   }
@@ -86,7 +86,7 @@ export function isSameProjectData(
     }
   }
 
-  if (!isSameReverseDeps(dataA.reverseDeps, dataB.reverseDeps)) {
+  if (!isSameDepsGraph(dataA.reverseDeps, dataB.reverseDeps)) {
     return false;
   }
 

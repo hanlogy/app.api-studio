@@ -1,14 +1,14 @@
 import { AppError } from '@/definitions';
 import {
+  isSameDepsGraph,
   isSameError,
   isSameProjectData,
-  isSameReverseDeps,
 } from '@/repositories/loadProject/dataComparison';
 import type {
   ApiStudioProject,
   ConfigDocument,
   OpenApiDocument,
-  ReverseDeps,
+  DepsGraph,
 } from '@/repositories/loadProject/types';
 
 jest.mock('@/helpers/checkTypes', () => ({
@@ -70,11 +70,11 @@ describe('isSameError', () => {
   });
 });
 
-describe('isSameReverseDeps', () => {
+describe('isSameDepsGraph', () => {
   test('undefined', () => {
-    expect(isSameReverseDeps(undefined, undefined)).toBe(true);
-    expect(isSameReverseDeps(undefined, new Map())).toBe(false);
-    expect(isSameReverseDeps(new Map(), undefined)).toBe(false);
+    expect(isSameDepsGraph(undefined, undefined)).toBe(true);
+    expect(isSameDepsGraph(undefined, new Map())).toBe(false);
+    expect(isSameDepsGraph(new Map(), undefined)).toBe(false);
   });
 
   test('order doesn not matter', () => {
@@ -87,7 +87,7 @@ describe('isSameReverseDeps', () => {
       ['a', ['c', 'b']],
     ]);
 
-    expect(isSameReverseDeps(a, b)).toBe(true);
+    expect(isSameDepsGraph(a, b)).toBe(true);
   });
 
   test('size differs', () => {
@@ -97,7 +97,7 @@ describe('isSameReverseDeps', () => {
       ['b', []],
     ]);
 
-    expect(isSameReverseDeps(a, b)).toBe(false);
+    expect(isSameDepsGraph(a, b)).toBe(false);
   });
 
   test('not the same', () => {
@@ -110,7 +110,7 @@ describe('isSameReverseDeps', () => {
       ['c', []],
     ]);
 
-    expect(isSameReverseDeps(a, b)).toBe(false);
+    expect(isSameDepsGraph(a, b)).toBe(false);
   });
 });
 
@@ -289,6 +289,7 @@ function project(overrides: Partial<ApiStudioProject> = {}): ApiStudioProject {
       ['/p/openapi.json', doc('/p/openapi.json', 2, 'h2')],
       ['/p/overlay1.json', doc('/p/overlay1.json', 3, 'h3')],
     ]),
+    forwardDeps: new Map(),
     reverseDeps: new Map<string, ReadonlySet<string>>([
       ['/p/openapi.json', new Set(['/p/overlay1.json'])],
       ['/p/overlay1.json', new Set()],
@@ -301,6 +302,6 @@ function project(overrides: Partial<ApiStudioProject> = {}): ApiStudioProject {
   };
 }
 
-function reverseDeps(entries: [string, string[]][]): ReverseDeps {
+function reverseDeps(entries: [string, string[]][]): DepsGraph {
   return new Map(entries.map(([k, deps]) => [k, new Set(deps)]));
 }
