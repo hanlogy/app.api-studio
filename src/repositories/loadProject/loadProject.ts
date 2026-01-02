@@ -24,24 +24,6 @@ export async function loadProject({
   let lastData: ProjectSource | null = null;
   let lastError: AppError | null = null;
 
-  const emitError = (error: AppError | null) => {
-    if (isSameError(error, lastError)) {
-      return;
-    }
-
-    lastError = error;
-    onError(error);
-  };
-
-  const emitData = (data: ProjectSource) => {
-    emitError(null);
-    if (isSameProjectData(data, lastData)) {
-      return;
-    }
-    lastData = data;
-    onData(data);
-  };
-
   const tick = async () => {
     if (inFlight) {
       return;
@@ -50,13 +32,24 @@ export async function loadProject({
     inFlight = true;
 
     try {
-      const projectData = await buildProjectData({
+      const data = await buildProjectData({
         projectDir,
         previous: lastData,
       });
-      emitData(projectData);
+
+      if (isSameProjectData(data, lastData)) {
+        return;
+      }
+      lastData = data;
+      onData(data);
     } catch (e) {
-      emitError(AppError.from(e));
+      const error = AppError.from(e);
+      if (isSameError(error, lastError)) {
+        return;
+      }
+
+      lastError = error;
+      onError(error);
     } finally {
       inFlight = false;
     }
