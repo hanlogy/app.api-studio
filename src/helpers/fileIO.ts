@@ -101,10 +101,26 @@ export async function readPlainText(path: string): Promise<string> {
   }
 }
 
+function toMs(input: unknown) {
+  if (typeof input === 'number') {
+    return input;
+  }
+
+  if (input instanceof Date) {
+    return input.getTime();
+  }
+
+  if (typeof input === 'string') {
+    return new Date(input).getTime();
+  }
+
+  throw new Error('Unhandled type');
+}
+
 export async function statFile(path: string): Promise<FileStatResult> {
   try {
     const { mtime, size } = await RNFS.stat(path);
-    return { mtime, size };
+    return { mtime: toMs(mtime), size };
   } catch (e) {
     throw new AppError({
       code: 'statFileFailed',
