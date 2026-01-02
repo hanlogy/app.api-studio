@@ -89,4 +89,88 @@ describe('readJsonRecordWithStat', () => {
 
     await expect(readJsonRecordWithStat(path)).rejects.toBe(error);
   });
+
+  test('stat unchanged', async () => {
+    const path = '/tmp/config.json';
+
+    const previous = {
+      path,
+      type: 'json',
+      text: '{"a":1}',
+      json: { a: 1 },
+      mtime: 1700000000000,
+      size: 123,
+      hash: 'deadbeef',
+    } as const;
+
+    checkFileExistsMock.mockResolvedValue(true);
+    statFileMock.mockResolvedValue({
+      mtime: previous.mtime,
+      size: previous.size,
+    });
+
+    const result = await readJsonRecordWithStat(path, previous);
+
+    expect(checkFileExistsMock).toHaveBeenCalledWith(path);
+    expect(statFileMock).toHaveBeenCalledTimes(1);
+    expect(statFileMock).toHaveBeenCalledWith(path);
+
+    // no re-read if unchanged
+    expect(readJsonRecordMock).not.toHaveBeenCalled();
+
+    // returns the exact same reference
+    expect(result).toBe(previous);
+  });
+
+  test('stat changed', async () => {
+    const path = '/tmp/config.json';
+    const previous = {
+      path,
+      type: 'json',
+      text: '{"a":1}',
+      json: { a: 1 },
+      mtime: 1700000000000,
+      size: 123,
+      hash: 'deadbeef',
+    } as const;
+
+    const textNew = '{"a":2}';
+
+    checkFileExistsMock.mockResolvedValue(true);
+
+    // 1st stat: quick check (different -> triggers re-read)
+    // 2nd stat: used in Promise.all result
+    statFileMock
+      .mockResolvedValueOnce({ mtime: previous.mtime + 1, size: previous.size })
+      .mockResolvedValueOnce({
+        mtime: previous.mtime + 1,
+        size: previous.size,
+      });
+
+    readJsonRecordMock.mockResolvedValue({
+      path,
+      type: 'json',
+      text: textNew,
+      json: { a: 2 },
+    });
+
+    const result = await readJsonRecordWithStat(path, previous);
+
+    expect(checkFileExistsMock).toHaveBeenCalledWith(path);
+    expect(statFileMock).toHaveBeenCalledTimes(2);
+    expect(readJsonRecordMock).toHaveBeenCalledTimes(1);
+    expect(readJsonRecordMock).toHaveBeenCalledWith(path);
+
+    expect(result).toStrictEqual({
+      path,
+      type: 'json',
+      text: textNew,
+      json: { a: 2 },
+      mtime: previous.mtime + 1,
+      size: previous.size,
+      hash: expect.any(String),
+    });
+
+    expect(result).not.toBe(previous);
+  });
 });

@@ -5,10 +5,12 @@ import { readJsonRecordWithStat } from './readJsonRecordWithStat';
 
 export async function readConfigFile(
   apiStudioDir: string,
+  previous?: ConfigDocument,
 ): Promise<ConfigDocument> {
   const configPath = joinPath(apiStudioDir, WORKSPACE_CONFIG_FILE);
   const configDoc = await readJsonRecordWithStat<ConfigDocument['json']>(
     configPath,
+    previous,
   );
 
   const { openapi: openApiRelativePath, overlays: overlaysRelativePaths } =

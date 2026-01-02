@@ -15,6 +15,7 @@ function fnv1a32Hex(input: string): string {
 
 export async function readJsonRecordWithStat<T extends JsonRecord = JsonRecord>(
   path: string,
+  previous?: JsonRecordDocumentWithStat<T>,
 ): Promise<JsonRecordDocumentWithStat<T>> {
   if (!(await checkFileExists(path))) {
     throw new AppError({
@@ -22,6 +23,13 @@ export async function readJsonRecordWithStat<T extends JsonRecord = JsonRecord>(
       message: `File ${path} does not exists`,
       meta: { path },
     });
+  }
+
+  if (previous) {
+    const newStat = await statFile(path);
+    if (previous.mtime === newStat.mtime && previous.size === newStat.size) {
+      return previous;
+    }
   }
 
   const [data, stat] = await Promise.all([

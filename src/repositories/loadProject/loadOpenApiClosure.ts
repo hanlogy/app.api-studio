@@ -3,7 +3,10 @@ import { collectExternalRefs } from './collectExternalRefs';
 import type { OpenApiDocument } from './types';
 import { readJsonRecordWithStat } from './readJsonRecordWithStat';
 
-export async function loadOpenApiClosure(path: string): Promise<{
+export async function loadOpenApiClosure(
+  path: string,
+  previous?: ReadonlyMap<string, OpenApiDocument>,
+): Promise<{
   openApiDocs: Map<string, OpenApiDocument>;
   forwardDeps: Map<string, Set<string>>;
 }> {
@@ -30,7 +33,10 @@ export async function loadOpenApiClosure(path: string): Promise<{
 
     visited.add(currentPath);
 
-    const doc = await readJsonRecordWithStat(currentPath);
+    const doc = await readJsonRecordWithStat(
+      currentPath,
+      previous?.get(currentPath),
+    );
     openApiDocs.set(currentPath, doc);
 
     const baseDir = getDirFromFilePath(currentPath);

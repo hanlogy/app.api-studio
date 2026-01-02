@@ -21,6 +21,7 @@ function makeDocument(
     text: JSON.stringify(json),
     path,
     json,
+    size: 1,
     hash: '',
     mtime: 123456789000,
   };
