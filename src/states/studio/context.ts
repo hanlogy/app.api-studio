@@ -3,7 +3,11 @@ import { createContext } from 'react';
 import { type StudioContextValue } from './types';
 
 export const useStudioContext = () => {
-  return useContext<StudioContextValue | null>(StudioContext)!;
+  const context = useContext<StudioContextValue | null>(StudioContext);
+  if (!context) {
+    throw new Error('Context missing');
+  }
+  return context;
 };
 
 export const StudioContext = createContext<StudioContextValue | null>(null);
