@@ -1,6 +1,7 @@
 import { readConfigFile } from '@/repositories/loadProject/readConfigFile';
 import { joinPath, resolvePath } from '@/helpers/pathHelpers';
 import * as Read from '@/repositories/loadProject/readJsonRecordWithStat';
+import type { ConfigDocument } from '@/repositories/loadProject/types';
 
 jest.mock('@/definitions', () => {
   const actual = jest.requireActual('@/definitions');
@@ -129,5 +130,38 @@ describe('readConfigFile', () => {
     });
 
     expect(mockResolvePath).toHaveBeenCalledTimes(1);
+  });
+
+  test('resolve path should be unchanged', async () => {
+    const apiStudioDir = '/dir';
+
+    const previous: ConfigDocument = {
+      path: `${apiStudioDir}/config.json`,
+      type: 'json',
+      text: '{"openapi":"./openapi.yaml","overlays":["o1.yaml"]}',
+      json: {
+        // already resolved (the important part)
+        openapi: '/dir::./openapi.yaml',
+        overlays: ['/dir::o1.yaml'],
+      },
+      mtime: 1,
+      size: 10,
+      hash: 'h1',
+    };
+
+    readJsonRecordWithStatMock.mockResolvedValueOnce(previous);
+
+    const result = await readConfigFile(apiStudioDir, previous);
+
+    expect(result).toBe(previous);
+
+    // Important: should NOT resolve again
+    expect(mockResolvePath).not.toHaveBeenCalled();
+
+    // should call readJsonRecordWithStat with previous
+    expect(readJsonRecordWithStatMock).toHaveBeenCalledWith(
+      `${apiStudioDir}/config.json`,
+      previous,
+    );
   });
 });

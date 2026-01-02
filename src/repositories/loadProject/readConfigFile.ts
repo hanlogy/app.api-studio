@@ -2,6 +2,7 @@ import { AppError, WORKSPACE_CONFIG_FILE } from '@/definitions';
 import { joinPath, resolvePath } from '@/helpers/pathHelpers';
 import type { ConfigDocument } from './types';
 import { readJsonRecordWithStat } from './readJsonRecordWithStat';
+import { isSameDocument } from './dataComparison';
 
 export async function readConfigFile(
   apiStudioDir: string,
@@ -12,6 +13,10 @@ export async function readConfigFile(
     configPath,
     previous,
   );
+
+  if (previous && isSameDocument(configDoc, previous)) {
+    return previous;
+  }
 
   const { openapi: openApiRelativePath, overlays: overlaysRelativePaths } =
     configDoc.json;

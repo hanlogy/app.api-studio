@@ -21,7 +21,7 @@ export function isSameError(errorA: AppError | null, errorB: AppError | null) {
   return errorA.sameAs(errorB) && getPath(errorA) === getPath(errorB);
 }
 
-function isSameDocument(
+export function isSameDocument(
   docA?: JsonRecordDocumentWithStat,
   docB?: JsonRecordDocumentWithStat,
 ) {
