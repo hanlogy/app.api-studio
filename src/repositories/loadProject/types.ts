@@ -1,15 +1,10 @@
-import { AppError, type JsonRecord } from '@/definitions';
+import { type JsonRecord } from '@/definitions';
 import type { JsonRecordDocument } from '@/helpers/fileIO';
 
-/**
- * For:
- * - config file
- * - entry document
- * - overlays documents
- */
 export interface JsonRecordDocumentWithStat<T extends JsonRecord = JsonRecord>
   extends JsonRecordDocument<T> {
   readonly mtime: number;
+  readonly size: number;
   readonly hash: string;
 }
 
@@ -24,13 +19,7 @@ export type ReverseDeps = ReadonlyMap<string, ReadonlySet<string>>;
 
 export interface ApiStudioProject {
   readonly projectDir: string;
-  readonly configPath: string;
-  readonly entryPath: string;
-  readonly overlayPaths: readonly string[];
-  // Including:
-  // - config file
-  // - entry document
-  // - overlays documents
-  readonly docs: ReadonlyMap<string, ConfigDocument | OpenApiDocument>;
+  readonly configDoc: ConfigDocument;
+  readonly openApiDocs: ReadonlyMap<string, OpenApiDocument>;
   readonly reverseDeps: ReverseDeps;
 }

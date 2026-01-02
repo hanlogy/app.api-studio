@@ -1,6 +1,10 @@
 import type { AppError } from '@/definitions';
 import { isPlainObject } from '@/helpers/checkTypes';
-import type { ApiStudioProject } from './types';
+import type {
+  ApiStudioProject,
+  JsonRecordDocumentWithStat,
+  ReverseDeps,
+} from './types';
 
 function getPath({ meta }: AppError) {
   if (!isPlainObject(meta)) {
@@ -17,6 +21,49 @@ export function isSameError(errorA: AppError | null, errorB: AppError | null) {
   return errorA.sameAs(errorB) && getPath(errorA) === getPath(errorB);
 }
 
+function isSameDocument(
+  docA?: JsonRecordDocumentWithStat,
+  docB?: JsonRecordDocumentWithStat,
+) {
+  if (!docA || !docB) {
+    return docA === docB;
+  }
+
+  return (
+    docA.path === docB.path &&
+    docA.mtime === docB.mtime &&
+    docA.size === docB.size &&
+    docA.hash === docB.hash
+  );
+}
+
+export function isSameReverseDeps(depsA?: ReverseDeps, depsB?: ReverseDeps) {
+  if (!depsA || !depsB) {
+    return depsA === depsB;
+  }
+  if (depsA.size !== depsB.size) {
+    return false;
+  }
+
+  for (const [key, depA] of depsA) {
+    const depB = depsB.get(key);
+    if (!depB) {
+      return false;
+    }
+
+    if (depA.size !== depB.size) {
+      return false;
+    }
+    for (const dep of depA) {
+      if (!depB.has(dep)) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
 export function isSameProjectData(
   dataA: ApiStudioProject | null,
   dataB: ApiStudioProject | null,
@@ -27,43 +74,20 @@ export function isSameProjectData(
 
   if (
     dataA.projectDir !== dataB.projectDir ||
-    dataA.configPath !== dataB.configPath ||
-    dataA.entryPath !== dataB.entryPath ||
-    dataA.overlayPaths.length !== dataB.overlayPaths.length ||
-    dataA.overlayPaths.every(e => dataB.overlayPaths.includes(e)) === false ||
-    dataA.docs.size !== dataB.docs.size ||
-    dataA.reverseDeps.size !== dataB.reverseDeps.size
+    dataA.openApiDocs.size !== dataB.openApiDocs.size ||
+    !isSameDocument(dataA.configDoc, dataB.configDoc)
   ) {
     return false;
   }
 
-  // Compare docs: only mtime + hash for each path
-  for (const [path, docA] of dataA.docs) {
-    const docB = dataB.docs.get(path);
-    if (!docB) {
-      return false;
-    }
-
-    if (docA.mtime !== docB.mtime || docA.hash !== docB.hash) {
+  for (const [path, docA] of dataA.openApiDocs) {
+    if (!isSameDocument(docA, dataB.openApiDocs.get(path))) {
       return false;
     }
   }
 
-  // Compare reverseDeps: keys + sets must match exactly
-  for (const [key, depsA] of dataA.reverseDeps) {
-    const depsB = dataB.reverseDeps.get(key);
-    if (!depsB) {
-      return false;
-    }
-
-    if (depsA.size !== depsB.size) {
-      return false;
-    }
-    for (const dep of depsA) {
-      if (!depsB.has(dep)) {
-        return false;
-      }
-    }
+  if (!isSameReverseDeps(dataA.reverseDeps, dataB.reverseDeps)) {
+    return false;
   }
 
   return true;

@@ -2,11 +2,13 @@ import { AppError } from '@/definitions';
 import {
   isSameError,
   isSameProjectData,
+  isSameReverseDeps,
 } from '@/repositories/loadProject/dataComparison';
 import type {
   ApiStudioProject,
   ConfigDocument,
   OpenApiDocument,
+  ReverseDeps,
 } from '@/repositories/loadProject/types';
 
 jest.mock('@/helpers/checkTypes', () => ({
@@ -68,6 +70,50 @@ describe('isSameError', () => {
   });
 });
 
+describe('isSameReverseDeps', () => {
+  test('undefined', () => {
+    expect(isSameReverseDeps(undefined, undefined)).toBe(true);
+    expect(isSameReverseDeps(undefined, new Map())).toBe(false);
+    expect(isSameReverseDeps(new Map(), undefined)).toBe(false);
+  });
+
+  test('order doesn not matter', () => {
+    const a = reverseDeps([
+      ['a', ['b', 'c']],
+      ['b', []],
+    ]);
+    const b = reverseDeps([
+      ['b', []],
+      ['a', ['c', 'b']],
+    ]);
+
+    expect(isSameReverseDeps(a, b)).toBe(true);
+  });
+
+  test('size differs', () => {
+    const a = reverseDeps([['a', ['b']]]);
+    const b = reverseDeps([
+      ['a', ['b']],
+      ['b', []],
+    ]);
+
+    expect(isSameReverseDeps(a, b)).toBe(false);
+  });
+
+  test('not the same', () => {
+    const a = reverseDeps([
+      ['a', ['b']],
+      ['b', []],
+    ]);
+    const b = reverseDeps([
+      ['a', ['b']],
+      ['c', []],
+    ]);
+
+    expect(isSameReverseDeps(a, b)).toBe(false);
+  });
+});
+
 describe('isSameProjectData', () => {
   test('same reference', () => {
     const p = project();
@@ -83,9 +129,7 @@ describe('isSameProjectData', () => {
   test('all match', () => {
     const a = project();
     const b = project({
-      // new instances but same values
-      overlayPaths: ['/p/overlay1.json'],
-      docs: new Map(a.docs),
+      openApiDocs: new Map(a.openApiDocs),
       reverseDeps: new Map(
         Array.from(a.reverseDeps.entries()).map(([k, s]) => [k, new Set(s)]),
       ),
@@ -102,59 +146,65 @@ describe('isSameProjectData', () => {
 
   test('overlayPaths differ in length', () => {
     const a = project();
-    const b = project({ overlayPaths: [] });
+    const b = project({
+      configDoc: { json: { overlays: [] } } as unknown as ConfigDocument,
+    });
     expect(isSameProjectData(a, b)).toBe(false);
   });
 
   test('overlayPaths differ in content', () => {
     const a = project();
-    const b = project({ overlayPaths: ['/p/overlay2.json'] });
+    const b = project({
+      configDoc: {
+        json: { overlays: ['/p/overlay2.json'] },
+      } as unknown as ConfigDocument,
+    });
     expect(isSameProjectData(a, b)).toBe(false);
   });
 
-  test('docs size differs', () => {
+  test('openApiDocs size differs', () => {
     const a = project();
-    const fewerDocs = new Map(a.docs);
+    const fewerDocs = new Map(a.openApiDocs);
     fewerDocs.delete('/p/overlay1.json');
-    const b = project({ docs: fewerDocs });
+    const b = project({ openApiDocs: fewerDocs });
     expect(isSameProjectData(a, b)).toBe(false);
   });
 
   test('a doc key is missing in B', () => {
     const a = project();
-    const docsB = new Map(a.docs);
+    const docsB = new Map(a.openApiDocs);
     docsB.delete('/p/openapi.json');
     // keep size same by adding some other key
     docsB.set('/p/other.json', doc('/p/other.json', 2, 'h2'));
-    const b = project({ docs: docsB });
+    const b = project({ openApiDocs: docsB });
 
     expect(isSameProjectData(a, b)).toBe(false);
   });
 
   test('a doc mtime differs', () => {
     const a = project();
-    const docsB = new Map(a.docs);
+    const docsB = new Map(a.openApiDocs);
     const d = docsB.get('/p/openapi.json');
     if (!d) {
-      throw new Error('Missing /p/openapi.json in docs');
+      throw new Error('Missing /p/openapi.json in openApiDocs');
     }
 
     docsB.set('/p/openapi.json', { ...d, mtime: d.mtime + 1 });
 
-    const b = project({ docs: docsB });
+    const b = project({ openApiDocs: docsB });
     expect(isSameProjectData(a, b)).toBe(false);
   });
 
   test('a doc hash differs', () => {
     const a = project();
-    const docsB = new Map(a.docs);
+    const docsB = new Map(a.openApiDocs);
     const d = docsB.get('/p/openapi.json');
     if (!d) {
-      throw new Error('Missing /p/openapi.json in docs');
+      throw new Error('Missing /p/openapi.json in openApiDocs');
     }
     docsB.set('/p/openapi.json', { ...d, hash: 'DIFFERENT' });
 
-    const b = project({ docs: docsB });
+    const b = project({ openApiDocs: docsB });
     expect(isSameProjectData(a, b)).toBe(false);
   });
 
@@ -214,6 +264,7 @@ function configDoc(
     text: 'ignored in equality',
     json: { openapi, overlays },
     mtime,
+    size: 1,
     hash,
   };
 }
@@ -226,20 +277,15 @@ function doc(path: string, mtime: number, hash: string): OpenApiDocument {
     json: {},
     mtime,
     hash,
+    size: 1,
   };
 }
 
 function project(overrides: Partial<ApiStudioProject> = {}): ApiStudioProject {
   const defaults: ApiStudioProject = {
     projectDir: '/p',
-    configPath: '/p/api-studio/config.json',
-    entryPath: '/p/openapi.json',
-    overlayPaths: ['/p/overlay1.json'],
-    docs: new Map<string, ConfigDocument | OpenApiDocument>([
-      [
-        '/p/api-studio/config.json',
-        configDoc('/p/api-studio/config.json', 1, 'h1'),
-      ],
+    configDoc: configDoc('/p/api-studio/config.json', 1, 'h1'),
+    openApiDocs: new Map<string, ConfigDocument | OpenApiDocument>([
       ['/p/openapi.json', doc('/p/openapi.json', 2, 'h2')],
       ['/p/overlay1.json', doc('/p/overlay1.json', 3, 'h3')],
     ]),
@@ -252,7 +298,9 @@ function project(overrides: Partial<ApiStudioProject> = {}): ApiStudioProject {
   return {
     ...defaults,
     ...overrides,
-    docs: overrides.docs ?? defaults.docs,
-    reverseDeps: overrides.reverseDeps ?? defaults.reverseDeps,
   };
+}
+
+function reverseDeps(entries: [string, string[]][]): ReverseDeps {
+  return new Map(entries.map(([k, deps]) => [k, new Set(deps)]));
 }
