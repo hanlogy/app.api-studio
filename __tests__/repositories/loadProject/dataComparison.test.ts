@@ -5,7 +5,7 @@ import {
   isSameProjectData,
 } from '@/repositories/loadProject/dataComparison';
 import type {
-  ApiStudioProject,
+  ProjectSource,
   ConfigDocument,
   OpenApiDocument,
   DepsGraph,
@@ -281,8 +281,8 @@ function doc(path: string, mtime: number, hash: string): OpenApiDocument {
   };
 }
 
-function project(overrides: Partial<ApiStudioProject> = {}): ApiStudioProject {
-  const defaults: ApiStudioProject = {
+function project(overrides: Partial<ProjectSource> = {}): ProjectSource {
+  const defaults: ProjectSource = {
     projectDir: '/p',
     configDoc: configDoc('/p/api-studio/config.json', 1, 'h1'),
     openApiDocs: new Map<string, ConfigDocument | OpenApiDocument>([

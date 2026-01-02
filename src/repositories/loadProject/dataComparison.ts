@@ -1,7 +1,7 @@
 import type { AppError } from '@/definitions';
 import { isPlainObject } from '@/helpers/checkTypes';
 import type {
-  ApiStudioProject,
+  ProjectSource,
   JsonRecordDocumentWithStat,
   DepsGraph,
 } from './types';
@@ -65,8 +65,8 @@ export function isSameDepsGraph(depsA?: DepsGraph, depsB?: DepsGraph) {
 }
 
 export function isSameProjectData(
-  dataA: ApiStudioProject | null,
-  dataB: ApiStudioProject | null,
+  dataA: ProjectSource | null,
+  dataB: ProjectSource | null,
 ) {
   if (!dataA || !dataB) {
     return dataA === dataB;
