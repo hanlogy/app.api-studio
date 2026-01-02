@@ -15,9 +15,9 @@ import { AppError } from '@/definitions';
 import { StudioContext } from './context';
 import { haveWorkspaceCachesChanged } from './haveWorkspaceCachesChanged';
 
-export const StudioContextProvider = ({ children }: PropsWithChildren<{}>) => {
+export const StudioContextProvider = ({ children }: PropsWithChildren) => {
   const [status, setStatus] = useState<StudioStateStatus>('initializing');
-  const [error, setError] = useState<AppError | undefined>();
+  const [error, setError] = useState<AppError | null>(null);
   const [workspaces, setWorkspaces] = useState<readonly WorkspaceCache[]>([]);
   const [currentWorkspace, setCurrentWorkspace] = useState<{
     dir: string;

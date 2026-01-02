@@ -21,8 +21,8 @@ export interface StudioStateCache {
 interface StudioContextValueBase {
   readonly workspaces?: readonly WorkspaceCache[];
   readonly updateRecentWorkspace?: (workspace: WorkspaceCache) => void;
-  readonly setError: (error?: AppError) => void;
-  readonly error?: AppError;
+  readonly setError: (error: AppError | null) => void;
+  readonly error: AppError | null;
   readonly currentWorkspace?: { dir: string; environment?: string };
   readonly setCurrentWorkspace?: (args: {
     dir: string;
